@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title th:text="${pageTitle}">cancercare – 회원가입</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg:#f7f9fc;--card:#fff;--text:#0b1a2b;--muted:#6b7280;--brand:#2563eb;--brand-700:#1d4ed8;--outline:#e5e7eb;--radius:16px;--shadow:0 10px 30px rgba(2,17,79,.08)
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%}
+        body{margin:0;background:var(--bg);font-family:"Pretendard",system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR",sans-serif;color:var(--text)}
+        .wrap{min-height:100%;display:grid;place-items:center;padding:40px 16px}
+        .card{width:100%;max-width:520px;background:var(--card);border:1px solid var(--outline);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px}
+        .brand{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+        .logo{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#4f46e5,#22d3ee);color:#fff;font-size:14px;font-weight:800}
+        h1{margin:8px 0 2px;font-size:24px}
+        .subtitle{color:var(--muted);font-size:13px;margin-bottom:8px}
+
+        form{margin-top:12px}
+        .grid{display:grid;grid-template-columns:1fr;gap:14px}
+        .row{display:grid;grid-template-columns:1fr;gap:10px}
+        label{font-weight:600;display:block;margin-bottom:8px}
+        .req{color:#ef4444;margin-left:4px}
+        input,select{width:100%;height:44px;border:1px solid var(--outline);border-radius:10px;padding:0 12px;font-size:15px;background:#fff;outline:none}
+        input:focus,select:focus{border-color:#94b5ff;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+        input::placeholder{color:#9ca3af}
+
+        .email-row{display:grid;grid-template-columns:1fr 60px 1fr;gap:8px;align-items:center}
+        .at{justify-self:center;color:#6b7280}
+
+        .btn{width:100%;height:46px;border:none;border-radius:12px;background:var(--brand);color:#fff;font-weight:700;font-size:15px;cursor:pointer;margin-top:6px}
+        .btn:hover{background:var(--brand-700)}
+
+        .links{margin-top:14px;text-align:center;font-size:14px}
+        .links a{color:#2563eb;text-decoration:none}
+        .links a:hover{text-decoration:underline}
+
+        .err{color:#dc2626;font-size:12px;margin-top:6px}
+        .alert{margin-bottom:10px;border:1px solid #fde68a;background:#fffbeb;color:#78350f;border-radius:10px;padding:10px 12px;font-size:13px}
+
+        @media(min-width:640px){
+            .row-2{grid-template-columns:1fr 1fr}
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="card">
+        <div class="brand">
+            <div class="logo">A</div>
+            <strong>cancercare</strong>
+        </div>
+        <h1>새로운 계정을 만들어보세요</h1>
+        <div class="subtitle">cancercare 계정에 가입하세요</div>
+
+        <!-- 전역 알림 (예: 약관 동의 누락 등) -->
+        <!--/*
+        <div class="alert" th:if="${#fields.hasGlobalErrors()}">
+            <span th:each="e : ${#fields.globalErrors()}" th:text="${e}" style="display:block"></span>
+        </div>
+        */-->
+
+        <form th:action="@{/signup}" method="post" th:object="${signUpForm}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+            <div class="grid">
+                <!-- 아이디 -->
+                <div>
+                    <label for="username">아이디 <span class="req">*</span></label>
+                    <input id="username" type="text" placeholder="아이디를 입력하세요" th:field="*{username}" required>
+                    <div class="err" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                </div>
+
+                <!-- 이름 -->
+                <div>
+                    <label for="name">이름 <span class="req">*</span></label>
+                    <input id="name" type="text" placeholder="이름을 입력하세요" th:field="*{name}" required>
+                    <div class="err" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                </div>
+
+                <!-- 이메일 (로컬 + 도메인 선택) -->
+                <div>
+                    <label>이메일 주소 <span class="req">*</span></label>
+                    <div class="email-row">
+                        <input type="text" placeholder="이메일" th:field="*{emailLocal}" required>
+                        <span class="at">@</span>
+                        <select th:field="*{emailDomain}" required id="emailDomain">
+                            <option value="" disabled selected>도메인 선택</option>
+                            <option>gmail.com</option>
+                            <option>naver.com</option>
+                            <option>daum.net</option>
+                            <option>kakao.com</option>
+                            <option value="custom">직접 입력</option>
+                        </select>
+                    </div>
+                    <input type="text" id="emailDomainCustom" placeholder="직접 도메인 입력" style="margin-top:8px;display:none"/>
+                    <div class="err" th:if="${#fields.hasErrors('emailLocal')}" th:errors="*{emailLocal}"></div>
+                    <div class="err" th:if="${#fields.hasErrors('emailDomain')}" th:errors="*{emailDomain}"></div>
+                </div>
+
+                <!-- 비밀번호 / 확인 -->
+                <div class="row row-2">
+                    <div>
+                        <label for="password">비밀번호 <span class="req">*</span></label>
+                        <input id="password" type="password" placeholder="비밀번호를 입력하세요" th:field="*{password}" required>
+                        <div class="err" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    </div>
+                    <div>
+                        <label for="passwordConfirm">비밀번호 확인 <span class="req">*</span></label>
+                        <input id="passwordConfirm" type="password" placeholder="비밀번호를 다시 입력하세요" th:field="*{passwordConfirm}" required>
+                        <div class="err" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></div>
+                    </div>
+                </div>
+
+                <!-- 성별 -->
+                <div>
+                    <label for="gender">성별</label>
+                    <select id="gender" th:field="*{gender}">
+                        <option value="" selected>성별을 선택하세요</option>
+                        <option value="FEMALE">여성</option>
+                        <option value="MALE">남성</option>
+                        <option value="OTHER">기타/응답 안 함</option>
+                    </select>
+                    <div class="err" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></div>
+                </div>
+
+                <!-- 생년월일 -->
+                <div>
+                    <label for="birth">생년월일</label>
+                    <input id="birth" type="date" th:field="*{birth}" placeholder="생년월일을 선택하세요">
+                    <div class="err" th:if="${#fields.hasErrors('birth')}" th:errors="*{birth}"></div>
+                </div>
+
+                <button class="btn" type="submit">회원가입</button>
+            </div>
+        </form>
+
+        <div class="links">
+            이미 계정이 있으신가요? <a th:href="@{/login}">로그인</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // "직접 입력" 선택 시 도메인 입력창 표시
+    (function(){
+        var sel = document.getElementById('emailDomain');
+        var custom = document.getElementById('emailDomainCustom');
+        if(!sel) return;
+        sel.addEventListener('change', function(){
+            if(this.value === 'custom'){
+                custom.style.display='block';
+                custom.setAttribute('name','emailDomain');
+                this.removeAttribute('name');
+            }else{
+                custom.style.display='none';
+                this.setAttribute('name','emailDomain');
+                custom.removeAttribute('name');
+            }
+        });
+    })();
+</script>
+</body>
+</html>
