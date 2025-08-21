@@ -33,6 +33,7 @@ dependencies {
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
 }
 
 test {

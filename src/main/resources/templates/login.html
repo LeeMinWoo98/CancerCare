@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title th:text="${pageTitle}">cancercare – 로그인</title>
+    <title>cancercare – 로그인</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -67,31 +67,20 @@
         <h1>다시 오신 것을 환영합니다</h1>
         <div class="subtitle">cancercare 계정에 로그인하세요</div>
 
-        <!-- 전역 에러/알림 -->
-        <!--/*
-        <div class="alert" th:if="${param.error} || ${#fields.hasGlobalErrors()}">
-            <span th:text="${errorMessage != null ? errorMessage : '이메일 또는 비밀번호가 올바르지 않습니다.'}"></span>
-        </div>
-        */-->
-
         <!-- 로그인 폼 -->
-        <form th:action="@{/login}" method="post" th:object="${loginForm}">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-
+        <form action="#" method="post">
             <div class="field">
                 <label for="email">이메일 주소 <span class="req">*</span></label>
-                <input id="email" type="email" placeholder="이메일을 입력하세요" th:field="*{email}" required>
-                <div class="err" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                <input id="email" name="email" type="email" placeholder="이메일을 입력하세요" required>
             </div>
 
             <div class="field">
                 <label for="password">비밀번호</label>
-                <input id="password" type="password" placeholder="비밀번호를 입력하세요" th:field="*{password}" required>
-                <div class="err" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                <input id="password" name="password" type="password" placeholder="비밀번호를 입력하세요" required>
             </div>
 
             <div class="hint">
-                <label class="remember"><input type="checkbox" th:field="*{rememberMe}"> 로그인 상태 유지</label>
+                <label class="remember"><input type="checkbox" name="rememberMe"> 로그인 상태 유지</label>
             </div>
 
             <button class="btn" type="submit">로그인</button>
@@ -100,28 +89,27 @@
         <div class="links">
             <a th:href="@{/signup}">회원가입</a>
             <span>·</span>
-            <a th:href="@{/account/recover}">ID/PW찾기</a>
+            <a href="#">ID/PW찾기</a>
         </div>
     </div>
-
-    <!--
-    <script th:inline="javascript">
-    /*<![CDATA[*/
-        // 아래는 JavaScript로 에러 메시지를 처리하는 예시입니다.
-        // Spring Security는 로그인 실패 시 URL에 '?error' 파라미터를 추가하여 리디렉션합니다.
-        // 이 파라미터의 존재 여부를 확인하여 에러 발생을 감지할 수 있습니다.
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('error')) {
-            const alertBox = document.querySelector('.alert');
-            // 서버의 Thymeleaf가 이미 에러 메시지를 표시했을 수 있으므로,
-            // alertBox 내부가 비어있을 때만 기본 메시지를 추가합니다.
-            if (alertBox && !alertBox.textContent.trim()) {
-                alertBox.innerHTML = '<span>이메일 또는 비밀번호가 올바르지 않습니다.</span>';
-            }
-        }
-    /*]]>*/
-    </script>
-    -->
 </div>
 </body>
 </html>
+<!--
+   <script th:inline="javascript">
+   /*<![CDATA[*/
+       // 아래는 JavaScript로 에러 메시지를 처리하는 예시입니다.
+       // Spring Security는 로그인 실패 시 URL에 '?error' 파라미터를 추가하여 리디렉션합니다.
+       // 이 파라미터의 존재 여부를 확인하여 에러 발생을 감지할 수 있습니다.
+       const urlParams = new URLSearchParams(window.location.search);
+       if (urlParams.has('error')) {
+           const alertBox = document.querySelector('.alert');
+           // 서버의 Thymeleaf가 이미 에러 메시지를 표시했을 수 있으므로,
+           // alertBox 내부가 비어있을 때만 기본 메시지를 추가합니다.
+           if (alertBox && !alertBox.textContent.trim()) {
+               alertBox.innerHTML = '<span>이메일 또는 비밀번호가 올바르지 않습니다.</span>';
+           }
+       }
+   /*]]>*/
+   </script>
+   -->

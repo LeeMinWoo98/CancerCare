@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title th:text="${pageTitle}">cancercare – 회원가입</title>
+    <title>cancercare – 회원가입</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -58,38 +58,27 @@
         <h1>새로운 계정을 만들어보세요</h1>
         <div class="subtitle">cancercare 계정에 가입하세요</div>
 
-        <!-- 전역 알림 (예: 약관 동의 누락 등) -->
-        <!--/*
-        <div class="alert" th:if="${#fields.hasGlobalErrors()}">
-            <span th:each="e : ${#fields.globalErrors()}" th:text="${e}" style="display:block"></span>
-        </div>
-        */-->
-
-        <form th:action="@{/signup}" method="post" th:object="${signUpForm}">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-
+        <form action="#" method="post">
             <div class="grid">
                 <!-- 아이디 -->
                 <div>
                     <label for="username">아이디 <span class="req">*</span></label>
-                    <input id="username" type="text" placeholder="아이디를 입력하세요" th:field="*{username}" required>
-                    <div class="err" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                    <input id="username" name="username" type="text" placeholder="아이디를 입력하세요" required>
                 </div>
 
                 <!-- 이름 -->
                 <div>
                     <label for="name">이름 <span class="req">*</span></label>
-                    <input id="name" type="text" placeholder="이름을 입력하세요" th:field="*{name}" required>
-                    <div class="err" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                    <input id="name" name="name" type="text" placeholder="이름을 입력하세요" required>
                 </div>
 
                 <!-- 이메일 (로컬 + 도메인 선택) -->
                 <div>
                     <label>이메일 주소 <span class="req">*</span></label>
                     <div class="email-row">
-                        <input type="text" placeholder="이메일" th:field="*{emailLocal}" required>
+                        <input type="text" name="emailLocal" placeholder="이메일" required>
                         <span class="at">@</span>
-                        <select th:field="*{emailDomain}" required id="emailDomain">
+                        <select name="emailDomain" required id="emailDomain">
                             <option value="" disabled selected>도메인 선택</option>
                             <option>gmail.com</option>
                             <option>naver.com</option>
@@ -99,41 +88,35 @@
                         </select>
                     </div>
                     <input type="text" id="emailDomainCustom" placeholder="직접 도메인 입력" style="margin-top:8px;display:none"/>
-                    <div class="err" th:if="${#fields.hasErrors('emailLocal')}" th:errors="*{emailLocal}"></div>
-                    <div class="err" th:if="${#fields.hasErrors('emailDomain')}" th:errors="*{emailDomain}"></div>
                 </div>
 
                 <!-- 비밀번호 / 확인 -->
                 <div class="row row-2">
                     <div>
                         <label for="password">비밀번호 <span class="req">*</span></label>
-                        <input id="password" type="password" placeholder="비밀번호를 입력하세요" th:field="*{password}" required>
-                        <div class="err" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                        <input id="password" name="password" type="password" placeholder="비밀번호를 입력하세요" required>
                     </div>
                     <div>
                         <label for="passwordConfirm">비밀번호 확인 <span class="req">*</span></label>
-                        <input id="passwordConfirm" type="password" placeholder="비밀번호를 다시 입력하세요" th:field="*{passwordConfirm}" required>
-                        <div class="err" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></div>
+                        <input id="passwordConfirm" name="passwordConfirm" type="password" placeholder="비밀번호를 다시 입력하세요" required>
                     </div>
                 </div>
 
                 <!-- 성별 -->
                 <div>
                     <label for="gender">성별</label>
-                    <select id="gender" th:field="*{gender}">
+                    <select id="gender" name="gender">
                         <option value="" selected>성별을 선택하세요</option>
                         <option value="FEMALE">여성</option>
                         <option value="MALE">남성</option>
                         <option value="OTHER">기타/응답 안 함</option>
                     </select>
-                    <div class="err" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></div>
                 </div>
 
                 <!-- 생년월일 -->
                 <div>
                     <label for="birth">생년월일</label>
-                    <input id="birth" type="date" th:field="*{birth}" placeholder="생년월일을 선택하세요">
-                    <div class="err" th:if="${#fields.hasErrors('birth')}" th:errors="*{birth}"></div>
+                    <input id="birth" name="birth" type="date" placeholder="생년월일을 선택하세요">
                 </div>
 
                 <button class="btn" type="submit">회원가입</button>
@@ -141,7 +124,7 @@
         </form>
 
         <div class="links">
-            이미 계정이 있으신가요? <a th:href="@{/login}">로그인</a>
+            이미 계정이 있으신가요? <a href="#">로그인</a>
         </div>
     </div>
 </div>
