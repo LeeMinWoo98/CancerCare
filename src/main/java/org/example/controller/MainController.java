@@ -25,4 +25,10 @@ public class MainController {
         return "signup";
     }
 
+    @GetMapping("/chat")
+    public String chat() { // 모델에 데이터를 추가할 필요가 없으므로 파라미터가 비어있어도 됩니다.
+        return "chat";
+    }
+
+
 }
