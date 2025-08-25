@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CancelCare - AI 의료 상담 서비스</title>
+
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/chat.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: headerFragment}"></div>
+
+<div class="chat-container">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <button class="new-chat-btn" onclick="startNewChat()">
+                새로운 상담 시작
+            </button>
+        </div>
+
+        <div class="chat-list">
+            <div class="chat-item active" onclick="selectCategory('general')">
+                <div class="category-icon">💬</div>
+                <div class="category-info">
+                    <div class="chat-title">일반 상담</div>
+                    <div class="chat-preview">기본적인 상담 서비스</div>
+                </div>
+            </div>
+            <div class="chat-item" onclick="selectCategory('symptoms')">
+                <div class="category-icon">🩺</div>
+                <div class="category-info">
+                    <div class="chat-title">증상 문의</div>
+                    <div class="chat-preview">증상에 대한 문의</div>
+                </div>
+            </div>
+            <div class="chat-item" onclick="selectCategory('prevention')">
+                <div class="category-icon">🛡️</div>
+                <div class="category-info">
+                    <div class="chat-title">예방 관리</div>
+                    <div class="chat-preview">질병 예방 및 관리</div>
+                </div>
+            </div>
+            <div class="chat-item" onclick="selectCategory('checkup')">
+                <div class="category-icon">📋</div>
+                <div class="category-info">
+                    <div class="chat-title">검진 정보</div>
+                    <div class="chat-preview">건강검진 관련 정보</div>
+                </div>
+            </div>
+            <div class="chat-item" onclick="selectCategory('nutrition')">
+                <div class="category-icon">🥗</div>
+                <div class="category-info">
+                    <div class="chat-title">영양 상담</div>
+                    <div class="chat-preview">영양 및 식단 상담</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">홍</div>
+                <div>
+                    <div style="font-size: 14px; font-weight: 500;">홍길동</div>
+                    <div style="font-size: 12px; color: #bdc3c7;">온라인</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-chat">
+        <div class="chat-header">
+            <div class="ai-avatar">AI</div>
+            <div class="ai-info">
+                <h3>CancelCare AI 상담</h3>
+                <div class="ai-status">의료 상담 서비스</div>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message ai">
+                <div class="message-avatar">AI</div>
+                <div class="message-content">
+                    안녕하세요! CancelCare AI 상담서비스입니다. 왼쪽 상담 주제를 선택하시거나 궁금한 점을 말씀해주세요.
+                </div>
+            </div>
+
+            <div class="message user">
+                <div class="message-avatar">홍</div>
+                <div class="message-content">
+                    이번 주에 건강검진을 받으려고 하는데 어떤 항목들을 검사하면 좋을까요?
+                </div>
+            </div>
+
+            <div class="message ai">
+                <div class="message-avatar">AI</div>
+                <div class="message-content">
+                    좋은 질문이네요! 건강검진 항목은 연령대와 개인 위험요소에 따라 달라집니다.
+
+                    **기본 검진 항목:**
+                    • 혈압 측정
+                    • 혈액검사 (당뇨, 고지혈증 등)
+                    • 소변검사
+                    • 흉부 X-ray
+                    • 심전도 검사
+
+                    검진정보 메뉴에서 더 자세한 정보를 확인하실 수 있습니다.
+                </div>
+            </div>
+
+            <div class="message user">
+                <div class="message-avatar">홍</div>
+                <div class="message-content">
+                    네 감사합니다!
+
+                    그러면 영양상담도 받을 수 있나요?
+                </div>
+            </div>
+
+            <div class="message ai">
+                <div class="message-avatar">AI</div>
+                <div class="message-content">
+                    물론입니다! 영양상담 서비스도 제공하고 있습니다.
+
+                    **영양상담 서비스:**
+                    • 개인 맞춤 식단 상담
+                    • 질병별 영양 관리
+                    • 체중 관리 상담
+                    • 영양제 복용 상담
+
+                    왼쪽 메뉴에서 '영양 상담'을 선택하시면 전문적인 상담을 받으실 수 있습니다.
+                </div>
+            </div>
+
+            <div class="message user">
+                <div class="message-avatar">홍</div>
+                <div class="message-content">
+                    감사합니다!
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <form action="#" method="post" id="chatForm">
+                <div class="chat-input-wrapper">
+                        <textarea
+                                name="message"
+                                id="messageInput"
+                                class="chat-input"
+                                placeholder="메시지를 입력하세요..."
+                                rows="1"
+                                required
+                        ></textarea>
+                    <button type="submit" class="send-btn" id="sendBtn" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 2L11 13"></path>
+                            <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // DOM 요소들
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+
+    // 자동 높이 조절
+    messageInput.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+
+        // 전송 버튼 활성화/비활성화
+        sendBtn.disabled = !this.value.trim();
+    });
+
+    // 엔터키 전송 (Shift+Enter는 줄바꿈)
+    messageInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if (this.value.trim()) {
+                sendMessage();
+            }
+        }
+    });
+
+    // 채팅 스크롤을 맨 아래로
+    function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // 페이지 로드 시 스크롤을 맨 아래로
+    window.addEventListener('load', scrollToBottom);
+
+    // 새 상담 시작
+    function startNewChat() {
+        alert('새로운 상담을 시작합니다!');
+        // window.location.href = '/chat/new';
+    }
+
+    // 상담 주제 선택
+    function selectCategory(category) {
+        // 활성 카테고리 변경
+        document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('active'));
+        event.target.closest('.chat-item').classList.add('active');
+
+        // 카테고리별 초기 메시지 표시
+        const categoryMessages = {
+            'general': '일반 상담을 선택하셨습니다. 무엇을 도와드릴까요?',
+            'symptoms': '증상 문의를 선택하셨습니다. 어떤 증상이 있으신가요?',
+            'prevention': '예방 관리를 선택하셨습니다. 어떤 예방법이 궁금하신가요?',
+            'checkup': '검진 정보를 선택하셨습니다. 어떤 검진 정보를 원하시나요?',
+            'nutrition': '영양 상담을 선택하셨습니다. 영양 관련 질문을 해보세요!'
+        };
+
+        alert(categoryMessages[category]);
+        // 실제 구현시에는 해당 카테고리의 채팅을 로드
+    }
+
+    // 메시지 전송
+    function sendMessage() {
+        const messageText = messageInput.value.trim();
+        if (!messageText) return;
+
+        // 사용자 메시지 추가
+        addMessage(messageText, true);
+
+        // 입력창 초기화
+        messageInput.value = '';
+        messageInput.style.height = 'auto';
+        sendBtn.disabled = true;
+
+        // AI 응답 시뮬레이션 (2초 후)
+        setTimeout(() => {
+            const responses = [
+                '네, 알겠습니다! 추가로 궁금한 점이 있으시면 언제든 말씀해주세요.',
+                '좋은 질문이네요! 더 자세히 설명해드릴까요?',
+                '네, 맞습니다. 다른 도움이 필요하시면 언제든 말씀해주세요.',
+                '이해했습니다. 혹시 다른 궁금한 점이 있으신가요?',
+                '네, 도움이 되셨기를 바랍니다. 또 다른 질문이 있으시면 편하게 물어보세요!'
+            ];
+            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+            addMessage(randomResponse, false);
+        }, 1500);
+    }
+
+    // 메시지 추가 함수
+    function addMessage(text, isUser) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+
+        messageDiv.innerHTML = `
+            <div class="message-avatar">${isUser ? '홍' : 'AI'}</div>
+            <div class="message-content">${text}</div>
+        `;
+
+        chatMessages.appendChild(messageDiv);
+        scrollToBottom();
+    }
+
+    // 폼 전송 처리
+    chatForm.addEventListener('submit', function (e) {
+        e.preventDefault(); // 실제 전송 방지
+        sendMessage();
+    });
+</script>
+</body>
+</html>
