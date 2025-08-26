@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.7.17' // Spring Boot 플러그인
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE' // 의존성 관리 플러그인
+    id 'org.springframework.boot' version '3.3.4' // Spring Boot 플러그인
+    id 'io.spring.dependency-management' version '1.1.6'
 }
 
 group = 'org.example'
@@ -20,32 +20,34 @@ repositories {
 dependencies {
     // Web
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    // JPA
+
+    // Security (회원가입/로그인 보안)
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // JPA (Hibernate 6.x 기반, Boot 3.x와 호환)
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    // MyBatis
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.1'
-    // View Template Engine
+
+    // MyBatis (Spring Boot 3.x 호환)
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+
+    // View Template Engine (Thymeleaf)
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
     // Lombok (코드 자동 생성)
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
     // Database (MariaDB Driver)
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+    // Gmail SMTP (메일 발송)
+    // implementation 'org.springframework.boot:spring-boot-starter-mail'
+
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 test {
     useJUnitPlatform()
 }
-
-task installPythonDependencies(type: Exec) {
-
-    workingDir './mri_analyze'
-
-    commandLine 'cmd', '/c', 'pip install -r requirements.txt'
-    
-}
-
-build.dependsOn installPythonDependencies
