@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+	
+<head>
+	<meta charset="UTF-8">
+	<title>암 종류 진단</title>
+	<link rel="stylesheet" th:href="@{/css/main.css}">
+	<link rel="stylesheet" href="/css/diag.css">
+</head>
+
+<body>
+	
+	<div th:replace="~{fragments/header :: headerFragment}"></div>
+	
+	<div class="diag_con">
+		
+		<div class="btn_group">
+			<button class="anal_btn" data-target="mri-sec">MRI 사진분석</button>
+			<button class="anal_btn" data-target="ct-sec">CT 사진분석</button>
+			<button class="anal_btn" data-target="bios_sec">조직검사 사진분석</button>
+		</div>
+		
+		<div id="anal_con">
+			<div id="mri-sec" class="anal-sec">
+				<h2>MRI 사진분석</h2>
+				<form method="post" action="/analyze/mri" enctype="multipart/form-data">
+					<input type="file" name="imageFile" accept="image/*" required>
+					<button type="submit">분석하기</button>
+				</form>
+				
+				<div class="result">
+				    <p th:if="${mri_prediction}">
+				        <strong>예측 결과:</strong> <span th:text="${mri_prediction}"></span>
+				    </p>
+				</div>
+				
+			</div>
+			
+		</div>
+		
+	</div>
+	
+	<script src="/js/diag.js"></script>
+</body>
+</html>
