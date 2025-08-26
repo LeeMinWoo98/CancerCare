@@ -1,6 +1,6 @@
 package org.example.service;
 
-import org.example.model.Hospital;
+import org.example.dto.Hospital;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 

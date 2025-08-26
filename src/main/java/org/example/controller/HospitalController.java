@@ -1,6 +1,6 @@
 package org.example.controller;
 
-import org.example.model.Hospital;
+import org.example.dto.Hospital;
 import org.example.service.HospitalService;
 import org.example.service.AIRecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;

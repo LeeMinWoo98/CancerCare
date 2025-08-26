@@ -1,7 +1,7 @@
 package org.example.controller;
 
 
-import org.example.form.LoginForm;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,6 @@ public class MainController {
 
     @GetMapping("/login")
     public String login(Model model) {
-        model.addAttribute("loginForm", new LoginForm());
         return "login";
     }
 
