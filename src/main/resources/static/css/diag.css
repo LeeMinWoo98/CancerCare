@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #f4f7f9;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px
+ 12px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+p {
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.analysis-button {
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.analysis-button:hover {
+    background-color: #0056b3;
+}
+
+.analysis-section {
+    display: none; /* 기본적으로 숨김 */
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.analysis-section h2 {
+    margin-top: 0;
+    font-size: 22px;
+}
+
+.analysis-section form {
+    margin-top: 15px;
+}
+
+.analysis-section input[type="file"] {
+    margin-right: 10px;
+}
+
+.analysis-section button {
+    padding: 10px 20px;
+    font-size: 14px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.result {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #0056b3;
+}

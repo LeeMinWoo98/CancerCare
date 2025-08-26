@@ -39,3 +39,13 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+task installPythonDependencies(type: Exec) {
+
+    workingDir './mri_analyze'
+
+    commandLine 'cmd', '/c', 'pip install -r requirements.txt'
+    
+}
+
+build.dependsOn installPythonDependencies
