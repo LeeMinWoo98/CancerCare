@@ -21,8 +21,8 @@ public class MainController {
         return "redirect:/main";
     }
     
-    @GetMapping("/chat")
-    public String chat() {
-        return "chat";
-    }
+//    @GetMapping("/chat")
+//    public String chat() {
+//        return "chat";
+//    }
 }
