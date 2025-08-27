@@ -1,19 +1,30 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 
 <header th:fragment="headerFragment">
     <div class="container nav">
         <a th:href="@{/}" class="logo" aria-label="cancercare 홈으로">
-<!--            <span class="logo-badge">A</span>-->
             <span>cancercare</span>
         </a>
+
         <nav class="menu" aria-label="주요 메뉴">
-            <a th:href="@{/diet}">식단 추천</a>
+            <a href="#" onclick="alert('서비스 준비 중입니다.')">식단 추천</a>
             <a th:href="@{/chat}">챗봇 상담</a>
             <a th:href="@{/diagnosis}">암 진단</a>
             <a th:href="@{/hospital/find}">병원 찾기</a>
-            <a class="login" th:href="@{/login}">로그인</a>
+
+            <!-- 로그인 상태일 때 -->
+            <div sec:authorize="isAuthenticated()">
+                <span sec:authentication="name"></span>
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="login">로그아웃</button>
+                </form>
+            </div>
+
+            <!-- 비로그인 상태일 때 -->
+            <a sec:authorize="isAnonymous()" class="login" th:href="@{/login}">로그인</a>
         </nav>
     </div>
 </header>

@@ -35,9 +35,9 @@
         .field{margin-bottom:14px}
         label{display:block;font-weight:600;margin-bottom:8px}
         .req{color:#ef4444;margin-left:4px}
-        input[type=email],input[type=password]{width:100%;height:44px;border:1px solid var(--outline);border-radius:10px;padding:0 12px;font-size:15px;outline:none;background:#fff}
-        input[type=email]::placeholder,input[type=password]::placeholder{color:#9ca3af}
-        input[type=email]:focus,input[type=password]:focus{border-color:#94b5ff;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+        input[type=text],input[type=password]{width:100%;height:44px;border:1px solid var(--outline);border-radius:10px;padding:0 12px;font-size:15px;outline:none;background:#fff}
+        input[type=text]::placeholder,input[type=password]::placeholder{color:#9ca3af}
+        input[type=text]:focus,input[type=password]:focus{border-color:#94b5ff;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
 
         .hint{display:flex;justify-content:space-between;align-items:center;margin:8px 2px 14px}
         .remember{display:flex;align-items:center;gap:8px;color:#374151;font-size:14px}
@@ -64,24 +64,22 @@
         </div>
 
         <!-- 타이틀 -->
-        <h1>다시 오신 것을 환영합니다</h1>
+        <h2>cancercare에 오신 것을 환영합니다</h2>
         <div class="subtitle">cancercare 계정에 로그인하세요</div>
 
         <!-- 로그인 폼 -->
-        <form action="#" method="post">
+        <form th:action="@{/login}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
             <div class="field">
-                <label for="email">이메일 주소 <span class="req">*</span></label>
-                <input id="email" name="email" type="email" placeholder="이메일을 입력하세요" required>
+                <label for="username">아이디 <span class="req">*</span></label>
+                <input id="username" name="username" type="text" placeholder="아이디를 입력하세요" required>
             </div>
 
             <div class="field">
-                <label for="password">비밀번호</label>
+                <label for="password">비밀번호 <span class="req">*</span></label>
                 <input id="password" name="password" type="password" placeholder="비밀번호를 입력하세요" required>
             </div>
 
-            <div class="hint">
-                <label class="remember"><input type="checkbox" name="rememberMe"> 로그인 상태 유지</label>
-            </div>
 
             <button class="btn" type="submit">로그인</button>
         </form>
@@ -91,8 +89,34 @@
             <span>·</span>
             <a href="#">ID/PW찾기</a>
         </div>
+        
+        <div th:if="${param.signup}" class="alert" style="background:#f0f9ff;color:#0369a1;border-color:#bae6fd;">
+            회원가입이 완료되었습니다. 로그인해주세요.
+        </div>
+        
+        <div th:if="${param.logout}" class="alert" style="background:#f0f9ff;color:#0369a1;border-color:#bae6fd;">
+            로그아웃되었습니다.
+        </div>
+        
+        <div th:if="${param.error}" class="alert">
+            아이디 또는 비밀번호가 올바르지 않습니다.
+        </div>
     </div>
 </div>
+
+<script>
+// 로그인 오류 메시지를 Alert로 표시
+window.addEventListener('load', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('error')) {
+        alert('아이디 또는 비밀번호가 올바르지 않습니다.');
+        // URL에서 error 파라미터 제거
+        const url = new URL(window.location);
+        url.searchParams.delete('error');
+        window.history.replaceState({}, document.title, url.pathname + url.search);
+    }
+});
+</script>
 </body>
 </html>
 <!--
