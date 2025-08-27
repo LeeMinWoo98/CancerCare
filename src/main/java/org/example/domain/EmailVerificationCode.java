@@ -16,11 +16,14 @@ public class EmailVerificationCode {
     @Column(nullable = false, length = 6)
     private String code;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "expires_at")
     private LocalDateTime expiresAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(nullable = false, name = "attempt_count")
+    private int attemptCount = 0;
 
     // Constructors
     public EmailVerificationCode() {}
@@ -29,6 +32,12 @@ public class EmailVerificationCode {
         this.email = email;
         this.code = code;
         this.expiresAt = expiresAt;
+    }
+
+    public EmailVerificationCode(String email, String code) {
+        this.email = email;
+        this.code = code;
+        this.expiresAt = LocalDateTime.now().plusMinutes(5);
     }
 
     // Getters and Setters
@@ -46,6 +55,9 @@ public class EmailVerificationCode {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public int getAttemptCount() { return attemptCount; }
+    public void setAttemptCount(int attemptCount) { this.attemptCount = attemptCount; }
 
     public boolean isExpired() {
         return LocalDateTime.now().isAfter(expiresAt);

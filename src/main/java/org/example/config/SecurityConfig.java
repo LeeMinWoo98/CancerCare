@@ -22,7 +22,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/main", "/signup", "/signup/**", "/login", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/main", "/signup", "/signup/**", "/login", "/find", "/find/**", "/css/**", "/js/**", "/images/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -37,6 +37,9 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")             // JSESSIONID 쿠키 삭제
                         .clearAuthentication(true)               // 인증 정보 제거
                         .permitAll()
+                )
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/find/**")    // find 경로는 CSRF 제외
                 );
 
         return http.build();

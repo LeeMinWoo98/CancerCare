@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>cancercare – 아이디/비밀번호 찾기</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg:#f7f9fc;
+            --card:#ffffff;
+            --text:#0b1a2b;
+            --muted:#6b7280;
+            --brand:#2563eb; /* blue-600 */
+            --brand-700:#1d4ed8;
+            --outline:#e5e7eb;
+            --shadow:0 10px 30px rgba(2, 17, 79, .08);
+            --radius:16px;
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%}
+        body{margin:0;background:var(--bg);font-family:"Pretendard", system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", sans-serif;color:var(--text)}
+        .wrap{min-height:100%;display:grid;place-items:center;padding:40px 16px}
+
+        .card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--outline);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px}
+        .brand{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+        .logo{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#4f46e5,#22d3ee);color:#fff;font-size:14px;font-weight:800}
+        .subtitle{color:var(--muted);font-size:13px;margin-top:4px}
+
+        h1{margin:10px 0 2px;font-size:24px;letter-spacing:-.01em}
+
+        .option-card{border:1px solid var(--outline);border-radius:12px;padding:20px;margin:14px 0;cursor:pointer;transition:all 0.2s ease;text-decoration:none;color:inherit;display:block}
+        .option-card:hover{border-color:#94b5ff;box-shadow:0 0 0 3px rgba(37,99,235,.12);background:#fafbff}
+        .option-title{font-weight:600;font-size:16px;margin-bottom:8px;color:var(--text)}
+        .option-desc{font-size:14px;color:var(--muted);line-height:1.4}
+        .option-icon{font-size:20px;margin-bottom:10px}
+
+        .back-link{display:inline-flex;align-items:center;gap:6px;color:#2563eb;text-decoration:none;font-size:14px;margin-top:20px}
+        .back-link:hover{text-decoration:underline}
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="card">
+        <!-- 로고 / 브랜드 -->
+        <div class="brand">
+            <div class="logo">A</div>
+            <strong>cancercare</strong>
+        </div>
+
+        <!-- 타이틀 -->
+        <h2>아이디/비밀번호 찾기</h2>
+        <div class="subtitle">찾고자 하는 항목을 선택해주세요</div>
+
+        <!-- 옵션 카드들 -->
+        <a th:href="@{/find/login_id}" class="option-card">
+            <div class="option-icon">🔍</div>
+            <div class="option-title">아이디 찾기</div>
+            <div class="option-desc">가입 시 사용한 이메일로 아이디를 찾을 수 있습니다</div>
+        </a>
+
+        <a th:href="@{/find/password}" class="option-card">
+            <div class="option-icon">🔒</div>
+            <div class="option-title">비밀번호 재설정</div>
+            <div class="option-desc">이메일 인증을 통해 새로운 비밀번호를 설정할 수 있습니다</div>
+        </a>
+
+        <!-- 뒤로가기 링크 -->
+        <a th:href="@{/login}" class="back-link">
+            ← 로그인 페이지로 돌아가기
+        </a>
+    </div>
+</div>
+</body>
+</html>
