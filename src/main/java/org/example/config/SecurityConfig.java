@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
 
 @Configuration
 @EnableWebSecurity
@@ -19,29 +19,29 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/main", "/signup", "/signup/**", "/login", "/find", "/find/**", "/css/**", "/js/**", "/images/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/main", true)
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/main?logout=true")  // 로그아웃 성공 시 리다이렉트
-                        .invalidateHttpSession(true)            // 세션 무효화
-                        .deleteCookies("JSESSIONID")             // JSESSIONID 쿠키 삭제
-                        .clearAuthentication(true)               // 인증 정보 제거
-                        .permitAll()
-                )
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/find/**")    // find 경로는 CSRF 제외
-                );
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/", "/main", "/signup", "/signup/**", "/login", "/find", "/find/**", "/diagnosis", "/css/**", "/js/**", "/images/**").permitAll()  // /diagnosis 추가
+                    .anyRequest().authenticated()  // /food/** 제거 - 이제 로그인 필요
+            )
+            .formLogin(form -> form
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/main", true)
+                    .permitAll()
+            )
+            .logout(logout -> logout
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/login?logout=true")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
+                    .clearAuthentication(true)
+                    .permitAll()
+            )
+            .csrf(csrf -> csrf
+                    .ignoringRequestMatchers("/find/**")
+            );
 
-        return http.build();
-    }
+    return http.build();
+}
 }

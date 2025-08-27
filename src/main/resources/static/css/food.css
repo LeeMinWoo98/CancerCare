@@ -1,0 +1,370 @@
+/* 식단 추천 전용 스타일 */
+:root {
+    --food-primary: #40E0D0;
+    --food-secondary: #2ECCC4;
+    --food-accent: #1BA8A0;
+    --food-light: #E0F7FA;
+    --food-dark: #00695C;
+    --food-warning: #F0B90B;
+    --food-error: #DC3545;
+}
+
+/* 글로벌 식단 스타일 */
+.food-container {
+    background: linear-gradient(135deg, var(--food-light) 0%, #ffffff 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.food-header {
+    background: linear-gradient(135deg, var(--food-primary) 0%, var(--food-secondary) 100%);
+    color: white;
+    padding: 3rem 0;
+    box-shadow: 0 4px 20px rgba(64, 224, 208, 0.3);
+}
+
+.food-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.food-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+}
+
+.food-card-header {
+    background: linear-gradient(135deg, var(--food-primary) 0%, var(--food-secondary) 100%);
+    color: white;
+    border-radius: 15px 15px 0 0 !important;
+    padding: 1.5rem;
+    border: none;
+}
+
+/* 폼 스타일 */
+.food-form-label {
+    font-weight: 600;
+    color: var(--food-dark);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+}
+
+.food-form-label i {
+    margin-right: 0.5rem;
+    color: var(--food-primary);
+}
+
+.food-select {
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.food-select:focus {
+    border-color: var(--food-primary);
+    box-shadow: 0 0 0 0.2rem rgba(64, 224, 208, 0.25);
+    outline: none;
+}
+
+/* 버튼 스타일 */
+.food-btn {
+    background: linear-gradient(135deg, var(--food-primary) 0%, var(--food-secondary) 100%);
+    border: none;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.food-btn:hover {
+    background: linear-gradient(135deg, var(--food-secondary) 0%, var(--food-accent) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(64, 224, 208, 0.4);
+    color: white;
+}
+
+.food-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.food-btn i {
+    margin-right: 0.5rem;
+}
+
+/* 로딩 스피너 */
+.food-loading {
+    display: none;
+}
+
+.food-loading.active {
+    display: inline-flex;
+    align-items: center;
+}
+
+.food-loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 결과 섹션 */
+.food-result {
+    display: none;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.food-result.show {
+    display: block;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 암 정보 카드 */
+.food-cancer-info {
+    background: linear-gradient(135deg, var(--food-light) 0%, #F0FFFF 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--food-primary);
+}
+
+.food-cancer-info h5 {
+    color: var(--food-dark);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.food-cancer-info h5 i {
+    margin-right: 0.5rem;
+    color: var(--food-primary);
+}
+
+/* 메뉴 카드 */
+.food-menu-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    border-left: 4px solid var(--food-primary);
+    transition: transform 0.3s ease;
+}
+
+.food-menu-card:hover {
+    transform: translateX(5px);
+}
+
+.food-menu-category {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--food-dark);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--food-light);
+}
+
+.food-menu-category i {
+    margin-right: 0.8rem;
+    color: var(--food-primary);
+    font-size: 1.3rem;
+}
+
+/* 음식 아이템 */
+.food-item {
+    background: var(--food-light);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    border-left: 3px solid var(--food-primary);
+    transition: all 0.3s ease;
+}
+
+.food-item:hover {
+    background: #D0F4F7;
+    border-left-color: var(--food-secondary);
+    transform: translateX(3px);
+}
+
+.food-item:last-child {
+    margin-bottom: 0;
+}
+
+.food-name {
+    font-weight: 600;
+    color: var(--food-dark);
+    margin-bottom: 0.3rem;
+    font-size: 1.1rem;
+}
+
+.food-description {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* 데이터 부족 메시지 */
+.food-insufficient {
+    background: linear-gradient(135deg, #FFF3CD 0%, #FCF8E3 100%);
+    border: 1px solid var(--food-warning);
+    color: #8C5E00;
+    padding: 2.5rem;
+    border-radius: 12px;
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.food-insufficient i {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    color: var(--food-warning);
+}
+
+.food-insufficient h5 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.food-insufficient p {
+    font-size: 1rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* 에러 메시지 */
+.food-error {
+    background: linear-gradient(135deg, #F8D7DA 0%, #F5C6CB 100%);
+    border: 1px solid #F5C6CB;
+    color: #721C24;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+}
+
+.food-error i {
+    margin-right: 0.8rem;
+    font-size: 1.2rem;
+    color: var(--food-error);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .food-header {
+        padding: 2rem 0;
+    }
+    
+    .food-header h1 {
+        font-size: 2rem;
+    }
+    
+    .food-header p {
+        font-size: 1rem;
+    }
+    
+    .food-card {
+        margin-bottom: 1rem;
+    }
+    
+    .food-menu-card {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .food-menu-category {
+        font-size: 1.1rem;
+    }
+    
+    .food-item {
+        padding: 0.8rem;
+    }
+    
+    .food-insufficient {
+        padding: 1.5rem;
+    }
+    
+    .food-insufficient i {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .food-btn {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .food-select {
+        padding: 0.7rem 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    .food-cancer-info {
+        padding: 1rem;
+    }
+    
+    .food-menu-card {
+        padding: 0.8rem;
+    }
+}
+
+/* 접근성 개선 */
+.food-select:focus,
+.food-btn:focus {
+    outline: 2px solid var(--food-primary);
+    outline-offset: 2px;
+}
+
+/* 인쇄 스타일 */
+@media print {
+    .food-header,
+    .food-card:first-child {
+        display: none;
+    }
+    
+    .food-result {
+        display: block !important;
+    }
+    
+    .food-menu-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+}

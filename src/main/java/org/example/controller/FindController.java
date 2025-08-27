@@ -4,7 +4,6 @@ import org.example.service.FindService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.security.PermitAll;
 
 @Controller
 @RequestMapping("/find")
@@ -16,7 +15,6 @@ public class FindController {
     }
 
     // 아이디/비밀번호 찾기 선택 페이지
-    @PermitAll
     @GetMapping("")
     public String findPage() {
         return "find/find";
