@@ -25,21 +25,13 @@ public class AnalysisController {
         return "diagnosis";
     }
 
-    // MRI 분석 요청을 처리하고 데이터(JSON)만 반환
-    @PostMapping("/analyze/mri")
+    // 분석 요청을 처리하고 데이터(JSON)만 반환
+    @PostMapping("/analyze/check")
     @ResponseBody
-    public Map<String, String> analyzeMriImage(@RequestParam("imageFile") MultipartFile file) {
-        String scriptPath = "analyzer/mri_check.py"; // 파이썬 프로젝트 폴더명 확인
+    public Map<String, String> analyzeImage(@RequestParam("imageFile") MultipartFile file) {
+        String scriptPath = "analyzer/check.py"; // 파이썬 스크립트 경로
         return runAnalysis(file, scriptPath);
     }
-
-    // (향후 CT, 조직검사 PostMapping 추가 공간)
-    // @PostMapping("/analyze/ct")
-    // @ResponseBody
-    // public Map<String, String> analyzeCtImage(@RequestParam("imageFile") MultipartFile file) {
-    //     String scriptPath = "python_analyzer/ct_check.py";
-    //     return runAnalysis(file, scriptPath);
-    // }
 
     /**
      * 분석을 실행하고 결과를 Map 형태로 반환하는 공통 메소드
@@ -53,50 +45,60 @@ public class AnalysisController {
         Process process = null;
 
         try {
-            // 1. 업로드된 이미지 임시 저장
+            // ... (이미지 저장 및 파이썬 실행 부분은 동일) ...
             String uploadDir = "uploads/";
             Files.createDirectories(Paths.get(uploadDir));
             String savedFilename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
             savedPath = Paths.get(uploadDir + savedFilename);
             Files.copy(file.getInputStream(), savedPath);
 
-            // 2. 파이썬 스크립트 실행
             ProcessBuilder processBuilder = new ProcessBuilder("python", scriptPath, savedPath.toAbsolutePath().toString());
             process = processBuilder.start();
 
-            // 3. 파이썬 스크립트의 출력 결과 읽기
             StringBuilder resultBuilder = new StringBuilder();
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    // "Prediction Result:" 문자열이 포함된 라인을 찾으면, 그 줄을 저장하고 반복을 멈춤
-                    if (line.contains("Prediction Result:")) {
-                        resultBuilder.append(line);
-                        break; 
-                    }
+                    System.out.println("Python Script Output: " + line);
+                    resultBuilder.append(line);
                 }
             }
-            
             process.waitFor();
 
-            // 4. 결과에서 예측값만 추출
             String fullResult = resultBuilder.toString();
-            String prediction = "";
+            String predictionKey = "";
 
-            if (!fullResult.isEmpty()) {
-                prediction = fullResult.substring(fullResult.indexOf(":") + 1).trim();
+            if (fullResult.contains("Prediction Result:")) {
+                predictionKey = fullResult.substring(fullResult.indexOf(":") + 1).trim();
             } else {
-                // 파이썬 스크립트에서 "Prediction Result:" 라인을 출력하지 않은 경우
-                return Collections.singletonMap("error", "Failed to get a valid prediction from the script.");
+                return Collections.singletonMap("error", "스크립트 실행 중 오류가 발생했습니다. 출력: " + fullResult);
             }
+            
+            // --- 👇 [수정된 부분] 예측 키워드를 한글 이름으로만 변환 ---
+            String cancerName = "알 수 없는 종류";
+            if (predictionKey.equalsIgnoreCase("ct_liver_cancer") || predictionKey.equalsIgnoreCase("liver_cancer")) {
+                cancerName = "간암(CT)";
+            } else if (predictionKey.equalsIgnoreCase("ct_lung_cancer")) {
+                cancerName = "폐암(CT)";
+            } else if (predictionKey.equalsIgnoreCase("ct_colon_cancer")) {
+                cancerName = "대장암(CT)";
+            } else if (predictionKey.equalsIgnoreCase("mri_liver_cancer")) {
+                cancerName = "간암(MRI)";
+            } else if (predictionKey.equalsIgnoreCase("mri_breast_cancer")) {
+                cancerName = "유방암(MRI)";
+            } else if (predictionKey.equalsIgnoreCase("mri_cervical_cancer")) {
+                cancerName = "자궁경부암(MRI)";
+            }
+            // (다른 암 종류에 대한 변환 규칙 추가)
 
-            return Collections.singletonMap("prediction", prediction);
+            // 최종 결과를 Map에 담아 반환
+            return Collections.singletonMap("prediction", cancerName);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return Collections.singletonMap("error", "Error during analysis: " + e.getMessage());
+            return Collections.singletonMap("error", "분속 중 서버 오류가 발생했습니다: " + e.getMessage());
         } finally {
-            // 5. 프로세스와 임시 파일 최종 정리
+            // ... (파일 정리 부분은 동일) ...
             if (process != null) {
                 process.destroy();
             }
@@ -105,7 +107,7 @@ public class AnalysisController {
                     Files.delete(savedPath);
                 }
             } catch (Exception e) {
-                System.err.println("Failed to delete temporary file: " + e.getMessage());
+                System.err.println("임시 파일 삭제에 실패했습니다: " + e.getMessage());
             }
         }
     }
