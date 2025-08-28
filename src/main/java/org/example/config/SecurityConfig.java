@@ -39,7 +39,7 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/find/**")
+                        .ignoringRequestMatchers("/find/**", "/chat/**")
                 );
 
         return http.build();
