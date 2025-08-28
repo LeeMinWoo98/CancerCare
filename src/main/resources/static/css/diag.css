@@ -274,4 +274,18 @@ body {
     .usage-info ol {
         font-size: 14px;
     }
+	
+}
+
+.image-preview-container {
+    margin-top: 15px;
+    text-align: center;
+}
+
+#image-preview {
+    max-width: 100%;
+    max-height: 300px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
 }
