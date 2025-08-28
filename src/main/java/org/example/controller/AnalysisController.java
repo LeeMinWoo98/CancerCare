@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.dto.Analysis; // 새로 만든 DTO를 임포트합니다.
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,8 +13,6 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.Map;
 import java.util.UUID;
 
 @Controller
@@ -28,17 +27,17 @@ public class AnalysisController {
     // 분석 요청을 처리하고 데이터(JSON)만 반환
     @PostMapping("/analyze/check")
     @ResponseBody
-    public Map<String, String> analyzeImage(@RequestParam("imageFile") MultipartFile file) {
+    public Analysis analyzeImage(@RequestParam("imageFile") MultipartFile file) { // 반환 타입을 DTO로 변경
         String scriptPath = "analyzer/check.py"; // 파이썬 스크립트 경로
         return runAnalysis(file, scriptPath);
     }
 
     /**
-     * 분석을 실행하고 결과를 Map 형태로 반환하는 공통 메소드
+     * 분석을 실행하고 결과를 DTO 형태로 반환하는 공통 메소드
      */
-    private Map<String, String> runAnalysis(MultipartFile file, String scriptPath) {
+    private Analysis runAnalysis(MultipartFile file, String scriptPath) { // 반환 타입을 DTO로 변경
         if (file.isEmpty()) {
-            return Collections.singletonMap("error", "Please select a file to upload.");
+            return Analysis.createError("Please select a file to upload.");
         }
 
         Path savedPath = null;
@@ -71,7 +70,7 @@ public class AnalysisController {
             if (fullResult.contains("Prediction Result:")) {
                 predictionKey = fullResult.substring(fullResult.indexOf(":") + 1).trim();
             } else {
-                return Collections.singletonMap("error", "스크립트 실행 중 오류가 발생했습니다. 출력: " + fullResult);
+                return Analysis.createError("스크립트 실행 중 오류가 발생했습니다. 출력: " + fullResult);
             }
             
             // --- 👇 [수정된 부분] 예측 키워드를 한글 이름으로만 변환 ---
@@ -91,12 +90,12 @@ public class AnalysisController {
             }
             // (다른 암 종류에 대한 변환 규칙 추가)
 
-            // 최종 결과를 Map에 담아 반환
-            return Collections.singletonMap("prediction", cancerName);
+            // 최종 결과를 DTO에 담아 반환
+            return Analysis.createSuccess(cancerName);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return Collections.singletonMap("error", "분속 중 서버 오류가 발생했습니다: " + e.getMessage());
+            return Analysis.createError("분석 중 서버 오류가 발생했습니다: " + e.getMessage());
         } finally {
             // ... (파일 정리 부분은 동일) ...
             if (process != null) {
