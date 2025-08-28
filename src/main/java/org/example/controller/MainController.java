@@ -20,9 +20,5 @@ public class MainController {
     public String home() {
         return "redirect:/main";
     }
-    
-//    @GetMapping("/chat")
-//    public String chat() {
-//        return "chat";
-//    }
+
 }

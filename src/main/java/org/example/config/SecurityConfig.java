@@ -39,7 +39,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                     .permitAll()
             )
             .csrf(csrf -> csrf
-                    .ignoringRequestMatchers("/find/**")
+                    .ignoringRequestMatchers("/find/**", "/chat/**")
             );
 
     return http.build();
