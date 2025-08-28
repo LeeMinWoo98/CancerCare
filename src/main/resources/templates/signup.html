@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="_csrf" th:content="${_csrf.token}">
+	<meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>cancercare – 회원가입</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,7 +48,9 @@
         @media(min-width:640px){
             .row-2{grid-template-columns:1fr 1fr}
         }
+		
     </style>
+
 </head>
 <body>
 <div class="wrap">
@@ -198,10 +202,12 @@ document.getElementById('sendCodeBtn').addEventListener('click', function() {
         alert('이메일을 입력하세요.');
         return;
     }
-    
+	const token = document.querySelector("meta[name='_csrf']").getAttribute("content");
+	const headerName = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
     fetch('/signup/send-code', {
         method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        headers: {'Content-Type': 'application/x-www-form-urlencoded',
+			[headerName]: token},
         body: new URLSearchParams({email: email, '_csrf': document.querySelector('input[name="_csrf"]').value})
     })
     .then(response => response.text())
