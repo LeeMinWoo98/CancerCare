@@ -38,7 +38,9 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                     .clearAuthentication(true)
                     .permitAll()
             )
-            .csrf(csrf -> csrf.disable());
+            .csrf(csrf -> csrf
+                    .ignoringRequestMatchers("/find/**")
+            );
 
     return http.build();
 }

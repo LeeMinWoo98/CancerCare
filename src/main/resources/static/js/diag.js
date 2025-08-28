@@ -52,9 +52,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             resultDiv.innerHTML = '<p>분석 중입니다...</p>';
+			
+			const token = document.querySelector("meta[name='_csrf']").getAttribute("content");
+			const headerName = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
 
             fetch(actionUrl, {
                 method: 'POST',
+				headers: {
+				                    // 👇 여기에 CSRF 토큰을 추가합니다
+				                    [headerName]: token
+				                },
                 body: formData
             })
             .then(response => {
