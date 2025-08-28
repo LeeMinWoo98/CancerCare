@@ -31,7 +31,7 @@ if __name__ == '__main__':
     parser.add_argument("image", type=str, help="분석할 이미지 경로")
     args = parser.parse_args()
     
-    MODEL_PATH = os.path.join('analyzer', 'dataset', 'mri_best.pt')
+    MODEL_PATH = os.path.join('analyzer', 'dataset', 'best.pt')
     IMAGE_PATH = args.image
     
     try:
