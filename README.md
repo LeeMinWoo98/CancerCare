@@ -56,5 +56,5 @@ CancerCare는 CNN 딥러닝 기반의 암 예측과 AI 챗봇을 통해 환자�
 
 1. **저장소 복제**
    ```bash
-   git clone [https://github.com/LeeMinWoo98/human_team6.git](https://github.com/LeeMinWoo98/human_team6.git)
-  ```
+   git clone [https://github.com/LeeMinWoo98/human_team6.git](https://github.com/LeeMinWoo98/human_team6.git)```
+
