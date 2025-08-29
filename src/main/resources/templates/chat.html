@@ -177,6 +177,7 @@
         
         addMessage(messageText, true);
         
+		
         // ✨ [수정] fetch 요청에 CSRF 헤더를 포함하도록 수정합니다.
         fetch('/chat/send', { 
             method: 'POST',
