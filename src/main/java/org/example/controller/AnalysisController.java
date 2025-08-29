@@ -51,18 +51,39 @@ public class AnalysisController {
             savedPath = Paths.get(uploadDir + savedFilename);
             Files.copy(file.getInputStream(), savedPath);
 
+            // Python 경로를 명시적으로 지정 (시스템에 따라 조정 필요)
             ProcessBuilder processBuilder = new ProcessBuilder("python", scriptPath, savedPath.toAbsolutePath().toString());
+            processBuilder.redirectErrorStream(true); // 에러 스트림도 함께 캡처
             process = processBuilder.start();
 
             StringBuilder resultBuilder = new StringBuilder();
+            StringBuilder errorBuilder = new StringBuilder();
+            
+            // 정상 출력 읽기
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     System.out.println("Python Script Output: " + line);
-                    resultBuilder.append(line);
+                    resultBuilder.append(line).append("\n");
                 }
             }
-            process.waitFor();
+            
+            // 에러 출력 읽기 (redirectErrorStream(true) 사용 시 필요 없지만 안전장치)
+            try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+                String line;
+                while ((line = errorReader.readLine()) != null) {
+                    System.err.println("Python Script Error: " + line);
+                    errorBuilder.append(line).append("\n");
+                }
+            }
+            
+            int exitCode = process.waitFor();
+            
+            // 프로세스가 정상 종료되지 않은 경우
+            if (exitCode != 0) {
+                String errorMsg = errorBuilder.length() > 0 ? errorBuilder.toString() : "Python 스크립트 실행 실패";
+                return Collections.singletonMap("error", "Python 스크립트 실행 실패 (종료 코드: " + exitCode + "). 오류: " + errorMsg);
+            }
 
             String fullResult = resultBuilder.toString();
             String predictionKey = "";

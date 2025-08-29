@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('.upload-form');
     const resultDiv = document.querySelector('.result');
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 이미지 파일 선택 시 미리보기 기능
     imageFile.addEventListener('change', function () {
         const file = this.files[0];
+
         if (file) {
             const reader = new FileReader();
             reader.onload = function (e) {
@@ -47,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => {
             if (!response.ok) {
                 throw new Error('서버 응답에 문제가 있습니다.');
+
             }
             return response.json();
         })
@@ -71,6 +74,8 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(error => {
             console.error('Error:', error);
             resultDiv.innerHTML = `<p class="error">분석 요청에 실패했습니다. 네트워크 연결을 확인해주세요.</p>`;
+
         });
     });
 });
+

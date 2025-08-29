@@ -19,14 +19,23 @@ public class ChatBotController {
     @Autowired
     private ChatBotService chatBotService;
 
+    // 기본 채팅 페이지로 이동
     @GetMapping("/chatbot")
     public String chat() {
         return "chat";
     }
 
-    // 채팅 페이지 이동 (진단 기반)
+    /**
+     * 특정 진단 ID 기반의 채팅 페이지로 이동.
+     * 모델에 diagnosisId와 채팅 히스토리를 추가하여 뷰에 전달.
+     * @param diagnosisId 경로 변수로 전달된 진단 ID.
+     * @param model 뷰에 데이터를 전달하기 위한 모델 객체.
+     * @return "chat" 뷰 이름.
+     */
     @GetMapping("/diagnosis/{diagnosisId}")
     public String chatWithDiagnosis(@PathVariable Integer diagnosisId, Model model) {
+
+        // 모델에 diagnosisId 속성 추가
         model.addAttribute("diagnosisId", diagnosisId);
 
         // 기존 채팅 히스토리 로드
