@@ -8,8 +8,17 @@ CancerCare는 CNN 딥러닝 기반의 암 예측과 AI 챗봇을 통해 환자�
 기간: 2025.08.11 ~ 2025.09.18(총 39일, 5주 4일)
 
 ## 🚀 추진 배경 및 기대효과
+#### 추진 배경
+- 고령화로 인한 암 발병률 증가: 65세 이상 인구가 늘면서 암 환자 수가 지속 상승하고, 조기 발견·지속 관리의 중요성이 커지고 있습니다.
+- 의료 접근성 한계: 병원 방문에 따른 비용·시간 부담과 지역 격차로 적시에 의료 서비스를 이용하기 어려운 환경이 존재합니다.
+- 전문의 부족·시스템 과부하: 암 전문의 수요 대비 공급 불균형으로 대기 시간이 길고, 의료 시스템 과부하로 효율적 진료 제공이 어렵습니다.
+- 파편화된 암 관리: 진단, 상담, 생활관리, 병원 연계가 분절적으로 제공되어 환자 경험과 연속성이 저하됩니다.
 
-
+#### 기대 효과
+- 조기 발견율 향상: AI 기반 영상 분석으로 조기 진단을 지원해 치료 개입 시점을 앞당기고 생존율 제고에 기여합니다.
+- 의료비 절감·효율 증대: 조기 발견으로 치료비를 낮추고, 불필요한 병원 방문을 줄여 시간·경제적 비용을 절약합니다.
+- 개인 맞춤형 통합 케어: 진단부터 생활관리까지 원스톱 제공으로 편의를 높이고, 개인별 식단·습관 관리로 치료 효과를 증진합니다.
+- 의료 접근성 개선: 지역 제약 없이 AI 상담을 제공하고, 위치 기반 병원 연계로 신속한 치료 연결을 돕습니다.
 
 ## 🚀 주요 기능 (Features)
 
@@ -58,11 +67,11 @@ CancerCare는 CNN 딥러닝 기반의 암 예측과 AI 챗봇을 통해 환자�
 #### **협업/커뮤니케이션 (Collaboration/Communication)**
 [![KakaoTalk](https://img.shields.io/badge/KakaoTalk-FFCD00?style=for-the-badge&logo=kakao&logoColor=black)](https://www.kakaocorp.com/service/KakaoTalk)
 
-### **역할 분담**
+### **👨‍💻 팀원 소개 및 역할**
 | 팀원 (Team Member) | 역할 (Role) | 주요 담당 기능 (Responsibilities) |
 | --- | --- | --- |
 | [**유승주**](https://github.com/pheonixpark) | PM, AI/ML Lead | - CNN/YOLOv8 기반 암 예측 모델 개발<br>- 프로젝트 총괄 및 관리 |
 | [**민경준**](https://github.com/minkj98) | PL, AI Chatbot Lead | - Gemini API 연동 챗봇 기능 구현<br>- 프로젝트 개발 총괄 |
-| [**박지선**](https://github.com/username) | Backend Developer | - Spring Security 기반 로그인/회원가입 구현<br>- 식단 추천 기능 구현 |
+| [**박지선**](https://github.com/dodidosid) | Backend Developer | - Spring Security 기반 로그인/회원가입 구현<br>- 식단 추천 기능 구현 |
 | [**이민우**](https://github.com/LeeMinWoo98) | Backend Developer | - Kakao Map API 연동 주변 병원 추천 구현<br>- 식단 추천 기능 구현 |
 
