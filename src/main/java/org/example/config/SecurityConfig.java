@@ -19,30 +19,6 @@ public class SecurityConfig {
     }
 
     @Bean
-
-/*public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http
-            .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/", "/main", "/signup", "/signup/**", "/login", "/find", "/find/**", "/diagnosis", "/css/**", "/js/**", "/images/**,","/analyze/check").permitAll()  // /diagnosis 추가
-                    .anyRequest().authenticated()  // /food/** 제거 - 이제 로그인 필요
-            )
-            .formLogin(form -> form
-                    .loginPage("/login")
-                    .defaultSuccessUrl("/main", true)
-                    .permitAll()
-            )
-            .logout(logout -> logout
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/login?logout=true")
-                    .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID")
-                    .clearAuthentication(true)
-                    .permitAll()
-            )
-            .csrf(csrf -> csrf
-                    .ignoringRequestMatchers("/find/**")
-            );*/
-
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth

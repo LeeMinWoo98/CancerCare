@@ -76,17 +76,17 @@ public class AnalysisController {
             // --- 👇 [수정된 부분] 예측 키워드를 한글 이름으로만 변환 ---
             String cancerName = "알 수 없는 종류";
             if (predictionKey.equalsIgnoreCase("ct_liver_cancer") || predictionKey.equalsIgnoreCase("liver_cancer")) {
-                cancerName = "간암(CT)";
+                cancerName = "간암";
             } else if (predictionKey.equalsIgnoreCase("ct_lung_cancer")) {
-                cancerName = "폐암(CT)";
+                cancerName = "폐암";
             } else if (predictionKey.equalsIgnoreCase("ct_colon_cancer")) {
-                cancerName = "대장암(CT)";
+                cancerName = "대장암";
             } else if (predictionKey.equalsIgnoreCase("mri_liver_cancer")) {
-                cancerName = "간암(MRI)";
+                cancerName = "간암";
             } else if (predictionKey.equalsIgnoreCase("mri_breast_cancer")) {
-                cancerName = "유방암(MRI)";
+                cancerName = "유방암";
             } else if (predictionKey.equalsIgnoreCase("mri_cervical_cancer")) {
-                cancerName = "자궁경부암(MRI)";
+                cancerName = "자궁경부암";
             }
             // (다른 암 종류에 대한 변환 규칙 추가)
 
