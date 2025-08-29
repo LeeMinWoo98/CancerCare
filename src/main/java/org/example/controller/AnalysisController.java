@@ -82,7 +82,7 @@ public class AnalysisController {
             // 프로세스가 정상 종료되지 않은 경우
             if (exitCode != 0) {
                 String errorMsg = errorBuilder.length() > 0 ? errorBuilder.toString() : "Python 스크립트 실행 실패";
-                return Collections.singletonMap("error", "Python 스크립트 실행 실패 (종료 코드: " + exitCode + "). 오류: " + errorMsg);
+                return Analysis.createError("Python 스크립트 실행 실패 (종료 코드: " + exitCode + "). 오류: " + errorMsg);
             }
 
             String fullResult = resultBuilder.toString();
