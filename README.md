@@ -52,9 +52,11 @@ CancerCare는 CNN 딥러닝 기반의 암 예측과 AI 챗봇을 통해 환자�
 #### **협업/커뮤니케이션 (Collaboration/Communication)**
 [![KakaoTalk](https://img.shields.io/badge/KakaoTalk-FFCD00?style=for-the-badge&logo=kakao&logoColor=black)](https://www.kakaocorp.com/service/KakaoTalk)
 
-## 🚀 실행 방법 (Getting Started)
-
-1. **저장소 복제**
-   ```bash
-   git clone [https://github.com/LeeMinWoo98/human_team6.git](https://github.com/LeeMinWoo98/human_team6.git)```
+** 역할 분담
+| 팀원 (Team Member) | 역할 (Role) | 주요 담당 기능 (Responsibilities) |
+| --- | --- | --- |
+| [**유승주**](https://github.com/pheonixpark) | PM, AI/ML Lead | - CNN/YOLOv8 기반 암 예측 모델 개발<br>- 프로젝트 총괄 및 관리 |
+| [**민경준**](https://github.com/minkj98) | PL, AI Chatbot Lead | - Gemini API 연동 챗봇 기능 구현<br>- 프로젝트 개발 총괄 |
+| [**박지선**](https://github.com/username) | Backend Developer | - Spring Security 기반 로그인/회원가입 구현<br>- 식단 추천 기능 구현 |
+| [**이민우**](https://github.com/LeeMinWoo98) | Backend Developer | - Kakao Map API 연동 주변 병원 추천 구현<br>- 식단 추천 기능 구현 |
 
