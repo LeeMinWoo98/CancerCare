@@ -9,58 +9,60 @@
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/diag.css}">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
 </head>
 
 <body>
-    <div th:replace="~{fragments/header :: headerFragment}"></div>
-    
-    <main class="diag_con">
-        <div class="anal_con">
-            <section id="mri-sec" class="anal-sec">
-                <header>
-                    <h2>AI 기반 MRI 이미지 분석</h2>
-                    <p class="section-desc">의료진이 촬영한 MRI 이미지를 업로드하여 AI가 암 종류를 분석해드립니다</p>
-                </header>
-                
-                <form method="post" action="/analyze/check" enctype="multipart/form-data" class="upload-form">
-                    <div class="file-input-wrapper">
-                        <label for="imageFile" class="file-label">
-                            <span class="file-icon">📁</span>
-                            <span class="file-text"> 이미지 파일을 선택하세요</span>
-                            <span class="file-hint">JPG, PNG, DICOM 형식 지원</span>
-                        </label>
-                        <input type="file" id="imageFile" name="imageFile" accept="image/*,.dcm" required>
-                    </div>
-                    
-					<div class="image-preview-container">
-					       <img id="image-preview" src="#" alt="선택한 이미지 미리보기" style="display: none;">
-					</div>
-					
-                    <button type="submit" class="analyze-btn">
-                        <span class="btn-icon">🔍</span>
-                        <span>AI 분석 시작</span>
-                    </button>
-                </form>
-                
-                <div class="result">
-                    </div>
-                
-                <div class="usage-info">
-                    <h3>사용 방법</h3>
-                    <ol>
-                        <li>의료진이 제공한 이미지 파일을 준비합니다</li>
-                        <li>위의 파일 선택 버튼을 클릭하여 이미지를 업로드합니다</li>
-                        <li>AI 분석 시작 버튼을 클릭하면 자동으로 분석이 진행됩니다</li>
-                        <li>분석 결과는 몇 초 내에 표시됩니다</li>
-                    </ol>
-                    <div class="note">
-                        <strong>주의사항:</strong> 이 분석 결과는 참고용이며, 최종 진단은 반드시 전문의와 상담하시기 바랍니다.
-                    </div>
+<div th:replace="~{fragments/header :: headerFragment}"></div>
+
+<main class="diag_con">
+    <div class="anal_con">
+        <section id="mri-sec" class="anal-sec">
+            <header>
+                <h2>AI 기반 MRI 이미지 분석</h2>
+                <p class="section-desc">의료진이 촬영한 MRI 이미지를 업로드하여 AI가 암 종류를 분석해드립니다</p>
+            </header>
+
+            <form method="post" action="/analyze/check" enctype="multipart/form-data" class="upload-form">
+                <div class="file-input-wrapper">
+                    <label for="imageFile" class="file-label">
+                        <span class="file-icon">📁</span>
+                        <span class="file-text"> 이미지 파일을 선택하세요</span>
+                        <span class="file-hint">JPG, PNG, DICOM 형식 지원</span>
+                    </label>
+                    <input type="file" id="imageFile" name="imageFile" accept="image/*,.dcm" required>
                 </div>
-            </section>
-        </div>
-    </main>
-    
-    <script th:src="@{/js/diag.js}"></script>
+
+                <div class="image-preview-container">
+                    <img id="image-preview" src="#" alt="선택한 이미지 미리보기" style="display: none;">
+                </div>
+
+                <button type="submit" class="analyze-btn">
+                    <span class="btn-icon">🔍</span>
+                    <span>AI 분석 시작</span>
+                </button>
+            </form>
+
+            <div class="result">
+            </div>
+
+            <div class="usage-info">
+                <h3>사용 방법</h3>
+                <ol>
+                    <li>의료진이 제공한 이미지 파일을 준비합니다</li>
+                    <li>위의 파일 선택 버튼을 클릭하여 이미지를 업로드합니다</li>
+                    <li>AI 분석 시작 버튼을 클릭하면 자동으로 분석이 진행됩니다</li>
+                    <li>분석 결과는 몇 초 내에 표시됩니다</li>
+                </ol>
+                <div class="note">
+                    <strong>주의사항:</strong> 이 분석 결과는 참고용이며, 최종 진단은 반드시 전문의와 상담하시기 바랍니다.
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<script th:src="@{/js/diag.js}"></script>
 </body>
 </html>
