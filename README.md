@@ -52,7 +52,7 @@ CancerCare는 CNN 딥러닝 기반의 암 예측과 AI 챗봇을 통해 환자�
 #### **협업/커뮤니케이션 (Collaboration/Communication)**
 [![KakaoTalk](https://img.shields.io/badge/KakaoTalk-FFCD00?style=for-the-badge&logo=kakao&logoColor=black)](https://www.kakaocorp.com/service/KakaoTalk)
 
-** 역할 분담
+### **역할 분담
 | 팀원 (Team Member) | 역할 (Role) | 주요 담당 기능 (Responsibilities) |
 | --- | --- | --- |
 | [**유승주**](https://github.com/pheonixpark) | PM, AI/ML Lead | - CNN/YOLOv8 기반 암 예측 모델 개발<br>- 프로젝트 총괄 및 관리 |
