@@ -1,0 +1,104 @@
+/* 뉴스 페이지 전용 스타일 */
+.page-header {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid var(--outline);
+    margin-top: 64px; /* Fixed Header Height */
+}
+.page-header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    color: var(--text);
+}
+.page-header p {
+    font-size: 1.1rem;
+    color: var(--muted);
+    margin-top: 10px;
+}
+.news-container {
+    padding: 50px 0;
+}
+.news-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+}
+/* 992px 이상 화면에서는 2줄로 표시 */
+@media (min-width: 992px) {
+    .news-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+.news-item .news-link {
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+    background-color: #ffffff;
+    border: 1px solid var(--outline);
+    border-radius: var(--radius);
+    text-decoration: none;
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.news-item .news-link:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow);
+}
+.news-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 10px;
+}
+.news-description {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin: 0 0 15px;
+    flex-grow: 1; /* 내용 길이에 맞춰 카드 높이 조절 */
+}
+.news-date {
+    font-size: 0.85rem;
+    color: #adb5bd;
+    text-align: right;
+}
+
+/* 페이지네이션 스타일 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    padding: 0;
+    list-style: none;
+    user-select: none;
+}
+.pagination li a, .pagination li span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 10px;
+    margin: 0 5px;
+    border-radius: 8px;
+    color: var(--brand);
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+    border: 1px solid var(--outline);
+}
+.pagination li a:hover {
+    background-color: #e9ecef;
+}
+.pagination li.active a {
+    background-color: var(--brand);
+    color: white;
+    font-weight: 600;
+    border-color: var(--brand);
+}
+.pagination li.disabled span, .pagination li.disabled a {
+    color: #ced4da;
+    pointer-events: none;
+    background-color: #f8f9fa;
+}

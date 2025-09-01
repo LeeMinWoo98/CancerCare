@@ -34,14 +34,16 @@ public class ChatBotController {
      */
     @GetMapping("/diagnosis/{diagnosisId}")
     public String chatWithDiagnosis(@PathVariable Integer diagnosisId, Model model) {
-
-        // 모델에 diagnosisId 속성 추가
         model.addAttribute("diagnosisId", diagnosisId);
 
-        // 기존 채팅 히스토리 로드
+        // 기존 채팅이 없다면 자동으로 시작
         List<ChatMessage> chatHistory = chatBotService.getChatHistory(diagnosisId);
-        model.addAttribute("chatHistory", chatHistory);
+        if (chatHistory.isEmpty()) {
+            chatBotService.startChatWithDiagnosis(diagnosisId);
+            chatHistory = chatBotService.getChatHistory(diagnosisId);
+        }
 
+        model.addAttribute("chatHistory", chatHistory);
         return "chat";
     }
 

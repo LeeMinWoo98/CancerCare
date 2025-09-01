@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title th:text="${pageTitle}">CancerCare – 더 건강한 내일을 위한 똑똑한 건강 관리</title>
@@ -12,33 +12,63 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
     <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 <body>
 
 <div th:replace="~{fragments/header :: headerFragment}"></div>
 
-<main class="hero container">
-    <section>
-        <div class="badge" aria-label="AI 기반 암 헬스케어 서비스">
-            <i></i><span>AI 기반 암 헬스케어 서비스</span>
+<div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+        <div class="swiper-slide">
+            <div class="slide-content">
+                <div class="custom-logo">
+                    <span class="logo-text-dark">cancer</span><span class="logo-text-light">care</span><i class="fa-solid fa-leaf logo-leaf-icon"></i>
+                </div>
+                <p class="slide-subtitle">
+                    AI로 당신의 건강을 예측하고 챗봇으로 당신의 일상을 함께하는, 가장 스마트한 건강 동반자
+                </p>
+            </div>
         </div>
-        <h1>
-            <span th:text="${headlineLine1}">더 건강한 내일을 위한</span><br/>
-            <span class="grad" th:text="${headlineLine2}">똑똑한 건강 관리</span>
-        </h1>
-        <p class="desc" th:text="${description}">
-            CancerCare는 최신 AI 기술을 활용하여 암 위험도 예측, 맞춤형 식단 추천, 전문가의 상담을 제공하는 통합 헬스케어 플랫폼입니다.
-        </p>
-        <div class="cta">
-            <a class="btn btn-primary" th:href="@{/diagnosis}">무료로 시작하기</a>
-            <a class="btn btn-ghost" href="#" onclick="alert('서비스 준비 중입니다.')">서비스 둘러보기</a>
-        </div>
-    </section>
-</main>
+
+        <div class="swiper-slide">두 번째 슬라이드 내용</div>
+        <div class="swiper-slide">세 번째 슬라이드 내용</div>
+        <div class="swiper-slide">네 번째 슬라이드 내용</div>
+        <div class="swiper-slide">다섯 번째 슬라이드 내용</div>
+    </div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-pagination"></div>
+</div>
+
 
 <footer>
     <span th:text="${footerText}">© 2025 CancerCare. 모든 권리 보유.</span>
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+    var swiper = new Swiper(".mySwiper", {
+        pagination: {
+            el: ".swiper-pagination",
+            type: "progressbar",
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        loop: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+        },
+    });
+</script>
+
 </body>
 </html>
