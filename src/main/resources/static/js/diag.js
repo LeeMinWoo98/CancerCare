@@ -75,6 +75,50 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Error:', error);
             resultDiv.innerHTML = `<p class="error">분석 요청에 실패했습니다. 네트워크 연결을 확인해주세요.</p>`;
 
+
+            fetch(actionUrl, {
+                method: 'POST',
+                headers: {
+                    // 👇 여기에 CSRF 토큰을 추가합니다
+                    [headerName]: token
+                },
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        // 서버에서 4xx, 5xx 에러 응답을 받았을 때 처리
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        resultDiv.innerHTML = `<p style="color: red;"><strong>오류:</strong> ${data.error}</p>`;
+                    } else if (data.success && data.diagnosisId) {
+                        // ✨ 새로운 연동 로직
+                        resultDiv.innerHTML = `
+                            <div style="text-align: center; color: green;">
+                                <p><strong>✅ 분석 완료!</strong></p>
+                                <p><strong>예측 결과:</strong> ${data.prediction}</p>
+                                <p>💬 AI 상담으로 이동 중...</p>
+                                <div class="loading-spinner">⏳</div>
+                            </div>
+                        `;
+                        
+                        // 3초 후 챗봇 페이지로 자동 이동
+                        setTimeout(() => {
+                            window.location.href = `/chat/diagnosis/${data.diagnosisId}`;
+                        }, 3000);
+                    } else {
+                        // 기존 로직 (diagnosisId가 없는 경우)
+                        resultDiv.innerHTML = `<p><strong>예측 결과:</strong> ${data.prediction}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    resultDiv.innerHTML = `<p style="color: red;">클라이언트 측 오류가 발생했습니다. 콘솔을 확인해주세요.</p>`;
+                });
+
         });
     });
 });

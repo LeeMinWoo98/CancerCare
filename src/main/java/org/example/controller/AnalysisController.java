@@ -1,11 +1,12 @@
 package org.example.controller;
 
-import org.example.dto.Analysis; // 새로 만든 DTO를 임포트합니다.
+import org.example.domain.Diagnosis;
+import org.example.repository.CancerRepository;
+import org.example.repository.DiagnosisRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
@@ -13,53 +14,59 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 
 @Controller
 public class AnalysisController {
 
-    // 분석 페이지를 보여주는 역할
+    @Autowired
+    private CancerRepository cancerRepository;
+
+    @Autowired
+    private DiagnosisRepository diagnosisRepository;
+
     @GetMapping("/diagnosis")
     public String diagnosisPage() {
         return "diagnosis";
     }
 
-    // 분석 요청을 처리하고 데이터(JSON)만 반환
     @PostMapping("/analyze/check")
     @ResponseBody
-    public Analysis analyzeImage(@RequestParam("imageFile") MultipartFile file) { // 반환 타입을 DTO로 변경
-        String scriptPath = "analyzer/check.py"; // 파이썬 스크립트 경로
-        return runAnalysis(file, scriptPath);
+    public Map<String, Object> analyzeImage(@RequestParam("imageFile") MultipartFile file,
+                                            Authentication authentication) {
+        String scriptPath = "analyzer/check.py";
+        // 현재 로그인한 사용자의 아이디를 runAnalysis 메소드로 전달합니다.
+        return runAnalysis(file, scriptPath, authentication.getName());
     }
 
     /**
-     * 분석을 실행하고 결과를 DTO 형태로 반환하는 공통 메소드
+     * AI 분석을 실행하고, 결과를 DB에 저장한 후 주요 정보를 반환하는 메소드
      */
-    private Analysis runAnalysis(MultipartFile file, String scriptPath) { // 반환 타입을 DTO로 변경
+    private Map<String, Object> runAnalysis(MultipartFile file, String scriptPath, String loginId) {
         if (file.isEmpty()) {
-            return Analysis.createError("Please select a file to upload.");
+            return Collections.singletonMap("error", "Please select a file to upload.");
         }
 
         Path savedPath = null;
         Process process = null;
 
         try {
-            // ... (이미지 저장 및 파이썬 실행 부분은 동일) ...
+            // 1. 업로드된 파일을 서버에 임시 저장
             String uploadDir = "uploads/";
             Files.createDirectories(Paths.get(uploadDir));
             String savedFilename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
             savedPath = Paths.get(uploadDir + savedFilename);
             Files.copy(file.getInputStream(), savedPath);
 
-            // Python 경로를 명시적으로 지정 (시스템에 따라 조정 필요)
+            // 2. 저장된 파일을 인자로 하여 Python 스크립트 실행
             ProcessBuilder processBuilder = new ProcessBuilder("python", scriptPath, savedPath.toAbsolutePath().toString());
-            processBuilder.redirectErrorStream(true); // 에러 스트림도 함께 캡처
+            processBuilder.redirectErrorStream(true);
             process = processBuilder.start();
 
+            // Python 스크립트의 출력 결과 읽기
             StringBuilder resultBuilder = new StringBuilder();
-            StringBuilder errorBuilder = new StringBuilder();
-            
-            // 정상 출력 읽기
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -67,22 +74,10 @@ public class AnalysisController {
                     resultBuilder.append(line).append("\n");
                 }
             }
-            
-            // 에러 출력 읽기 (redirectErrorStream(true) 사용 시 필요 없지만 안전장치)
-            try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-                String line;
-                while ((line = errorReader.readLine()) != null) {
-                    System.err.println("Python Script Error: " + line);
-                    errorBuilder.append(line).append("\n");
-                }
-            }
-            
+
             int exitCode = process.waitFor();
-            
-            // 프로세스가 정상 종료되지 않은 경우
             if (exitCode != 0) {
-                String errorMsg = errorBuilder.length() > 0 ? errorBuilder.toString() : "Python 스크립트 실행 실패";
-                return Analysis.createError("Python 스크립트 실행 실패 (종료 코드: " + exitCode + "). 오류: " + errorMsg);
+                return Collections.singletonMap("error", "Python 스크립트 실행 실패");
             }
 
             String fullResult = resultBuilder.toString();
@@ -91,34 +86,37 @@ public class AnalysisController {
             if (fullResult.contains("Prediction Result:")) {
                 predictionKey = fullResult.substring(fullResult.indexOf(":") + 1).trim();
             } else {
-                return Analysis.createError("스크립트 실행 중 오류가 발생했습니다. 출력: " + fullResult);
+                return Collections.singletonMap("error", "스크립트 실행 중 오류가 발생했습니다.");
             }
-            
-            // --- 👇 [수정된 부분] 예측 키워드를 한글 이름으로만 변환 ---
-            String cancerName = "알 수 없는 종류";
-            if (predictionKey.equalsIgnoreCase("ct_liver_cancer") || predictionKey.equalsIgnoreCase("liver_cancer")) {
-                cancerName = "간암";
-            } else if (predictionKey.equalsIgnoreCase("ct_lung_cancer")) {
-                cancerName = "폐암";
-            } else if (predictionKey.equalsIgnoreCase("ct_colon_cancer")) {
-                cancerName = "대장암";
-            } else if (predictionKey.equalsIgnoreCase("mri_liver_cancer")) {
-                cancerName = "간암";
-            } else if (predictionKey.equalsIgnoreCase("mri_breast_cancer")) {
-                cancerName = "유방암";
-            } else if (predictionKey.equalsIgnoreCase("mri_cervical_cancer")) {
-                cancerName = "자궁경부암";
-            }
-            // (다른 암 종류에 대한 변환 규칙 추가)
 
-            // 최종 결과를 DTO에 담아 반환
-            return Analysis.createSuccess(cancerName);
+            // 3. AI 예측 결과를 DB와 연동하기 좋은 형태로 변환
+            String cancerName = mapPredictionToCancerName(predictionKey);
+
+            // 'cancers' 테이블에서 암 이름에 해당하는 ID를 조회
+            Integer cancerId = cancerRepository.findByCancerName(cancerName)
+                    .map(cancer -> cancer.getCancerId())
+                    .orElse(null);
+
+            if (cancerId == null) {
+                return Collections.singletonMap("error", "알 수 없는 암 종류입니다: " + cancerName);
+            }
+
+            // 4. 최종 진단 결과를 'diagnosis' 테이블에 저장
+            Diagnosis diagnosis = new Diagnosis(loginId, cancerId, savedPath.toString(), null);
+            Diagnosis savedDiagnosis = diagnosisRepository.save(diagnosis);
+
+            // 5. 프론트엔드(JavaScript)에 필요한 정보들을 Map 형태로 반환
+            return Map.of(
+                    "prediction", cancerName,
+                    "diagnosisId", savedDiagnosis.getDiagnosisId(), // 챗봇 연동에 필요한 ID
+                    "success", true
+            );
 
         } catch (Exception e) {
             e.printStackTrace();
-            return Analysis.createError("분석 중 서버 오류가 발생했습니다: " + e.getMessage());
+            return Collections.singletonMap("error", "분석 중 서버 오류가 발생했습니다: " + e.getMessage());
         } finally {
-            // ... (파일 정리 부분은 동일) ...
+            // 임시 파일 정리
             if (process != null) {
                 process.destroy();
             }
@@ -130,5 +128,26 @@ public class AnalysisController {
                 System.err.println("임시 파일 삭제에 실패했습니다: " + e.getMessage());
             }
         }
+    }
+
+    /**
+     * AI 모델의 예측 키워드를 DB에 저장된 암 이름으로 매핑하는 헬퍼 메소드
+     */
+    private String mapPredictionToCancerName(String predictionKey) {
+        String key = predictionKey.toLowerCase();
+        if (key.contains("liver")) {
+            return "간암";
+        } else if (key.contains("lung")) {
+            return "폐암";
+        } else if (key.contains("colon")) {
+            return "대장암";
+        } else if (key.contains("breast")) {
+            return "유방암";
+        } else if (key.contains("cervical")) {
+            return "자궁경부암";
+        } else if (key.contains("stomach")) {
+            return "위암";
+        }
+        return "알 수 없는 종류";
     }
 }

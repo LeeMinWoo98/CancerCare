@@ -9,6 +9,10 @@
     --outline: #e5e7eb;
     --shadow: 0 10px 30px rgba(37, 99, 235, .15);
     --radius: 14px;
+
+    /* Swiper 네비게이션/페이지네이션 색상을 브랜드 색상으로 통일 */
+    --swiper-navigation-color: var(--brand);
+    --swiper-pagination-color: var(--brand);
 }
 
 * {
@@ -37,7 +41,6 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    /* backdrop-filter 속성을 삭제하고, background를 불투명한 흰색으로 변경 */
     background-color: #ffffff;
     border-bottom: 1px solid var(--outline);
     z-index: 1000;
@@ -54,22 +57,10 @@ header {
     display: flex;
     align-items: center;
     font-weight: 700;
-    font-size: 22px; /* 로고 글자 크기를 키웠습니다. */
-    color: var(--text); /* 기본 텍스트 색상을 항상 유지하도록 설정합니다. */
-    text-decoration: none; /* 밑줄을 항상 제거하도록 설정합니다. */
+    font-size: 22px;
+    color: var(--text);
+    text-decoration: none;
 }
-
-/*.logo-badge {*/
-/*    width: 28px;*/
-/*    height: 28px;*/
-/*    border-radius: 50%;*/
-/*    display: grid;*/
-/*    place-items: center;*/
-/*    background: linear-gradient(135deg, #4f46e5, #22d3ee);*/
-/*    color: white;*/
-/*    font-size: 16px;*/
-/*    font-weight: 800*/
-/*}*/
 
 .menu {
     display: flex;
@@ -101,60 +92,60 @@ header {
     color: var(--brand)
 }
 
-.hero {
-    display: grid;
-    place-items: center;
+/* --- Swiper Slider Styles --- */
+.swiper {
+    width: 100%;
+    height: 400px; /* 슬라이더 높이 */
+    /* 64px(헤더 높이) + 20px(여백) = 84px */
+    margin-top: 84px; /* 헤더와 겹치지 않도록 상단 여백 추가 */
+}
+
+.swiper-slide {
     text-align: center;
-    padding: 72px 0
-}
-
-.badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 12px;
-    border: 1px solid var(--outline);
-    border-radius: 999px;
-    color: #1f2937;
-    background: #fff
-}
-
-.badge i {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--brand)
-}
-
-h1 {
-    margin: 18px 0 8px;
-    font-size: 40px;
-    line-height: 1.25;
-    letter-spacing: -0.02em
-}
-
-.grad {
-    background: linear-gradient(90deg, #1e3a8a, #2563eb, #06b6d4);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent
-}
-
-.desc {
-    max-width: 720px;
-    margin: 0 auto 28px;
-    color: var(--muted);
     font-size: 18px;
-    line-height: 1.7
-}
-
-.cta {
+    background: #fff;
     display: flex;
-    gap: 12px;
     justify-content: center;
-    flex-wrap: wrap
+    align-items: center;
 }
 
+.slide-content {
+    max-width: 800px;
+    padding: 20px;
+}
+
+.custom-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.0rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.custom-logo .logo-text-dark {
+    color: var(--text); /* 기존 변수 사용 */
+}
+
+.custom-logo .logo-text-light {
+    color: #69a74e;
+}
+
+.custom-logo .logo-leaf-icon {
+    color: #69a74e;
+    font-size: 2.5rem;
+    margin-left: 10px;
+    transform: rotate(10deg);
+}
+
+.slide-subtitle {
+    font-size: 1.3rem;
+    color: var(--muted); /* 기존 변수 사용 */
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+/* --- 기존 버튼 스타일 --- */
 .btn {
     padding: 14px 20px;
     border-radius: 999px;
@@ -186,16 +177,10 @@ h1 {
     color: var(--brand)
 }
 
+
 footer {
     padding: 56px 0 40px;
     color: #9ca3af;
     text-align: center;
     font-size: 13px
 }
-
-@media (max-width: 768px) {
-    h1 {
-        font-size: 32px
-    }
-}
-
