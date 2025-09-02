@@ -128,11 +128,11 @@
         </div>
     </div>
 </div>
-
+<div th:replace="~{fragments/footer :: footerFragment}"></div>
 <script th:inline="javascript">
-    /*<![CDATA[*/
 
-    // 💡💡💡 --- 수정된 부분 --- 💡💡💡
+
+
     // th:block 대신, 삼항 연산자를 사용하여 한 줄로 안전하게 변수를 설정합니다.
     const currentUserInitial = /*[[${#authorization.expression('isAuthenticated()')} ? ${#strings.substring(#authentication.name, 0, 1).toUpperCase()} : '홍']]*/ '홍';
     // 💡💡💡 --- 수정 완료 --- 💡💡💡

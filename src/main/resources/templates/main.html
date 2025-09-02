@@ -44,12 +44,6 @@
     <div class="swiper-button-prev"></div>
     <div class="swiper-pagination"></div>
 </div>
-
-
-<footer>
-    <span th:text="${footerText}">© 2025 CancerCare. 모든 권리 보유.</span>
-</footer>
-
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <script>
@@ -69,6 +63,44 @@
         },
     });
 </script>
+
+<!-- 서비스 소개 섹션 -->
+<section class="services-section">
+    <div class="container">
+        <div class="services-header">
+            <h2 class="services-title">당신의 건강 동반자, Cancer<span class="care-leaf">Care<i class="fa-solid fa-leaf"></i></span></h2>
+            <p class="services-subtitle">일상 속 작은 습관이 건강한 내일로 이어지도록 AI가 함께합니다</p>
+        </div>
+        
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <h3 class="service-name">AI 암 진단</h3>
+                <p class="service-description">인공지능이 분석하는 암 위험도 예측으로 조기 발견의 기회를 제공합니다</p>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fa-solid fa-apple-whole"></i>
+                </div>
+                <h3 class="service-name">맞춤형 식단 추천</h3>
+                <p class="service-description">개인 건강 상태에 맞는 최적의 식단을 AI가 추천해드립니다</p>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fa-solid fa-comments"></i>
+                </div>
+                <h3 class="service-name">AI 챗봇 상담</h3>
+                <p class="service-description">24시간 언제든지 건강 상담을 받을 수 있는 스마트한 상담 서비스</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments/footer :: footerFragment}"></div>
 
 </body>
 </html>
