@@ -7,12 +7,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/diag.css}">
 	<meta name="_csrf" th:content="${_csrf.token}">
 	<meta name="_csrf_header" th:content="${_csrf.headerName}">
 </head>
 
+<<<<<<< HEAD
 <body>
     <div th:replace="~{fragments/header :: headerFragment}"></div>
     
@@ -31,6 +33,57 @@
                     
 					<div class="image-preview-container">
 					       <img id="image-preview" src="#" alt="선택한 이미지 미리보기" style="display: none;">
+					</div>
+					
+                    <button type="submit" class="analyze-btn">
+                        <span class="btn-icon">🔍</span>
+                        <span>AI 분석 시작</span>
+                    </button>
+                </form>
+                
+                <div class="result">
+=======
+<body class="diagnosis-page">
+<div th:replace="~{fragments/header :: headerFragment}"></div>
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CancerCare - 암 종류 진단</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/diag.css}">
+	<meta name="_csrf" th:content="${_csrf.token}">
+	<meta name="_csrf_header" th:content="${_csrf.headerName}">
+</head>
+
+<body class="diagnosis-page">
+    <div th:replace="~{fragments/header :: headerFragment}"></div>
+    
+    <main class="diag_con">
+        <div class="anal_con">
+            <section id="mri-sec" class="anal-sec">
+                <header class="section-header">
+                    <h2 class="section-title">AI 기반 MRI 이미지 분석</h2>
+                    <p class="section-desc">의료진이 촬영한 MRI 이미지를 업로드하여 AI가 암 종류를 분석해드립니다</p>
+                </header>
+
+                <form method="post" action="/analyze/check" enctype="multipart/form-data" class="upload-form">
+                    <div class="file-input-wrapper">
+                        <label for="imageFile" class="file-label">
+                            <span class="file-icon">📁</span>
+                            <span class="file-text"> 이미지 파일을 선택하세요</span>
+                            <span class="file-hint">JPG, PNG, DICOM 형식 지원</span>
+                        </label>
+                        <input type="file" id="imageFile" name="imageFile" accept="image/*,.dcm" required>
+                    </div>
+                    
+					<div class="image-preview-container">
+					    <img id="image-preview" src="#" alt="선택한 이미지 미리보기" style="display: none;">
 					</div>
 					
                     <button type="submit" class="analyze-btn">
@@ -62,6 +115,81 @@
         </div>
     </main>
     
+    <div th:replace="~{fragments/footer :: footerFragment}"></div>
+
     <script th:src="@{/js/diag.js}"></script>
+</body>
+</html>
+<main class="diag_con">
+    <div class="anal_con">
+        <section id="mri-sec" class="anal-sec">
+            <header class="section-header">
+                <h2 class="section-title">AI 기반 MRI 이미지 분석</h2>
+                <p class="section-desc">의료진이 촬영한 MRI 이미지를 업로드하여 AI가 암 종류를 분석해드립니다</p>
+            </header>
+
+            <form method="post" action="/analyze/check" enctype="multipart/form-data" class="upload-form">
+                <div class="file-input-wrapper">
+                    <label for="imageFile" class="file-label">
+                        <span class="file-icon">📁</span>
+                        <span class="file-text"> 이미지 파일을 선택하세요</span>
+                        <span class="file-hint">JPG, PNG, DICOM 형식 지원</span>
+                    </label>
+                    <input type="file" id="imageFile" name="imageFile" accept="image/*,.dcm" required>
+>>>>>>> branch 'master' of https://github.com/LeeMinWoo98/human_team6
+                </div>
+				
+				<div id="chat-link-container" style="display: none; text-align: center; margin-top: 20px;">
+				    <a href="#" id="chat-link" class="analyze-btn">결과에 대해 챗봇과 상담하기</a>
+				</div>
+                
+                <div class="usage-info">
+                    <h3>사용 방법</h3>
+                    <ol>
+                        <li>의료진이 제공한 이미지 파일을 준비합니다</li>
+                        <li>위의 파일 선택 버튼을 클릭하여 이미지를 업로드합니다</li>
+                        <li>AI 분석 시작 버튼을 클릭하면 자동으로 분석이 진행됩니다</li>
+                        <li>분석 결과는 몇 초 내에 표시됩니다</li>
+                    </ol>
+                    <div class="note">
+                        <strong>주의사항:</strong> 이 분석 결과는 참고용이며, 최종 진단은 반드시 전문의와 상담하시기 바랍니다.
+                    </div>
+                </div>
+<<<<<<< HEAD
+            </section>
+        </div>
+    </main>
+    
+    <script th:src="@{/js/diag.js}"></script>
+=======
+
+                <button type="submit" class="analyze-btn">
+                    <span class="btn-icon">🔍</span>
+                    <span>AI 분석 시작</span>
+                </button>
+            </form>
+
+            <div class="result">
+            </div>
+
+            <div class="usage-info">
+                <h3>사용 방법</h3>
+                <ol>
+                    <li>의료진이 제공한 이미지 파일을 준비합니다</li>
+                    <li>위의 파일 선택 버튼을 클릭하여 이미지를 업로드합니다</li>
+                    <li>AI 분석 시작 버튼을 클릭하면 자동으로 분석이 진행됩니다</li>
+                    <li>분석 결과는 몇 초 내에 표시됩니다</li>
+                </ol>
+                <div class="note">
+                    <strong>주의사항:</strong> 이 분석 결과는 참고용이며, 최종 진단은 반드시 전문의와 상담하시기 바랍니다.
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+<div th:replace="~{fragments/footer :: footerFragment}"></div>
+
+<script th:src="@{/js/diag.js}"></script>
+>>>>>>> branch 'master' of https://github.com/LeeMinWoo98/human_team6
 </body>
 </html>

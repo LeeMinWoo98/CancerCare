@@ -1,10 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Footer</title>
 </head>
 <body>
+    <footer class="footer" th:fragment="footerFragment">
+        <div class="container">
+            <div class="footer-content">
+                <!-- 연락처 정보 섹션 -->
+                <div class="footer-section">
+                    <h3 class="footer-title">연락처 정보</h3>
+                    <div class="contact-info">
+                        <p><i class="fa-solid fa-map-marker-alt"></i> 서울특별시 강남구 테헤란로 123</p>
+                        <p><i class="fa-solid fa-phone"></i> 02-1234-5678</p>
+                        <p><i class="fa-solid fa-envelope"></i> contact@cancercare.com</p>
+                    </div>
+                </div>
 
+                <!-- 정책 관련 링크 섹션 -->
+                <div class="footer-section">
+                    <h3 class="footer-title">정책</h3>
+                    <ul class="footer-links">
+                        <li><a href="/privacy">개인정보 처리 방침</a></li>
+                        <li><a href="/terms">사이트 이용 약관</a></li>
+                        <li><a href="/cookies">쿠키 정책</a></li>
+                    </ul>
+                </div>
+
+                <!-- 회사 정보 섹션 -->
+                <div class="footer-section">
+                    <h3 class="footer-title">CancerCare</h3>
+                    <p class="company-description">
+                        AI 기반 암 헬스케어 서비스로<br>
+                        더 건강한 내일을 만들어갑니다
+                    </p>
+                </div>
+            </div>
+
+            <!-- 저작권 정보 -->
+            <div class="footer-bottom">
+                <div class="copyright">
+                    <p>&copy; 2024 CancerCare. All rights reserved.</p>
+                    <p>본 웹사이트는 의료 정보 제공 목적으로 제작되었으며, 전문 의료 상담을 대체할 수 없습니다.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
