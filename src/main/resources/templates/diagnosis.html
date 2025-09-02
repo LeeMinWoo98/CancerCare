@@ -10,21 +10,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/diag.css}">
+
     <meta name="_csrf" th:content="${_csrf.token}">
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
 </head>
 
 <body class="diagnosis-page">
-<div th:replace="~{fragments/header :: headerFragment}"></div>
+
 
 <main class="diag_con">
     <div class="anal_con">
         <section id="mri-sec" class="anal-sec">
             <header class="section-header">
-                <h2 class="section-title">AI 기반 MRI 이미지 분석</h2>
-                <p class="section-desc">의료진이 촬영한 MRI 이미지를 업로드하여 AI가 암 종류를 분석해드립니다</p>
+                <div th:replace="~{fragments/header :: headerFragment}"></div>
             </header>
 
+            <h2 class="section-title">
+                <i class="fa-solid fa-microscope" style="margin-right: 12px; color: #2c7be5;"></i>스마트한 암 진단
+            </h2>
+            <p class="section-desc">사용자의 의료 이미지를 통해 암을 예측합니다.</p>
             <form method="post" action="/analyze/check" enctype="multipart/form-data" class="upload-form">
                 <div class="file-input-wrapper">
                     <label for="imageFile" class="file-label">
