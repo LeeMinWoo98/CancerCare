@@ -75,7 +75,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(data => {
                     if (data.error) {
                         resultDiv.innerHTML = `<p style="color: red;"><strong>오류:</strong> ${data.error}</p>`;
+                    } else if (data.success && data.diagnosisId) {
+                        // ✨ 새로운 연동 로직
+                        resultDiv.innerHTML = `
+                            <div style="text-align: center; color: green;">
+                                <p><strong>✅ 분석 완료!</strong></p>
+                                <p><strong>예측 결과:</strong> ${data.prediction}</p>
+                                <p>💬 AI 상담으로 이동 중...</p>
+                                <div class="loading-spinner">⏳</div>
+                            </div>
+                        `;
+                        
+                        // 3초 후 챗봇 페이지로 자동 이동
+                        setTimeout(() => {
+                            window.location.href = `/chat/diagnosis/${data.diagnosisId}`;
+                        }, 3000);
                     } else {
+                        // 기존 로직 (diagnosisId가 없는 경우)
                         resultDiv.innerHTML = `<p><strong>예측 결과:</strong> ${data.prediction}</p>`;
                     }
                 })

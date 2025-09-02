@@ -1,16 +1,44 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<body>
-
 <header th:fragment="headerFragment">
+
+    <!-- Header Logo & Menu Styles -->
+    <style>
+        .logo .logo-text-dark {
+            color: #212529; /* 'cancer' 텍스트 색상 */
+        }
+        .logo .logo-text-light {
+            color: #69a74e; /* 'care' 텍스트 색상 */
+        }
+        .logo .logo-leaf-icon {
+            color: #69a74e; /* 나뭇잎 아이콘 색상 */
+            font-size: 18px; /* 헤더 폰트 크기에 맞게 아이콘 크기 조절 */
+            margin-left: 5px; /* 텍스트와 아이콘 사이 간격 */
+            transform: rotate(10deg); /* 아이콘 살짝 회전 */
+        }
+
+        /* --- 메뉴 스타일 개선 --- */
+        .menu a {
+            padding: 8px 12px; /* 호버 영역을 위해 패딩 추가 */
+            border-radius: 8px; /* 부드러운 모서리 */
+            transition: color 0.2s ease, background-color 0.2s ease; /* 부드러운 전환 효과 */
+        }
+
+        .menu a:hover {
+            background-color: #f0f6ff; /* 호버 시 연한 파란색 배경 */
+        }
+    </style>
+
     <div class="container nav">
         <a th:href="@{/}" class="logo" aria-label="cancercare 홈으로">
-            <span>cancercare</span>
+            <span class="logo-text-dark">cancer</span><span class="logo-text-light">care</span><i class="fa-solid fa-leaf logo-leaf-icon"></i>
         </a>
 
         <nav class="menu" aria-label="주요 메뉴">
+            <!-- 아이콘 제거 -->
             <a th:href="@{/food/recommend}">식단 추천</a>
             <a th:href="@{/chat/chatbot}">챗봇 상담</a>
+            <a th:href="@{/news/healthNews}">건강 뉴스</a>
             <a th:href="@{/diagnosis}">암 진단</a>
             <a th:href="@{/hospital/find}">병원 찾기</a>
 
@@ -31,3 +59,5 @@
 
 </body>
 </html>
+
+

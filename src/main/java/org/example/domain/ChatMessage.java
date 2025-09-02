@@ -1,10 +1,8 @@
 package org.example.domain;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,14 +11,14 @@ import java.time.LocalDateTime;
 @Table(name = "chat_messages")
 public class ChatMessage {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "message_id")
-    private Integer messageId;
+    private Long messageId;
 
-    @Column(name = "diagnosis_id", nullable = false)
-    private Integer diagnosisId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "diagnosis_id", nullable = false)
+    private Diagnosis diagnosis;
 
     @Column(name = "message_text", columnDefinition = "TEXT", nullable = false)
     private String messageText;
@@ -32,18 +30,14 @@ public class ChatMessage {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // Enum
     public enum SenderType {user, chatbot}
 
-    // Constructors
     public ChatMessage() {
     }
 
-    public ChatMessage(Integer diagnosisId, String messageText, SenderType sender) {
-        this.diagnosisId = diagnosisId;
+    public ChatMessage(Diagnosis diagnosis, String messageText, SenderType sender) {
+        this.diagnosis = diagnosis;
         this.messageText = messageText;
         this.sender = sender;
     }
-
-
 }

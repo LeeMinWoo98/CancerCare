@@ -43,6 +43,25 @@
         .err{color:#dc2626;font-size:12px;margin-top:6px}
         .alert{margin-bottom:10px;border:1px solid #fde68a;background:#fffbeb;color:#78350f;border-radius:10px;padding:10px 12px;font-size:13px}
 
+
+
+        input[type="checkbox"] {
+            width: auto;
+            height: auto;
+            margin-right: 6px;
+        }
+        .terms-scroll-box {
+            height: 200px;
+            overflow-y: scroll;
+            border: 1px solid var(--outline);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 14px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
         @media(min-width:640px){
             .row-2{grid-template-columns:1fr 1fr}
         }
@@ -122,7 +141,78 @@
                     <input id="birthdate" name="birthdate" type="date" required>
                 </div>
 
-                <button class="btn" type="submit" id="submitBtn" disabled>회원가입</button>
+                <!-- 이용 약관 -->
+                <div class="terms-container">
+                    <p><strong>CancerCare 이용 약관(필수)</strong></p>
+                    <div class="terms-scroll-box">
+                        <p><strong>제1조 (목적)</strong></p>
+                        <p>본 약관은 CancerCare (이하 '회사')가 운영하는 웹사이트 'Cancercare.com' (이하 '사이트')에서 제공하는 AI 기반 헬스케어 서비스(이하 '서비스')를 이용함에 있어 '회사'와 이용자의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.</p>
+                        <p><strong>제2조 (정의)</strong></p>
+                        <p>1. '사이트'란 '회사'가 AI 기술을 활용한 암 위험도 예측 및 챗봇 상담 등의 서비스를 이용자에게 제공하기 위하여 컴퓨터 등 정보통신설비를 이용하여 구축한 가상의 공간을 말합니다.</p>
+                        <p>2. '이용자'란 '사이트'에 접속하여 본 약관에 따라 '회사'가 제공하는 서비스를 받는 회원 및 비회원을 말합니다.</p>
+                        <p>3. '회원'이라 함은 '사이트'에 개인정보를 제공하여 회원등록을 한 자로서, '사이트'의 정보를 지속적으로 제공받으며, '사이트'가 제공하는 서비스를 계속적으로 이용할 수 있는 자를 말합니다.</p>
+                        <p>4. '비회원'이라 함은 회원에 가입하지 않고 '사이트'가 제공하는 서비스를 이용하는 자를 말합니다.</p>
+                        <p><strong>제3조 (약관 등의 명시와 설명 및 개정)</strong></p>
+                        <p>1. '회사'는 본 약관의 내용과 상호 및 대표자 성명, 영업소 소재지 주소(소비자의 불만을 처리할 수 있는 곳의 주소를 포함), 전화번호, 전자우편주소, 사업자등록번호, 통신판매업 신고번호, 개인정보보호책임자 등을 이용자가 쉽게 알 수 있도록 '사이트'의 초기 서비스화면(전면)에 게시합니다. 다만, 약관의 내용은 이용자가 연결화면을 통하여 볼 수 있도록 할 수 있습니다.</p>
+                        <p>2. '회사'는 「전자상거래 등에서의 소비자보호에 관한 법률」, 「약관의 규제에 관한 법률」, 「정보통신망 이용촉진 및 정보보호 등에 관한 법률」 등 관련 법을 위배하지 않는 범위에서 본 약관을 개정할 수 있습니다.</p>
+                        <p>3. '회사'가 약관을 개정할 경우에는 적용일자 및 개정사유를 명시하여 현행약관과 함께 '사이트'의 초기화면에 그 적용일자 7일 이전부터 적용일자 전일까지 공지합니다.다만, 이용자에게 불리하게 약관내용을 변경하는 경우에는 최소한 30일 이상의 사전 유예기간을 두고 공지합니다.</p>
+                        <p><strong>제4조 (서비스의 제공 및 변경)</strong></p>
+                        <p>1. '회사'는 다음과 같은 업무를 수행합니다.</p>
+                        <ul>
+                            <li>AI 기반 암 위험도 예측 서비스 제공</li>
+                            <li>AI 챗봇 상담 서비스 제공</li>
+                            <li>맞춤형 식단 및 병원 정보 추천 서비스 제공</li>
+                            <li>기타 '회사'가 정하는 업무</li>
+                        </ul>
+                        <p>2. '회사'는 기술적 사양의 변경 또는 불가피한 사정이 있는 경우에 장차 체결되는 계약에 의해 제공할 서비스의 내용을 변경할 수 있습니다.</p>
+                        <p><strong>제5조 (회원가입)</strong></p>
+                        <p>1. 이용자는 '회사'가 정한 가입 양식에 따라 회원정보를 기입한 후 본 약관에 동의한다는 의사표시를 함으로써 회원가입을 신청합니다.</p>
+                        <p>2. '회사'는 제1항과 같이 회원으로 가입할 것을 신청한 이용자 중 다음 각 호에 해당하지 않는 한 회원으로 등록합니다.</p>
+                        <ul>
+                            <li>가입신청자가 본 약관 제7조 제3항에 의하여 이전에 회원자격을 상실한 적이 있는 경우</li>
+                            <li>등록 내용에 허위, 기재누락, 오기가 있는 경우</li>
+                            <li>기타 회원으로 등록하는 것이 '회사'의 기술상 현저히 지장이 있다고 판단되는 경우</li>
+                        </ul>
+                        <p>3. 회원가입 계약의 성립 시기는 '회사'의 승낙이 회원에게 도달한 시점으로 합니다.</p>
+                        <p><strong>제6조 (회원 탈퇴 및 자격 상실 등)</strong></p>
+                        <p>1. 회원은 '회사'에 언제든지 탈퇴를 요청할 수 있으며 '회사'는 즉시 회원탈퇴를 처리합니다.</p>
+                        <p>2. 회원이 다음 각 호의 사유에 해당하는 경우, '회사'는 회원자격을 제한 및 정지시킬 수 있습니다.</p>
+                        <ul>
+                            <li>가입 신청 시에 허위 내용을 등록한 경우</li>
+                            <li>'사이트'를 이용하여 구입한 재화 등의 대금, 기타 '사이트' 이용에 관련하여 회원이 부담하는 채무를 기일에 지급하지 않는 경우</li>
+                            <li>다른 사람의 '사이트' 이용을 방해하거나 그 정보를 도용하는 등 전자상거래 질서를 위협하는 경우</li>
+                            <li>'사이트'를 이용하여 법령 또는 본 약관이 금지하거나 공서양속에 반하는 행위를 하는 경우</li>
+                        </ul>
+                        <p><strong>제7조 (회원의 의무)</strong></p>
+                        <p>1. 회원은 다음 행위를 하여서는 안 됩니다.</p>
+                        <ul>
+                            <li>신청 또는 변경 시 허위 내용의 등록</li>
+                            <li>타인의 정보 도용</li>
+                            <li>'사이트'에 게시된 정보의 변경</li>
+                            <li>'회사'가 정한 정보 이외의 정보(컴퓨터 프로그램 등) 등의 송신 또는 게시</li>
+                            <li>'회사' 기타 제3자의 저작권 등 지적재산권에 대한 침해</li>
+                            <li>'회사' 기타 제3자의 명예를 손상시키거나 업무를 방해하는 행위</li>
+                            <li>외설 또는 폭력적인 메시지, 화상, 음성, 기타 공서양속에 반하는 정보를 '사이트'에 공개 또는 게시하는 행위</li>
+                        </ul>
+                        <p><strong>제8조 (AI 서비스의 한계 및 면책)</strong></p>
+                        <p>1. 본 약관에 명시된 AI 기반 암 위험도 예측 결과 및 챗봇 상담 내용은 의학적 진단이나 전문적인 의료 행위가 아니며, 단지 이용자의 건강 관리를 돕기 위한 참고용 정보입니다.</p>
+                        <p>2. 이용자는 본 서비스에서 제공된 정보를 어떠한 경우에도 의료진의 진단 및 처방을 대체하는 용도로 사용해서는 안 됩니다.</p>
+                        <p>3. '회사'는 서비스에 포함된 정보의 정확성, 완전성, 신뢰성을 보증하지 않으며, 이로 인해 발생한 직간접적인 손해에 대해 어떠한 책임도 부담하지 않습니다.</p>
+                        <p><strong>제9조 (민감 정보의 수집 및 활용)</strong></p>
+                        <p>1. '회사'는 AI 암 예측 서비스 제공을 위해 이용자의 동의를 얻어 CT, MRI, 내시경 영상 등 민감한 의료 정보를 수집할 수 있습니다.</p>
+                        <p>2. 수집된 민감 정보는 암 예측 모델의 성능 개선 및 연구 개발 목적으로만 사용되며, 이 과정에서 개인을 식별할 수 있는 정보는 모두 비식별화 또는 암호화 처리됩니다.</p>
+                        <p>3. '회사'는 이용자의 별도 동의 없이 수집된 민감 정보를 제3자에게 제공하거나 목적 외의 용도로 활용하지 않습니다.</p>
+                        <p><strong>부칙</strong></p>
+                        <p>본 약관은 [시행일자]부터 적용됩니다. </p>
+                    </div>
+                    <label>
+                        <input type="checkbox" id="termsAgree" name="termsAgree">
+                        이용 약관에 동의합니다 <span class="req">*</span>
+                    </label>
+                    <div id="termsErrorMsg" class="err" style="display: none;">약관 확인 후 동의해주세요.</div>
+                </div>
+
+                <button class="btn" type="submit" id="submitBtn">회원가입</button>
             </div>
         </form>
 
@@ -133,123 +223,156 @@
 </div>
 
 <script>
-let isEmailVerified = false;
-let isPasswordMatching = false;
-let timerInterval = null;
+    let isEmailVerified = false;
+    let isPasswordMatching = false;
+    let isTermsAgreed = false; //약관 관련
+    let timerInterval = null;
 
-// 비밀번호 일치 확인
-function checkPasswordMatch() {
-    const password = document.getElementById('password').value;
-    const passwordConfirm = document.getElementById('passwordConfirm').value;
-    const msgDiv = document.getElementById('passwordMatchMsg');
-    
-    if (passwordConfirm === '') {
-        msgDiv.innerHTML = '';
-        isPasswordMatching = false;
-    } else if (password === passwordConfirm) {
-        msgDiv.innerHTML = '<span style="color:green;">✓ 비밀번호가 일치합니다.</span>';
-        isPasswordMatching = true;
-    } else {
-        msgDiv.innerHTML = '<span style="color:red;">✗ 비밀번호가 일치하지 않습니다.</span>';
-        isPasswordMatching = false;
-    }
-    updateSubmitButton();
-}
+    // 비밀번호 일치 확인
+    function checkPasswordMatch() {
+        const password = document.getElementById('password').value;
+        const passwordConfirm = document.getElementById('passwordConfirm').value;
+        const msgDiv = document.getElementById('passwordMatchMsg');
 
-// 회원가입 버튼 활성화 상태 업데이트
-function updateSubmitButton() {
-    const submitBtn = document.getElementById('submitBtn');
-    submitBtn.disabled = !(isEmailVerified && isPasswordMatching);
-}
-
-// 타이머 시작 함수
-function startTimer(minutes) {
-    let timeLeft = minutes * 60; // 초 단위로 변환
-    const timerDiv = document.getElementById('timerMsg');
-    
-    // 기존 타이머가 있다면 정리
-    if (timerInterval) {
-        clearInterval(timerInterval);
-    }
-    
-    timerInterval = setInterval(function() {
-        const mins = Math.floor(timeLeft / 60);
-        const secs = timeLeft % 60;
-        
-        timerDiv.innerHTML = `유효시간: ${mins}:${secs.toString().padStart(2, '0')}`;
-        
-        if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            timerDiv.innerHTML = '<span style="color:red;">⏰ 인증번호가 만료되었습니다. 다시 전송해주세요.</span>';
-            timerInterval = null;
-        }
-        
-        timeLeft--;
-    }, 1000);
-}
-
-// 비밀번호 필드에 이벤트 리스너 추가
-document.getElementById('password').addEventListener('input', checkPasswordMatch);
-document.getElementById('passwordConfirm').addEventListener('input', checkPasswordMatch);
-
-document.getElementById('sendCodeBtn').addEventListener('click', function() {
-    const email = document.getElementById('email').value;
-    if (!email) {
-        alert('이메일을 입력하세요.');
-        return;
-    }
-    
-    fetch('/signup/send-code', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: new URLSearchParams({email: email, '_csrf': document.querySelector('input[name="_csrf"]').value})
-    })
-    .then(response => response.text())
-    .then(result => {
-        if (result === 'success') {
-            alert('인증번호가 전송되었습니다. (유효시간: 5분)');
-            startTimer(5); // 5분 타이머 시작
-        } else if (result === '이미 사용 중인 이메일입니다.') {
-            alert('이미 가입된 계정입니다.');
-        } else if (result === '유효하지 않은 이메일입니다.') {
-            alert('유효하지 않은 이메일입니다.');
+        if (passwordConfirm === '') {
+            msgDiv.innerHTML = '';
+            isPasswordMatching = false;
+        } else if (password === passwordConfirm) {
+            msgDiv.innerHTML = '<span style="color:green;">✓ 비밀번호가 일치합니다.</span>';
+            isPasswordMatching = true;
         } else {
-            alert('인증번호 전송에 실패했습니다.');
-        }
-    });
-});
-
-document.getElementById('verifyCodeBtn').addEventListener('click', function() {
-    const email = document.getElementById('email').value;
-    const code = document.getElementById('verificationCode').value;
-    if (!email || !code) {
-        alert('이메일과 인증번호를 모두 입력하세요.');
-        return;
-    }
-    
-    fetch('/signup/verify-code', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: new URLSearchParams({email: email, code: code, '_csrf': document.querySelector('input[name="_csrf"]').value})
-    })
-    .then(response => response.text())
-    .then(result => {
-        const resultDiv = document.getElementById('verifyResult');
-        if (result === 'success') {
-            resultDiv.innerHTML = '<span style="color:green;">✓ 이메일 인증이 완료되었습니다.</span>';
-            isEmailVerified = true;
-            // 인증 성공 시 타이머 정지
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                document.getElementById('timerMsg').innerHTML = '<span style="color:green;">✓ 인증 완료</span>';
-            }
-        } else {
-            resultDiv.innerHTML = '<span style="color:red;">✗ 인증번호가 일치하지 않습니다.</span>';
-            isEmailVerified = false;
+            msgDiv.innerHTML = '<span style="color:red;">✗ 비밀번호가 일치하지 않습니다.</span>';
+            isPasswordMatching = false;
         }
         updateSubmitButton();
+    }
+
+    function checkTermsAgreement() {
+        const termsCheckbox = document.getElementById('termsAgree');
+        const termsErrorMsg = document.getElementById('termsErrorMsg');
+
+        isTermsAgreed = termsCheckbox.checked;
+
+        // 체크박스가 체크되면 오류 메시지를 숨깁니다.
+        if (isTermsAgreed) {
+            termsErrorMsg.style.display = 'none';
+        }
+
+        updateSubmitButton();
+    }
+
+    // 회원가입 버튼 활성화 상태 업데이트(이용 약관 동의 여부 변수 추가)
+    function updateSubmitButton() {
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = !(isEmailVerified && isPasswordMatching);
+    }
+
+    // 타이머 시작 함수
+    function startTimer(minutes) {
+        let timeLeft = minutes * 60; // 초 단위로 변환
+        const timerDiv = document.getElementById('timerMsg');
+
+        // 기존 타이머가 있다면 정리
+        if (timerInterval) {
+            clearInterval(timerInterval);
+        }
+
+        timerInterval = setInterval(function() {
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+
+            timerDiv.innerHTML = `유효시간: ${mins}:${secs.toString().padStart(2, '0')}`;
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timerDiv.innerHTML = '<span style="color:red;">⏰ 인증번호가 만료되었습니다. 다시 전송해주세요.</span>';
+                timerInterval = null;
+            }
+
+            timeLeft--;
+        }, 1000);
+    }
+
+    document.querySelector('form').addEventListener('submit', function(event) {
+        const termsAgreeCheckbox = document.getElementById('termsAgree');
+        const termsErrorMsg = document.getElementById('termsErrorMsg');
+
+        // 약관 동의 체크박스가 체크되지 않았다면
+        if (!termsAgreeCheckbox.checked) {
+            // 폼 제출을 막습니다.
+            event.preventDefault();
+
+            // 오류 메시지를 보이게 합니다.
+            termsErrorMsg.style.display = 'block';
+        } else {
+            // 체크박스가 체크되어 있다면 오류 메시지를 숨깁니다.
+            termsErrorMsg.style.display = 'none';
+        }
     });
-});
+
+    // 비밀번호 필드에 이벤트 리스너 추가
+    document.getElementById('password').addEventListener('input', checkPasswordMatch);
+    document.getElementById('passwordConfirm').addEventListener('input', checkPasswordMatch);
+    document.getElementById('termsAgree').addEventListener('change', checkTermsAgreement); // 약관 동의 리스너
+
+    document.getElementById('sendCodeBtn').addEventListener('click', function() {
+        const email = document.getElementById('email').value;
+        if (!email) {
+            alert('이메일을 입력하세요.');
+            return;
+        }
+
+        fetch('/signup/send-code', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: new URLSearchParams({email: email, '_csrf': document.querySelector('input[name="_csrf"]').value})
+        })
+            .then(response => response.text())
+            .then(result => {
+                if (result === 'success') {
+                    alert('인증번호가 전송되었습니다. (유효시간: 5분)');
+                    startTimer(5); // 5분 타이머 시작
+                } else if (result === '이미 사용 중인 이메일입니다.') {
+                    alert('이미 가입된 계정입니다.');
+                } else if (result === '유효하지 않은 이메일입니다.') {
+                    alert('유효하지 않은 이메일입니다.');
+                } else {
+                    alert('인증번호 전송에 실패했습니다.');
+                }
+            });
+    });
+
+    document.getElementById('verifyCodeBtn').addEventListener('click', function() {
+        const email = document.getElementById('email').value;
+        const code = document.getElementById('verificationCode').value;
+        if (!email || !code) {
+            alert('이메일과 인증번호를 모두 입력하세요.');
+            return;
+        }
+
+        fetch('/signup/verify-code', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: new URLSearchParams({email: email, code: code, '_csrf': document.querySelector('input[name="_csrf"]').value})
+        })
+            .then(response => response.text())
+            .then(result => {
+                const resultDiv = document.getElementById('verifyResult');
+                if (result === 'success') {
+                    resultDiv.innerHTML = '<span style="color:green;">✓ 이메일 인증이 완료되었습니다.</span>';
+                    isEmailVerified = true;
+                    // 인증 성공 시 타이머 정지
+                    if (timerInterval) {
+                        clearInterval(timerInterval);
+                        document.getElementById('timerMsg').innerHTML = '<span style="color:green;">✓ 인증 완료</span>';
+                    }
+                } else {
+                    resultDiv.innerHTML = '<span style="color:red;">✗ 인증번호가 일치하지 않습니다.</span>';
+                    isEmailVerified = false;
+                }
+                updateSubmitButton();
+            });
+    });
 </script>
 </body>
 </html>

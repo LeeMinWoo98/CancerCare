@@ -63,12 +63,30 @@ body.diagnosis-page {
     margin-bottom: 32px;
 }
 
-#mri-sec h2 {
+.section-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.section-title {
     margin: 0 0 16px 0;
     font-size: 32px;
     font-weight: 700;
     color: var(--text);
     letter-spacing: -0.01em;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(135deg, var(--brand), var(--brand-700));
+    border-radius: 2px;
 }
 
 .section-desc {
