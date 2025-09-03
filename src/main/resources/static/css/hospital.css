@@ -418,3 +418,45 @@ body {
     font-weight: 600;
     box-shadow: 0 2px 8px rgba(255,107,107,0.3);
 }
+
+
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px; /* 버튼 사이 간격 */
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.hospital-item {
+    display: flex; /* 체크박스와 정보 정렬을 위해 flex 사용 */
+    align-items: center; /* 세로 중앙 정렬 */
+    gap: 15px; /* 체크박스와 정보 사이 간격 */
+}
+
+.hospital-item-checkbox {
+    transform: scale(1.2); /* 체크박스 크기 키우기 */
+    cursor: pointer;
+}

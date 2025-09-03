@@ -5,12 +5,10 @@ import org.example.service.HospitalService;
 import org.example.service.AIRecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -63,5 +61,16 @@ public class HospitalController {
         result.put("insights", insights);
 
         return result;
+    }
+
+    @PostMapping("/api/save")
+    public ResponseEntity<String> saveHospitals(@RequestBody Map<String, Object> payload) {
+        // payload.get("specialty") 로 진료과목을 가져올 수 있습니다.
+        // payload.get("hospitals") 로 병원 목록(List<Map<String, Object>>)을 가져올 수 있습니다.
+
+        // 여기에 실제 데이터베이스에 저장하는 로직을 구현합니다.
+        System.out.println("저장할 데이터: " + payload);
+
+        return ResponseEntity.ok("저장되었습니다.");
     }
 }
