@@ -1,7 +1,8 @@
 package org.example.controller;
 
-import org.example.dto.ChatRequest;
-import org.example.dto.ChatResponse;
+import org.example.dto.ChatMessageDTO;
+import org.example.dto.ChatRequestDTO;
+import org.example.dto.ChatResponseDTO;
 import org.example.domain.ChatMessage;
 import org.example.service.ChatBotService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +33,15 @@ public class ChatBotController {
      */
     @GetMapping("/diagnosis/{diagnosisId}")
     public String chatWithDiagnosis(@PathVariable Integer diagnosisId, Model model, Authentication auth) {
-        String loginId = auth.getName(); // 🎯 현재 로그인한 사용자
-
+        String loginId = auth.getName();
         model.addAttribute("diagnosisId", diagnosisId);
 
-        // 🎯 해당 사용자의 기존 채팅이 없다면 자동으로 시작
-        List<ChatMessage> chatHistory = chatBotService.getChatHistory(diagnosisId, loginId);
+        // ★★★ 타입을 List<ChatMessageDTO>로 수정 ★★★
+        List<ChatMessageDTO> chatHistory = chatBotService.getChatHistory(diagnosisId, loginId);
         if (chatHistory.isEmpty()) {
+            // startChatWithDiagnosis는 반환값이 없으므로 그대로 두고,
             chatBotService.startChatWithDiagnosis(diagnosisId, loginId);
+            // 다시 히스토리를 가져와 chatHistory 변수에 할당합니다.
             chatHistory = chatBotService.getChatHistory(diagnosisId, loginId);
         }
 
@@ -52,7 +54,7 @@ public class ChatBotController {
      */
     @PostMapping("/send")
     @ResponseBody
-    public ResponseEntity<ChatResponse> sendMessage(@RequestBody ChatRequest request, Authentication auth) {
+    public ResponseEntity<ChatResponseDTO> sendMessage(@RequestBody ChatRequestDTO request, Authentication auth) {
         try {
             String loginId = auth.getName(); // 🎯 현재 로그인한 사용자
 
@@ -62,10 +64,10 @@ public class ChatBotController {
                     loginId  // 🎯 loginId 전달
             );
 
-            return ResponseEntity.ok(new ChatResponse(aiResponse, true));
+            return ResponseEntity.ok(new ChatResponseDTO(aiResponse, true));
 
         } catch (Exception e) {
-            return ResponseEntity.ok(new ChatResponse("오류가 발생했습니다.", false));
+            return ResponseEntity.ok(new ChatResponseDTO("오류가 발생했습니다.", false));
         }
     }
 
@@ -74,9 +76,9 @@ public class ChatBotController {
      */
     @GetMapping("/history/{diagnosisId}")
     @ResponseBody
-    public ResponseEntity<List<ChatMessage>> getChatHistory(@PathVariable Integer diagnosisId, Authentication auth) {
-        String loginId = auth.getName(); // 🎯 현재 로그인한 사용자
-        List<ChatMessage> history = chatBotService.getChatHistory(diagnosisId, loginId);
+    public ResponseEntity<List<ChatMessageDTO>> getChatHistory(@PathVariable Integer diagnosisId, Authentication auth) {
+        String loginId = auth.getName();
+        List<ChatMessageDTO> history = chatBotService.getChatHistory(diagnosisId, loginId);
         return ResponseEntity.ok(history);
     }
 

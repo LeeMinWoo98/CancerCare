@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.domain.ChatMessage;
 import org.example.domain.Diagnosis;
+import org.example.dto.ChatMessageDTO;
 import org.example.repository.ChatMessageRepository;
 import org.example.repository.DiagnosisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,10 +108,17 @@ public class ChatBotService {
         }
     }
 
-    public List<ChatMessage> getChatHistory(Integer diagnosisId, String loginId) {
+    // 반환 타입을 List<ChatMessageDto>로 변경
+    public List<ChatMessageDTO> getChatHistory(Integer diagnosisId, String loginId) {
         Diagnosis diagnosis = diagnosisRepository.findById(diagnosisId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid diagnosis ID: " + diagnosisId));
-        return chatMessageRepository.findByDiagnosisAndLoginIdOrderByCreatedAtAsc(diagnosis, loginId);
+
+        List<ChatMessage> messages = chatMessageRepository.findByDiagnosisAndLoginIdOrderByCreatedAtAsc(diagnosis, loginId);
+
+        // 조회한 엔티티 리스트를 DTO 리스트로 변환하여 반환
+        return messages.stream()
+                .map(ChatMessageDTO::new)
+                .collect(Collectors.toList());
     }
 
     public Diagnosis getDiagnosisInfo(Integer diagnosisId) {
@@ -148,6 +156,21 @@ public class ChatBotService {
             chatMessageRepository.save(welcomeMsg);
             return fallbackMessage;
         }
+    }
+
+    @Transactional
+    public List<ChatMessageDTO> chatWithDiagnosis(Integer diagnosisId, String loginId) {
+        // 먼저 해당 사용자의 채팅 기록을 조회합니다.
+        List<ChatMessageDTO> chatHistory = getChatHistory(diagnosisId, loginId);
+
+        // 만약 채팅 기록이 없다면 (첫 상담이라면), 새로운 상담을 시작합니다.
+        if (chatHistory.isEmpty()) {
+            startChatWithDiagnosis(diagnosisId, loginId);
+            // 새로운 상담이 시작되었으므로, 다시 채팅 기록을 조회하여 반환합니다.
+            chatHistory = getChatHistory(diagnosisId, loginId);
+        }
+
+        return chatHistory;
     }
 
     /**
