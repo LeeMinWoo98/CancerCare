@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
@@ -34,11 +34,37 @@
                 </p>
             </div>
         </div>
+        <div class="swiper-slide slide-diet">
+            <div class="slide-content feature-slide">
+                <h2 class="slide-title">
+                    나를 위한 맞춤 식단 <i class="fa-solid fa-plate-wheat inline-icon"></i>
+                </h2>
+                <p class="slide-subtitle">AI가 찾아주는 내 몸에 꼭 맞는 식단으로, 맛있고 건강한 변화를 시작해 보세요.</p>
+                <a th:href="@{/food/recommend}" class="slide-button">식단 추천받기</a>
+            </div>
+        </div>
 
-        <div class="swiper-slide">두 번째 슬라이드 내용</div>
-        <div class="swiper-slide">세 번째 슬라이드 내용</div>
-        <div class="swiper-slide">네 번째 슬라이드 내용</div>
-        <div class="swiper-slide">다섯 번째 슬라이드 내용</div>
+        <div class="swiper-slide slide-chatbot">
+            <div class="slide-content feature-slide">
+                <h2 class="slide-title">
+                    혼자라고 느껴질 때, 가장 가까운 곳에서 <i class="fa-solid fa-hand-holding-heart inline-icon"></i>
+                </h2>
+                <p class="slide-subtitle">암이라는 긴 여정, 당신의 질문과 감정에 AI 상담사가 귀 기울일게요.</p>
+                <a th:href="@{/chat/chatbot}" class="slide-button">상담 시작하기</a>
+            </div>
+        </div>
+
+        <div class="swiper-slide slide-cancer-predict">
+            <div class="slide-content feature-slide">
+                <h2 class="slide-title">
+                    건강을 지키는 작은 시작 <i class="fa-solid fa-ribbon inline-icon"></i>
+                </h2>
+                <p class="slide-subtitle">CNN 기반 AI가 의료 이미지를 분석해 암 예측을 지원하고, 불안한 순간에도 따뜻하게 곁에 있습니다.</p>
+                <a th:href="@{/diagnosis}" class="slide-button">의료 이미지 분석하기</a>
+            </div>
+        </div>
+
+
     </div>
     <div class="swiper-button-next"></div>
     <div class="swiper-button-prev"></div>

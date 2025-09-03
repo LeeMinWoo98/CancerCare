@@ -10,7 +10,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <link rel="stylesheet" th:href="@{/css/main.css}">
@@ -51,7 +50,7 @@
                 </div>
             </div>
             <div class="chat-item" data-category="symptoms">
-                <div class="category-icon">🩺</div>
+                <div class="category-icon">🤒</div>
                 <div class="category-info">
                     <div class="chat-title">증상 문의</div>
                     <div class="chat-preview">증상에 대한 문의</div>
@@ -65,14 +64,14 @@
                 </div>
             </div>
             <div class="chat-item" data-category="checkup">
-                <div class="category-icon">📋</div>
+                <div class="category-icon">🩺</div>
                 <div class="category-info">
                     <div class="chat-title">검진 정보</div>
                     <div class="chat-preview">건강검진 관련 정보</div>
                 </div>
             </div>
             <div class="chat-item" data-category="nutrition">
-                <div class="category-icon">🍎</div>
+                <div class="category-icon">🥗</div>
                 <div class="category-info">
                     <div class="chat-title">영양 상담</div>
                     <div class="chat-preview">영양 및 식단 상담</div>
@@ -113,7 +112,7 @@
                 <div class="chat-input-wrapper">
                     <textarea name="message" id="messageInput" class="chat-input" placeholder="메시지를 입력하세요..." rows="1" required></textarea>
                     <button type="submit" class="send-btn" id="sendBtn" disabled>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="20" height="20" viewBox="0_0_24_24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M22 2L11 13"></path>
                             <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
                         </svg>
@@ -124,144 +123,228 @@
     </div>
 </div>
 <div th:replace="~{fragments/footer :: footerFragment}"></div>
+
 <script th:inline="javascript">
-    /*<![CDATA[*/
-    document.addEventListener('DOMContentLoaded', function() {
-        // DOM 요소 가져오기
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const chatMessages = document.getElementById('chatMessages');
-        const chatForm = document.getElementById('chatForm');
-        const newChatBtn = document.querySelector('.new-chat-btn');
-        const chatItems = document.querySelectorAll('.chat-item');
+/*<![CDATA[*/
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM 요소 가져오기
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const newChatBtn = document.querySelector('.new-chat-btn');
+    const chatItems = document.querySelectorAll('.chat-item');
 
-        // 로그인한 사용자 이름의 첫 글자 (Thymeleaf로부터 안전하게 전달받음)
-        const currentUserInitial = /*[[${#authorization.expression('isAuthenticated()')} ? ${#strings.substring(#authentication.name, 0, 1).toUpperCase()} : 'U']]*/ 'U';
+    // 로그인한 사용자 이름의 첫 글자
+    const currentUserInitial = /*[[${#authorization.expression('isAuthenticated()')} ? ${#strings.substring(#authentication.name, 0, 1).toUpperCase()} : 'U']]*/ 'U';
 
-        // --- 함수 정의 ---
+    // --- 함수 정의 ---
 
-        // 채팅 스크롤을 항상 맨 아래로 이동
-        function scrollToBottom() {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
+    // 채팅 스크롤을 항상 맨 아래로 이동
+    function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
 
-        // 메시지를 화면에 추가하는 함수
-        function addMessage(text, isUser) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
-            const avatar = isUser ? currentUserInitial : 'AI';
-            messageDiv.innerHTML = `
-                <div class="message-avatar">${avatar}</div>
-                <div class="message-content">${text.replace(/\n/g, '<br>')}</div>
-            `;
-            chatMessages.appendChild(messageDiv);
-            scrollToBottom();
-        }
-
-        // 서버로 메시지를 전송하는 함수
-        function sendMessage() {
-            const messageText = messageInput.value.trim();
-            const diagnosisId = document.getElementById('diagnosisId').value;
-            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-
-            if (!messageText) return;
-
-            addMessage(messageText, true);
-
-            fetch('/chat/send', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    [csrfHeader]: csrfToken
-                },
-                body: JSON.stringify({
-                    message: messageText,
-                    diagnosisId: parseInt(diagnosisId)
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    addMessage(data.response, false);
-                } else {
-                    addMessage('오류가 발생했습니다: ' + (data.error || '알 수 없는 오류'), false);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                addMessage('네트워크 오류가 발생했습니다.', false);
-            });
-
-            messageInput.value = '';
-            messageInput.style.height = 'auto'; // 높이 초기화
-            sendBtn.disabled = true;
-        }
-
-        // --- 이벤트 리스너 설정 ---
-
-        // 페이지 로드 시 스크롤 맨 아래로
+    // 메시지를 화면에 추가하는 함수 (kyoungjun 브랜치 기능에 필요)
+    function addMessage(text, isUser) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+        const avatar = isUser ? currentUserInitial : 'AI';
+        messageDiv.innerHTML = `
+            <div class="message-avatar">${avatar}</div>
+            <div class="message-content">${text.replace(/\n/g, '<br>')}</div>
+        `;
+        chatMessages.appendChild(messageDiv);
         scrollToBottom();
+    }
+    
+    // --- 'kyoungjun' 브랜치의 새로운 기능들 ---
 
-        // 입력창 자동 높이 조절 및 전송 버튼 활성화
-        messageInput.addEventListener('input', function () {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px'; // 최대 높이 120px
-            sendBtn.disabled = !this.value.trim();
-        });
+    // 새로운 상담 세션 시작 함수
+    function startNewChatSession() {
+        const diagnosisId = document.getElementById('diagnosisId').value;
+        const csrfToken = document.querySelector("meta[name='_csrf']").content;
+        const csrfHeader = document.querySelector("meta[name='_csrf_header']").content;
 
-        // Enter 키로 메시지 전송 (Shift+Enter는 줄바꿈)
-        messageInput.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                if (!sendBtn.disabled) {
-                    sendMessage();
+        newChatBtn.disabled = true;
+        newChatBtn.textContent = '시작 중...';
+
+        fetch('/chat/new-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            },
+            body: JSON.stringify({ diagnosisId: parseInt(diagnosisId) })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                clearChatMessages();
+                if (data.welcomeMessage) {
+                    addMessage(data.welcomeMessage, false);
                 }
+                showNotification('새로운 상담이 시작되었습니다!', 'success');
+            } else {
+                showNotification(data.message || '오류가 발생했습니다.', 'error');
             }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('네트워크 오류가 발생했습니다.', 'error');
+        })
+        .finally(() => {
+            newChatBtn.disabled = false;
+            newChatBtn.textContent = '새로운 상담 시작';
+        });
+    }
+
+    // 채팅 화면 초기화 함수
+    function clearChatMessages() {
+        chatMessages.innerHTML = '';
+    }
+
+    // 알림 표시 함수
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.textContent = message;
+        // 스타일 직접 적용
+        notification.style.position = 'fixed';
+        notification.style.top = '20px';
+        notification.style.right = '20px';
+        notification.style.zIndex = '1000';
+        notification.style.padding = '12px 24px';
+        notification.style.borderRadius = '6px';
+        notification.style.color = 'white';
+        notification.style.background = type === 'success' ? '#10b981' : '#ef4444';
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
+    }
+    
+    // 카테고리 선택 함수
+    function selectCategory(selectedItem, category) {
+        chatItems.forEach(item => item.classList.remove('active'));
+        selectedItem.classList.add('active');
+
+        const categoryMessages = {
+            'general': '일반 상담을 선택하셨습니다. 무엇을 도와드릴까요?',
+            'symptoms': '증상 문의를 선택하셨습니다. 어떤 증상이 있으신가요?',
+            'prevention': '예방 관리를 선택하셨습니다. 어떤 예방법이 궁금하신가요?',
+            'checkup': '검진 정보를 선택하셨습니다. 어떤 검진 정보를 원하시나요?',
+            'nutrition': '영양 상담을 선택하셨습니다. 영양 관련 질문을 해보세요!'
+        };
+        showNotification(categoryMessages[category], 'success');
+    }
+
+    // --- 기존 기능 ---
+
+    // 서버로 메시지를 전송하는 함수
+    function sendMessage() {
+        const messageText = messageInput.value.trim();
+        const diagnosisId = document.getElementById('diagnosisId').value;
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        if (!messageText) return;
+
+        addMessage(messageText, true);
+
+        fetch('/chat/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            },
+            body: JSON.stringify({
+                message: messageText,
+                diagnosisId: parseInt(diagnosisId)
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                addMessage(data.response, false);
+            } else {
+                addMessage('오류가 발생했습니다: ' + (data.error || '알 수 없는 오류'), false);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            addMessage('네트워크 오류가 발생했습니다.', false);
         });
 
-        // 폼 제출(전송 버튼 클릭) 시 메시지 전송
-        chatForm.addEventListener('submit', function (e) {
+        messageInput.value = '';
+        messageInput.style.height = 'auto';
+        sendBtn.disabled = true;
+    }
+
+    // --- 이벤트 리스너 설정 ---
+
+    // 페이지 로드 시 스크롤 맨 아래로
+    scrollToBottom();
+
+    // 입력창 자동 높이 조절 및 전송 버튼 활성화
+    messageInput.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        sendBtn.disabled = !this.value.trim();
+    });
+
+    // Enter 키로 메시지 전송
+    messageInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            sendMessage();
-        });
-
-        // 새 상담 시작 버튼
-        newChatBtn.addEventListener('click', () => {
-             alert('새로운 상담을 시작합니다!');
-             // 필요하다면 채팅 내역 초기화 로직 추가
-        });
-
-        // 사이드바 카테고리 선택
-        chatItems.forEach(item => {
-            item.addEventListener('click', function() {
-                chatItems.forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-                const category = this.dataset.category;
-                const categoryMessages = {
-                    'general': '일반 상담을 선택하셨습니다. 무엇을 도와드릴까요?',
-                    'symptoms': '증상 문의를 선택하셨습니다. 어떤 증상이 있으신가요?',
-                    'prevention': '예방 관리를 선택하셨습니다. 어떤 예방법이 궁금하신가요?',
-                    'checkup': '검진 정보를 선택하셨습니다. 어떤 검진 정보를 원하시나요?',
-                    'nutrition': '영양 상담을 선택하셨습니다. 영양 관련 질문을 해보세요!'
-                };
-                addMessage(categoryMessages[category], false); // AI가 응답하는 것처럼 메시지 추가
-            });
-        });
-
-        // 진단 페이지에서 넘어온 경우, 첫 질문을 자동으로 전송
-        const urlParams = new URLSearchParams(window.location.search);
-        const diagnosisResult = urlParams.get('diagnosis');
-        if (diagnosisResult) {
-            addMessage(`'${diagnosisResult}' 진단 결과에 대해 더 자세히 알려주세요.`, true);
-            
-            // fetch 전송을 위해 messageInput에 잠시 값을 할당
-            messageInput.value = `'${diagnosisResult}' 진단 결과에 대해 더 자세히 알려주세요.`;
-            sendMessage();
-            messageInput.value = ''; // 전송 후 다시 비움
+            if (!sendBtn.disabled) {
+                sendMessage();
+            }
         }
     });
-    /*]]>*/
+
+    // 폼 제출(전송 버튼 클릭) 시 메시지 전송
+    chatForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        sendMessage();
+    });
+    
+    // 'kyoungjun' 브랜치의 '새로운 상담 시작' 버튼 이벤트
+    newChatBtn.addEventListener('click', function() {
+        if (confirm('새로운 상담을 시작하시겠습니까? 기존 대화 내용이 삭제됩니다.')) {
+            startNewChatSession();
+        }
+    });
+    
+    // 'kyoungjun' 브랜치의 사이드바 카테고리 선택 이벤트
+    chatItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const category = this.dataset.category;
+            selectCategory(this, category);
+        });
+    });
+
+    // 진단 페이지에서 넘어온 경우, 첫 질문 자동 전송
+    const urlParams = new URLSearchParams(window.location.search);
+    const diagnosisResult = url.params.get('diagnosis');
+    if (diagnosisResult) {
+        addMessage(`'${diagnosisResult}' 진단 결과에 대해 더 자세히 알려주세요.`, true);
+        messageInput.value = `'${diagnosisResult}' 진단 결과에 대해 더 자세히 알려주세요.`;
+        sendMessage();
+        messageInput.value = '';
+    }
+});
+/*]]>*/
 </script>
+
+<style>
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+</style>
+
 </body>
 </html>
