@@ -133,9 +133,9 @@
 
 
 
-    // th:block 대신, 삼항 연산자를 사용하여 한 줄로 안전하게 변수를 설정합니다.
+
     const currentUserInitial = /*[[${#authorization.expression('isAuthenticated()')} ? ${#strings.substring(#authentication.name, 0, 1).toUpperCase()} : '홍']]*/ '홍';
-    // 💡💡💡 --- 수정 완료 --- 💡💡💡
+
 
     document.addEventListener('DOMContentLoaded', function() {
         const messageInput = document.getElementById('messageInput');
@@ -163,7 +163,87 @@
         }
         scrollToBottom();
 
-        newChatBtn.addEventListener('click', () => alert('새로운 상담을 시작합니다!'));
+        // 🎯 새로운 상담 시작 버튼 이벤트 (CSRF 포함)
+        newChatBtn.addEventListener('click', function() {
+            if (confirm('새로운 상담을 시작하시겠습니까? 기존 대화 내용이 삭제됩니다.')) {
+                startNewChatSession();
+            }
+        });
+
+        // 🎯 새로운 상담 세션 시작 함수
+        function startNewChatSession() {
+            const diagnosisId = document.getElementById('diagnosisId').value;
+            const csrfToken = document.querySelector("meta[name='_csrf']").content;
+            const csrfHeader = document.querySelector("meta[name='_csrf_header']").content;
+
+            // 로딩 상태 표시
+            newChatBtn.disabled = true;
+            newChatBtn.textContent = '시작 중...';
+
+            fetch('/chat/new-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify({ diagnosisId: parseInt(diagnosisId) })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // 채팅 화면 초기화
+                        clearChatMessages();
+
+                        // 새로운 환영 메시지 추가
+                        if (data.welcomeMessage) {
+                            addMessage(data.welcomeMessage, false);
+                        }
+
+                        // 성공 메시지 표시
+                        showNotification('새로운 상담이 시작되었습니다!', 'success');
+                    } else {
+                        showNotification(data.message || '오류가 발생했습니다.', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('네트워크 오류가 발생했습니다.', 'error');
+                })
+                .finally(() => {
+                    // 로딩 상태 해제
+                    newChatBtn.disabled = false;
+                    newChatBtn.textContent = '새로운 상담 시작';
+                });
+        }
+
+        // 🎯 채팅 화면 초기화 함수
+        function clearChatMessages() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '';
+        }
+
+        // 🎯 알림 표시 함수
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '1000';
+            notification.style.padding = '12px 24px';
+            notification.style.borderRadius = '6px';
+            notification.style.color = 'white';
+            notification.style.background = type === 'success' ? '#10b981' : '#ef4444';
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+
+
+
 
         function selectCategory(selectedItem, category) {
             chatItems.forEach(item => item.classList.remove('active'));
@@ -176,7 +256,7 @@
                 'checkup': '검진 정보를 선택하셨습니다. 어떤 검진 정보를 원하시나요?',
                 'nutrition': '영양 상담을 선택하셨습니다. 영양 관련 질문을 해보세요!'
             };
-            alert(categoryMessages[category]);
+            showNotification(categoryMessages[category], 'success');
         }
 
         chatItems.forEach(item => {
@@ -185,6 +265,7 @@
                 selectCategory(this, category);
             });
         });
+
 
         function sendMessage() {
             const messageText = messageInput.value.trim();
@@ -230,6 +311,17 @@
         });
     });
 </script>
+<style>
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+</style>
 </body>
 </html>
 

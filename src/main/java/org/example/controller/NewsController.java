@@ -49,9 +49,7 @@ public class NewsController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
-
         // templates/news/healthNews.html 을 렌더링합니다.
         return "news/healthNews";
     }
 }
-
