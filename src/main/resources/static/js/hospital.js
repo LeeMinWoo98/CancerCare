@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Places.keywordSearch를 Promise로 감싸는 함수
-    function searchPlacesByKeyword(keyword, coords, radius, sort) {
+    function searchPlacesByKeyword(keyword, coords, radius, sort, categoryCode) {
         return new Promise((resolve, reject) => {
             places.keywordSearch(keyword, (data, status) => {
                 if (status === kakao.maps.services.Status.OK) {
@@ -122,7 +122,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }, {
                 location: coords,
                 radius: radius * 1000, // km를 미터로 변환
-                sort: sort
+                sort: sort,
+                category_group_code: categoryCode // 카테고리 코드를 이용해 검색 결과 제한
             });
         });
     }
@@ -191,7 +192,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 keyword,
                 coords,
                 distance,
-                kakao.maps.services.SortBy.DISTANCE
+                kakao.maps.services.SortBy.DISTANCE,
+                'HP8' // 병원(HP8) 카테고리 내에서만 검색하도록 제한
             );
             displayHospitals(hospitals);
         } catch (error) {
