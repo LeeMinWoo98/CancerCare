@@ -1,13 +1,13 @@
 package org.example.dto;
 
-public class ChatRequest {
+public class ChatRequestDTO {
     private String message;
     private Integer diagnosisId;
 
     // Constructors
-    public ChatRequest() {}
+    public ChatRequestDTO() {}
 
-    public ChatRequest(String message, Integer diagnosisId) {
+    public ChatRequestDTO(String message, Integer diagnosisId) {
         this.message = message;
         this.diagnosisId = diagnosisId;
     }

@@ -130,12 +130,7 @@
 </div>
 <div th:replace="~{fragments/footer :: footerFragment}"></div>
 <script th:inline="javascript">
-
-
-
-
     const currentUserInitial = /*[[${#authorization.expression('isAuthenticated()')} ? ${#strings.substring(#authentication.name, 0, 1).toUpperCase()} : '홍']]*/ '홍';
-
 
     document.addEventListener('DOMContentLoaded', function() {
         const messageInput = document.getElementById('messageInput');
@@ -145,128 +140,47 @@
         const newChatBtn = document.querySelector('.new-chat-btn');
         const chatItems = document.querySelectorAll('.chat-item');
 
-        messageInput.addEventListener('input', function () {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-            sendBtn.disabled = !this.value.trim();
-        });
-
-        messageInput.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                if (this.value.trim()) sendMessage();
-            }
-        });
-
-        function scrollToBottom() {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-        scrollToBottom();
-
-        // 🎯 새로운 상담 시작 버튼 이벤트 (CSRF 포함)
-        newChatBtn.addEventListener('click', function() {
-            if (confirm('새로운 상담을 시작하시겠습니까? 기존 대화 내용이 삭제됩니다.')) {
-                startNewChatSession();
-            }
-        });
-
-        // 🎯 새로운 상담 세션 시작 함수
-        function startNewChatSession() {
+        // 1. 페이지 로드 시 채팅 기록을 불러오는 함수
+        function loadChatHistory() {
             const diagnosisId = document.getElementById('diagnosisId').value;
-            const csrfToken = document.querySelector("meta[name='_csrf']").content;
-            const csrfHeader = document.querySelector("meta[name='_csrf_header']").content;
+            if (!diagnosisId) return;
 
-            // 로딩 상태 표시
-            newChatBtn.disabled = true;
-            newChatBtn.textContent = '시작 중...';
+            // 로딩 중임을 표시 (선택 사항)
+            chatMessages.innerHTML = '<div class="message ai"><div class="message-content">대화 기록을 불러오는 중입니다...</div></div>';
 
-            fetch('/chat/new-session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    [csrfHeader]: csrfToken
-                },
-                body: JSON.stringify({ diagnosisId: parseInt(diagnosisId) })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // 채팅 화면 초기화
-                        clearChatMessages();
-
-                        // 새로운 환영 메시지 추가
-                        if (data.welcomeMessage) {
-                            addMessage(data.welcomeMessage, false);
-                        }
-
-                        // 성공 메시지 표시
-                        showNotification('새로운 상담이 시작되었습니다!', 'success');
-                    } else {
-                        showNotification(data.message || '오류가 발생했습니다.', 'error');
+            fetch(`/chat/history/${diagnosisId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('서버에서 기록을 가져오지 못했습니다.');
+                    return response.json();
+                })
+                .then(history => {
+                    clearChatMessages();
+                    if (history && history.length > 0) {
+                        history.forEach(msg => {
+                            // msg.sender가 'user' 또는 'chatbot' 문자열이므로 바로 비교 가능
+                            addMessage(msg.messageText, msg.sender === 'user');
+                        });
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    showNotification('네트워크 오류가 발생했습니다.', 'error');
-                })
-                .finally(() => {
-                    // 로딩 상태 해제
-                    newChatBtn.disabled = false;
-                    newChatBtn.textContent = '새로운 상담 시작';
+                    console.error('Error loading chat history:', error);
+                    clearChatMessages();
+                    addMessage('대화 기록을 불러오는 중 오류가 발생했습니다.', false);
                 });
         }
 
-        // 🎯 채팅 화면 초기화 함수
-        function clearChatMessages() {
-            const chatMessages = document.getElementById('chatMessages');
-            chatMessages.innerHTML = '';
+        // 2. 메시지를 채팅창에 추가하는 함수
+        function addMessage(text, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+            // HTML 태그 실행 방지 및 줄바꿈 처리
+            const sanitizedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            messageDiv.innerHTML = `<div class="message-avatar">${isUser ? currentUserInitial : 'AI'}</div><div class="message-content">${sanitizedText.replace(/\n/g, '<br>')}</div>`;
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
         }
 
-        // 🎯 알림 표시 함수
-        function showNotification(message, type) {
-            const notification = document.createElement('div');
-            notification.textContent = message;
-
-            notification.style.position = 'fixed';
-            notification.style.top = '20px';
-            notification.style.right = '20px';
-            notification.style.zIndex = '1000';
-            notification.style.padding = '12px 24px';
-            notification.style.borderRadius = '6px';
-            notification.style.color = 'white';
-            notification.style.background = type === 'success' ? '#10b981' : '#ef4444';
-
-            document.body.appendChild(notification);
-
-            setTimeout(() => notification.remove(), 3000);
-        }
-
-
-
-
-
-        function selectCategory(selectedItem, category) {
-            chatItems.forEach(item => item.classList.remove('active'));
-            selectedItem.classList.add('active');
-
-            const categoryMessages = {
-                'general': '일반 상담을 선택하셨습니다. 무엇을 도와드릴까요?',
-                'symptoms': '증상 문의를 선택하셨습니다. 어떤 증상이 있으신가요?',
-                'prevention': '예방 관리를 선택하셨습니다. 어떤 예방법이 궁금하신가요?',
-                'checkup': '검진 정보를 선택하셨습니다. 어떤 검진 정보를 원하시나요?',
-                'nutrition': '영양 상담을 선택하셨습니다. 영양 관련 질문을 해보세요!'
-            };
-            showNotification(categoryMessages[category], 'success');
-        }
-
-        chatItems.forEach(item => {
-            item.addEventListener('click', function() {
-                const category = this.dataset.category;
-                selectCategory(this, category);
-            });
-        });
-
-
+        // 3. 채팅 메시지 전송 함수
         function sendMessage() {
             const messageText = messageInput.value.trim();
             const diagnosisId = document.getElementById('diagnosisId').value;
@@ -275,7 +189,7 @@
             const csrfToken = document.querySelector("meta[name='_csrf']").content;
             const csrfHeader = document.querySelector("meta[name='_csrf_header']").content;
 
-            addMessage(messageText, true);
+            addMessage(messageText, true); // 사용자 메시지를 먼저 화면에 표시
 
             fetch('/chat/send', {
                 method: 'POST',
@@ -293,22 +207,123 @@
                 });
 
             messageInput.value = '';
-            messageInput.style.height = 'auto';
+            messageInput.style.height = 'auto'; // 높이 초기화
             sendBtn.disabled = true;
         }
 
-        function addMessage(text, isUser) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
-            messageDiv.innerHTML = `<div class="message-avatar">${isUser ? currentUserInitial : 'AI'}</div><div class="message-content">${text}</div>`;
-            chatMessages.appendChild(messageDiv);
-            scrollToBottom();
+        // 4. 새로운 상담 세션 시작 함수
+        function startNewChatSession() {
+            const diagnosisId = document.getElementById('diagnosisId').value;
+            const csrfToken = document.querySelector("meta[name='_csrf']").content;
+            const csrfHeader = document.querySelector("meta[name='_csrf_header']").content;
+
+            newChatBtn.disabled = true;
+            newChatBtn.textContent = '시작 중...';
+
+            fetch('/chat/new-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify({ diagnosisId: parseInt(diagnosisId) })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        clearChatMessages();
+                        if (data.welcomeMessage) {
+                            addMessage(data.welcomeMessage, false);
+                        }
+                        showNotification('새로운 상담이 시작되었습니다!', 'success');
+                    } else {
+                        showNotification(data.message || '오류가 발생했습니다.', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('네트워크 오류가 발생했습니다.', 'error');
+                })
+                .finally(() => {
+                    newChatBtn.disabled = false;
+                    newChatBtn.textContent = '새로운 상담 시작';
+                });
         }
+
+        // 5. 기타 유틸리티 함수 및 이벤트 리스너
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function clearChatMessages() {
+            chatMessages.innerHTML = '';
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '1000';
+            notification.style.padding = '12px 24px';
+            notification.style.borderRadius = '6px';
+            notification.style.color = 'white';
+            notification.style.background = type === 'success' ? '#10b981' : '#ef4444';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        function selectCategory(selectedItem, category) {
+            chatItems.forEach(item => item.classList.remove('active'));
+            selectedItem.classList.add('active');
+            const categoryMessages = {
+                'general': '일반 상담을 선택하셨습니다. 무엇을 도와드릴까요?',
+                'symptoms': '증상 문의를 선택하셨습니다. 어떤 증상이 있으신가요?',
+                'prevention': '예방 관리를 선택하셨습니다. 어떤 예방법이 궁금하신가요?',
+                'checkup': '검진 정보를 선택하셨습니다. 어떤 검진 정보를 원하시나요?',
+                'nutrition': '영양 상담을 선택하셨습니다. 영양 관련 질문을 해보세요!'
+            };
+            showNotification(categoryMessages[category], 'success');
+        }
+
+        // --- 이벤트 리스너 바인딩 ---
+
+        messageInput.addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            sendBtn.disabled = !this.value.trim();
+        });
+
+        messageInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (this.value.trim()) sendMessage();
+            }
+        });
 
         chatForm.addEventListener('submit', function (e) {
             e.preventDefault();
             sendMessage();
         });
+
+        newChatBtn.addEventListener('click', function() {
+            if (confirm('새로운 상담을 시작하시겠습니까? 기존 대화 내용이 삭제됩니다.')) {
+                startNewChatSession();
+            }
+        });
+
+        chatItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const category = this.dataset.category;
+                selectCategory(this, category);
+            });
+        });
+
+        // --- 페이지 초기화 ---
+
+        // 페이지가 처음 로드될 때 대화 기록을 불러옵니다.
+        loadChatHistory();
     });
 </script>
 <style>
