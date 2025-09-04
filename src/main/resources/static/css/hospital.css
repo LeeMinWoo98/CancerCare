@@ -5,35 +5,10 @@
     box-sizing: border-box;
 }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    color: #333;
-}
-
 .container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
-}
-
-/* 헤더 */
-.header {
-    text-align: center;
-    margin-bottom: 30px;
-    color: white;
-}
-
-.header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-}
-
-.header p {
-    font-size: 1.1rem;
-    opacity: 0.9;
 }
 
 /* 검색 섹션 */
@@ -114,6 +89,7 @@ body {
     grid-template-columns: 1fr 400px;
     gap: 25px;
     height: 600px;
+    margin: 0 30px; /* 좌우 여백 추가 */
 }
 
 /* 지도 컨테이너 */
@@ -376,10 +352,6 @@ body {
         padding: 10px;
     }
 
-    .header h1 {
-        font-size: 2rem;
-    }
-
     .search-box {
         flex-direction: column;
     }
@@ -417,4 +389,46 @@ body {
     font-size: 11px;
     font-weight: 600;
     box-shadow: 0 2px 8px rgba(255,107,107,0.3);
+}
+
+
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px; /* 버튼 사이 간격 */
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.hospital-item {
+    display: flex; /* 체크박스와 정보 정렬을 위해 flex 사용 */
+    align-items: center; /* 세로 중앙 정렬 */
+    gap: 15px; /* 체크박스와 정보 사이 간격 */
+}
+
+.hospital-item-checkbox {
+    transform: scale(1.2); /* 체크박스 크기 키우기 */
+    cursor: pointer;
 }
