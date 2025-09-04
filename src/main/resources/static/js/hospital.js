@@ -21,12 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const saveHospitalsBtn = document.getElementById('saveHospitalsBtn');
     const loadingEl = document.getElementById('loading');
 
-    // AI 추천 관련 DOM 요소
-    const aiRecommendBtn = document.getElementById('aiRecommendBtn');
-    const aiPanel = document.getElementById('aiRecommendation');
-    const aiRecommendationContent = document.getElementById('aiRecommendationContent');
-    const closeAiPanelBtn = document.getElementById('closeAiPanelBtn');
-
     // Map controls
     const zoomInBtn = document.getElementById('zoomIn');
     const zoomOutBtn = document.getElementById('zoomOut');
@@ -93,7 +87,6 @@ document.addEventListener('DOMContentLoaded', function () {
     saveHospitalsBtn.addEventListener('click', saveSelectedHospitals);
 
     // --- Promisified Kakao Map Services ---
-    // Geocoder.addressSearch를 Promise로 감싸는 함수
     function searchAddressToCoords(address) {
         return new Promise((resolve, reject) => {
             geocoder.addressSearch(address, (result, status) => {
@@ -106,14 +99,13 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Places.keywordSearch를 Promise로 감싸는 함수
     function searchPlacesByKeyword(keyword, coords, radius, sort, categoryCode) {
         return new Promise((resolve, reject) => {
             places.keywordSearch(keyword, (data, status) => {
                 if (status === kakao.maps.services.Status.OK) {
                     resolve(data);
                 } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-                    resolve([]); // 결과가 없어도 에러가 아님
+                    resolve([]);
                 } else if (status === kakao.maps.services.Status.ERROR) {
                     reject(new Error('검색 결과가 너무 많습니다. 검색 반경을 줄이거나 진료과목을 선택해주세요.'));
                 } else {
@@ -121,17 +113,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }, {
                 location: coords,
-                radius: radius * 1000, // km를 미터로 변환
+                radius: radius * 1000,
                 sort: sort,
-                category_group_code: categoryCode // 카테고리 코드를 이용해 검색 결과 제한
+                category_group_code: categoryCode
             });
         });
     }
     // --- End Promisified Kakao Map Services ---
 
     // 4. 핵심 로직 함수들 (async/await 적용)
-
-    // 주소로 검색 처리 (async/await 사용)
     async function handleSearch() {
         const address = locationInput.value.trim();
         if (!address) {
@@ -142,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const coords = await searchAddressToCoords(address);
             map.setCenter(coords);
-            await searchHospitals(coords); // 병원 검색 완료까지 기다림
+            await searchHospitals(coords);
         } catch (error) {
             alert(error.message);
             console.error('주소 검색 오류:', error);
@@ -151,7 +141,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // 현재 위치로 검색 처리 (async/await 사용)
     async function handleCurrentLocation() {
         loadingEl.style.display = 'flex';
         try {
@@ -164,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             const coords = new kakao.maps.LatLng(position.coords.latitude, position.coords.longitude);
             map.setCenter(coords);
-            await searchHospitals(coords); // 병원 검색 완료까지 기다림
+            await searchHospitals(coords);
         } catch (error) {
             alert(error.message);
             console.error('현재 위치 가져오기 오류:', error);
@@ -173,13 +162,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // 카카오맵 API로 병원 검색 (async/await 사용)
     async function searchHospitals(coords) {
         if (!coords) {
-            // 좌표가 없으면 검색하지 않음 (페이지 첫 로딩 시)
             return;
         }
-        currentCoords = coords; // 현재 검색 좌표 저장
+        currentCoords = coords;
         loadingEl.style.display = 'flex';
         clearResults();
 
@@ -193,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 coords,
                 distance,
                 kakao.maps.services.SortBy.DISTANCE,
-                'HP8' // 병원(HP8) 카테고리 내에서만 검색하도록 제한
+                'HP8'
             );
             displayHospitals(hospitals);
         } catch (error) {
@@ -204,60 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // AI 추천 요청 처리 (async/await 사용)
-    async function handleAiRecommendation() {
-        if (!currentCoords) {
-            alert('먼저 위치를 검색해주세요.');
-            return;
-        }
-
-        loadingEl.style.display = 'flex';
-        aiPanel.style.display = 'none'; // 이전 결과 숨기기
-
-        try {
-            const lat = currentCoords.getLat();
-            const lng = currentCoords.getLng();
-            const specialty = specialtyFilter.value;
-
-            // URL 쿼리 파라미터 구성
-            const params = new URLSearchParams({
-                lat: lat,
-                lng: lng,
-            });
-            if (specialty) {
-                params.append('specialty', specialty);
-            }
-            // TODO: 진단명(diagnosis) 파라미터가 필요하다면, 해당 값을 가져오는 로직 추가
-            // params.append('diagnosis', 'some_diagnosis');
-
-            const response = await fetch(`/hospital/api/ai-recommendation?${params.toString()}`);
-
-            if (!response.ok) {
-                throw new Error('AI 추천을 받아오는 데 실패했습니다.');
-            }
-
-            const result = await response.json();
-            displayAiRecommendations(result);
-
-        } catch (error) {
-            alert(error.message);
-            console.error('AI 추천 오류:', error);
-        } finally {
-            loadingEl.style.display = 'none';
-        }
-    }
-
-    // AI 추천 결과를 화면에 표시
-    function displayAiRecommendations(result) {
-        // TODO: 받아온 result.recommendations와 result.insights를 사용하여
-        // aiRecommendationContent 내부에 HTML을 동적으로 생성하는 로직을 구현합니다.
-        aiRecommendationContent.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`; // 임시로 JSON 데이터 표시
-        aiPanel.style.display = 'block'; // 패널 보이기
-    }
-
-    // 선택된 병원을 저장하는 함수
     async function saveSelectedHospitals() {
-        // 1. 체크된 병원 목록 가져오기
         const checkedItems = document.querySelectorAll('.hospital-item-checkbox:checked');
 
         if (checkedItems.length === 0) {
@@ -265,7 +199,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // 2. 서버로 보낼 데이터 구성
         const hospitalsToSave = [];
         checkedItems.forEach(checkbox => {
             const placeData = JSON.parse(checkbox.dataset.place);
@@ -280,18 +213,16 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-        const specialty = specialtyFilter.value || "전체"; // 선택된 진료과목
+        const specialty = specialtyFilter.value || "전체";
 
         const payload = {
             specialty: specialty,
             hospitals: hospitalsToSave
         };
 
-        // 3. fetch를 사용하여 서버에 데이터 전송
         try {
             loadingEl.style.display = 'flex';
 
-            // 1. HTML에 숨겨둔 CSRF 토큰(허가증)을 찾습니다.
             const token = document.querySelector("meta[name='_csrf']").getAttribute("content");
             const header = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
 
@@ -299,19 +230,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    // 2. 요청 헤더에 찾은 토큰을 정확한 이름으로 추가합니다.
                     [header]: token
                 },
                 body: JSON.stringify(payload)
             });
 
             if (!response.ok) {
-                // 서버 응답이 실패(4xx, 5xx 에러)했을 때, 더 자세한 정보를 담은 에러를 생성합니다.
                 console.error("----- 서버 응답 오류 발생 -----");
-                console.error("상태 코드:", response.status); // 예: 403
-                console.error("상태 메시지:", response.statusText); // 예: Forbidden
+                console.error("상태 코드:", response.status);
+                console.error("상태 메시지:", response.statusText);
 
-                const errorBody = await response.text(); // 서버가 보낸 오류 페이지(HTML)나 메시지(JSON)를 확인합니다.
+                const errorBody = await response.text();
                 console.error("서버 응답 내용:", errorBody);
 
                 throw new Error(`서버 응답 오류: ${response.status}`);
@@ -320,7 +249,6 @@ document.addEventListener('DOMContentLoaded', function () {
             alert(`${hospitalsToSave.length}개의 병원 정보가 성공적으로 저장되었습니다.`);
 
         } catch (error) {
-            // 네트워크 연결 오류 또는 위에서 발생시킨 에러를 여기서 잡습니다.
             console.error("----- 최종 에러 처리 -----");
             console.error(error);
             alert('병원 정보 저장에 실패했습니다. 개발자 콘솔(F12)을 확인해주세요.');
@@ -330,13 +258,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // 5. 결과 표시 및 초기화 함수들
-
-    // 검색 결과를 화면에 표시
     function displayHospitals(hospitals) {
         const bounds = new kakao.maps.LatLngBounds();
-        hospitalListEl.innerHTML = ''; // 이전 목록 아이템 초기화
+        hospitalListEl.innerHTML = '';
 
-        // 검색 결과가 있으면 '선택 저장' 버튼 표시, 없으면 숨김
         saveHospitalsBtn.style.display = hospitals.length > 0 ? 'inline-block' : 'none';
 
         if (hospitals.length === 0) {
@@ -345,18 +270,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         hospitals.forEach((place) => {
-            // 마커 생성
             const position = new kakao.maps.LatLng(place.y, place.x);
             const marker = new kakao.maps.Marker({
                 map: map,
                 position: position,
-                title: place.place_name // 마커에 마우스 오버 시 병원 이름 표시
+                title: place.place_name
             });
             markers.push(marker);
 
             bounds.extend(position);
 
-            // 목록 아이템 생성
             const itemEl = document.createElement('div');
             itemEl.className = 'hospital-item';
             itemEl.innerHTML = `
@@ -373,7 +296,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             `;
 
-            // 공통으로 사용할 인포윈도우 열기 함수
             const openInfoWindow = () => {
                 const content = `
                     <div style="padding:10px; min-width:280px; font-size:14px; line-height:1.6;">
@@ -391,15 +313,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 map.panTo(marker.getPosition());
             };
 
-            // 마커와 목록 아이템에 클릭 이벤트 등록
             kakao.maps.event.addListener(marker, 'click', openInfoWindow);
             itemEl.addEventListener('click', openInfoWindow);
 
-            // 마커와 목록 아이템에 마우스 이벤트 연결
             kakao.maps.event.addListener(marker, 'mouseover', () => itemEl.classList.add('active'));
             kakao.maps.event.addListener(marker, 'mouseout', () => itemEl.classList.remove('active'));
-            itemEl.addEventListener('mouseover', () => marker.setZIndex(1)); // 마커를 최상단으로
-            itemEl.addEventListener('mouseout', () => marker.setZIndex(0)); // 마커 z-index 리셋
+            itemEl.addEventListener('mouseover', () => marker.setZIndex(1));
+            itemEl.addEventListener('mouseout', () => marker.setZIndex(0));
 
             hospitalListEl.appendChild(itemEl);
         });
@@ -407,15 +327,13 @@ document.addEventListener('DOMContentLoaded', function () {
         map.setBounds(bounds);
     }
 
-    // 이전 검색 결과(마커, 목록) 지우기
     function clearResults() {
-        markers.forEach(marker => marker.setMap(null)); // 지도에서 마커 제거
-        saveHospitalsBtn.style.display = 'none'; // 저장 버튼 숨기기
+        markers.forEach(marker => marker.setMap(null));
+        saveHospitalsBtn.style.display = 'none';
         markers = [];
         hospitalListEl.innerHTML = '';
     }
 
     // 6. 페이지 첫 로딩 시 실행
-    // 기본 위치(예: 서울 시청)로 지도 초기화
     initMap(37.566826, 126.9786567);
 });

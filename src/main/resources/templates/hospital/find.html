@@ -1,85 +1,96 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- CSRF 토큰을 위한 메타 태그 -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>병원찾기 - CancerCare</title>
+    <meta name="description" content="AI 기반 암 헬스케어 서비스: 가까운 병원을 찾고 AI 추천을 받아보세요" />
 
-    <title>병원찾기 - AI 진단 시스템</title>
-    <link rel="stylesheet" th:href="@{/css/hospital.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/hospital.css}">
+    
     <script type="text/javascript" th:src="'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoApiKey} + '&libraries=services'"></script>
 </head>
 <body>
-<div class="container">
-    <header class="header">
-        <h1><i class="fas fa-hospital"></i> AI 병원찾기</h1>
-        <p>가까운 병원을 찾고 AI 추천을 받아보세요</p>
-    </header>
 
-    <div class="search-section">
-        <div class="search-box">
-            <input type="text" id="locationInput" placeholder="주소를 입력하거나 현재 위치를 사용하세요">
-            <button id="currentLocationBtn" class="btn-primary">
-                <i class="fas fa-location-arrow"></i> 현재 위치
-            </button>
-            <button id="searchBtn" class="btn-primary">
-                <i class="fas fa-search"></i> 검색
-            </button>
+<div th:replace="~{fragments/header :: headerFragment}"></div>
+
+<section class="services-section">
+    <div class="container">
+        <div class="services-header">
+            <h2 class="services-title">내 주변 병원찾기</h2>
+            <p class="services-subtitle">가까운 병원을 진료과목 별로 검색해보세요</p>
         </div>
 
-        <div class="filter-section">
-            <select id="specialtyFilter" class="filter-select">
-                <option value="">전체 진료과목</option>
-                <option value="종합병원">종합병원</option>
-                <option value="암병원">암전문병원</option>
-                <option value="피부과">피부과</option>
-                <option value="내과">내과</option>
-                <option value="외과">외과</option>
-            </select>
-
-            <select id="distanceFilter" class="filter-select">
-                <option value="5">5km 이내</option>
-                <option value="10" selected>10km 이내</option>
-                <option value="20">20km 이내</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="main-content">
-        <div class="map-container">
-            <div id="map" class="map"></div>
-            <div class="map-controls">
-                <button id="zoomIn" class="map-btn"><i class="fas fa-plus"></i></button>
-                <button id="zoomOut" class="map-btn"><i class="fas fa-minus"></i></button>
-                <button id="resetMap" class="map-btn"><i class="fas fa-home"></i></button>
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="locationInput" placeholder="주소를 입력하거나 현재 위치를 사용하세요">
+                <button id="currentLocationBtn" class="btn-primary">
+                    <i class="fas fa-location-arrow"></i> 현재 위치
+                </button>
+                <button id="searchBtn" class="btn-primary">
+                    <i class="fas fa-search"></i> 검색
+                </button>
+            </div>
+    
+            <div class="filter-section">
+                <select id="specialtyFilter" class="filter-select">
+                    <option value="">전체 진료과목</option>
+                    <option value="종합병원">종합병원</option>
+                    <option value="암병원">암전문병원</option>
+                    <option value="피부과">피부과</option>
+                    <option value="내과">내과</option>
+                    <option value="외과">외과</option>
+                </select>
+    
+                <select id="distanceFilter" class="filter-select">
+                    <option value="5">5km 이내</option>
+                    <option value="10" selected>10km 이내</option>
+                    <option value="20">20km 이내</option>
+                </select>
             </div>
         </div>
-
-        <div class="hospital-list">
-            <div class="list-header">
-                <h3><i class="fas fa-list"></i> 주변 병원 목록</h3>
-                <div class="header-actions">
-                    <button id="saveHospitalsBtn" class="btn-secondary" style="display: none;">
-                        <i class="fas fa-save"></i> 선택 저장
-                    </button>
+    
+        <div class="main-content">
+            <div class="map-container">
+                <div id="map" class="map"></div>
+                <div class="map-controls">
+                    <button id="zoomIn" class="map-btn"><i class="fas fa-plus"></i></button>
+                    <button id="zoomOut" class="map-btn"><i class="fas fa-minus"></i></button>
+                    <button id="resetMap" class="map-btn"><i class="fas fa-home"></i></button>
                 </div>
             </div>
-
-            <div id="hospitalList" class="hospital-items">
-                <!-- 병원 목록이 여기에 동적으로 추가됩니다 -->
+    
+            <div class="hospital-list">
+                <div class="list-header">
+                    <h3><i class="fas fa-list"></i> 주변 병원 목록</h3>
+                    <div class="header-actions">
+                        <button id="saveHospitalsBtn" class="btn-secondary" style="display: none;">
+                            <i class="fas fa-save"></i> 선택 저장
+                        </button>
+                    </div>
+                </div>
+    
+                <div id="hospitalList" class="hospital-items">
+                    <!-- 병원 목록이 여기에 동적으로 추가됩니다 -->
+                </div>
             </div>
         </div>
+    
+        <div class="loading" id="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>병원을 찾고 있습니다...</p>
+        </div>
     </div>
-
-    <div class="loading" id="loading" style="display: none;">
-        <div class="spinner"></div>
-        <p>병원을 찾고 있습니다...</p>
-    </div>
-</div>
+</section>
 
 <!-- 병원 상세 정보 모달 -->
 <div id="hospitalModal" class="modal">
@@ -88,6 +99,8 @@
         <div id="modalContent"></div>
     </div>
 </div>
+
+<div th:replace="~{fragments/footer :: footerFragment}"></div>
 
 <script th:src="@{/js/hospital.js}"></script>
 </body>
