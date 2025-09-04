@@ -9,8 +9,6 @@
     --outline: #e5e7eb;
     --shadow: 0 10px 30px rgba(37, 99, 235, .15);
     --radius: 14px;
-
-    /* Swiper 네비게이션/페이지네이션 색상을 브랜드 색상으로 통일 */
     --swiper-navigation-color: var(--brand);
     --swiper-pagination-color: var(--brand);
 }
@@ -20,27 +18,26 @@
 }
 
 .logo .logo-text-dark {
-    color: #212529; /* 'cancer' 텍스트 색상 */
+    color: #212529;
 }
 .logo .logo-text-light {
-    color: #69a74e; /* 'care' 텍스트 색상 */
+    color: #69a74e;
 }
 .logo .logo-leaf-icon {
-    color: #69a74e; /* 나뭇잎 아이콘 색상 */
-    font-size: 18px; /* 헤더 폰트 크기에 맞게 아이콘 크기 조절 */
-    margin-left: 5px; /* 텍스트와 아이콘 사이 간격 */
-    transform: rotate(10deg); /* 아이콘 살짝 회전 */
+    color: #69a74e;
+    font-size: 18px;
+    margin-left: 5px;
+    transform: rotate(10deg);
 }
 
-/* --- 메뉴 스타일 개선 --- */
 .menu a {
-    padding: 8px 12px; /* 호버 영역을 위해 패딩 추가 */
-    border-radius: 8px; /* 부드러운 모서리 */
-    transition: color 0.2s ease, background-color 0.2s ease; /* 부드러운 전환 효과 */
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .menu a:hover {
-    background-color: #f0f6ff; /* 호버 시 연한 파란색 배경 */
+    background-color: #f0f6ff;
 }
 
 html, body {
@@ -119,9 +116,8 @@ header {
 /* --- Swiper Slider Styles --- */
 .swiper {
     width: 100%;
-    height: 400px; /* 슬라이더 높이 */
-    /* 64px(헤더 높이) + 20px(여백) = 84px */
-    margin-top: 84px; /* 헤더와 겹치지 않도록 상단 여백 추가 */
+    height: 400px;
+    margin-top: 84px;
 }
 
 .swiper-slide {
@@ -148,7 +144,7 @@ header {
 }
 
 .custom-logo .logo-text-dark {
-    color: var(--text); /* 기존 변수 사용 */
+    color: var(--text);
 }
 
 .custom-logo .logo-text-light {
@@ -162,43 +158,12 @@ header {
     transform: rotate(10deg);
 }
 
-.slide-subtitle {
+/* ★★★ 수정된 부분 1: 첫 번째 슬라이드의 부제에만 적용되도록 수정 ★★★ */
+.swiper-slide:not(.feature-slide) .slide-subtitle {
     font-size: 1.3rem;
-    color: var(--muted); /* 기존 변수 사용 */
+    color: var(--muted);
     line-height: 1.6;
     margin-bottom: 25px;
-}
-
-/* --- 기존 버튼 스타일 --- */
-.btn {
-    padding: 14px 20px;
-    border-radius: 999px;
-    font-weight: 700;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px
-}
-
-.btn-primary {
-    background: var(--brand);
-    color: #fff;
-    box-shadow: var(--shadow)
-}
-
-.btn-primary:hover {
-    background: var(--brand-700)
-}
-
-.btn-ghost {
-    border: 1px solid var(--outline);
-    color: #111827;
-    background: white
-}
-
-.btn-ghost:hover {
-    border-color: var(--brand);
-    color: var(--brand)
 }
 
 /* --- 서비스 소개 섹션 스타일 --- */
@@ -282,25 +247,60 @@ header {
     line-height: 1.6;
 }
 
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-    .services-section {
-        padding: 60px 0;
-    }
-    
-    .services-title {
-        font-size: 2rem;
-    }
-    
-    .services-grid {
-        grid-template-columns: 1fr;
-        gap: 24px;
-        padding: 0 20px;
-    }
-    
-    .service-card {
-        padding: 32px 24px;
-    }
+/* --- 슬라이더 UI 개선 --- */
+.swiper-slide.feature-slide {
+    background: linear-gradient(135deg, var(--brand-700), var(--brand));
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.feature-slide .slide-content {
+    text-align: center;
+    max-width: 600px;
+}
+
+.feature-slide .slide-title {
+    font-size: 2.3rem; /* 기존 2.5rem에서 약간 줄임 */
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.slide-title .inline-icon {
+    font-size: 2.0rem; /* 제목 크기에 맞춰 아이콘도 약간 줄임 */
+    color: #69a74e;
+    margin-left: 12px; /* 기존 15px에서 간격 약간 줄임 */
+}
+
+/* ★★★ 수정된 부분 2: 기능 소개 슬라이드의 부제 스타일 ★★★ */
+.feature-slide .slide-subtitle {
+    font-size: 1.15rem;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+    margin: 0 auto 36px auto;
+}
+
+.feature-slide .slide-button {
+    display: inline-block;
+    background-color: #ffffff;
+    color: var(--text); /* <-- 이 부분이 검정 계열 색상으로 변경됩니다. */
+    padding: 14px 32px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.05rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.feature-slide .slide-button:hover {
+    background-color: #f0f6ff;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
 /* Footer Styles */
@@ -401,22 +401,52 @@ header {
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
-    .footer {
-        padding: 40px 0 20px;
+    .services-section, .footer {
+        padding: 60px 20px;
     }
-    
-    .footer-content {
+
+    .services-title {
+        font-size: 2rem;
+    }
+
+    .services-grid, .footer-content {
         grid-template-columns: 1fr;
-        gap: 30px;
+        gap: 24px;
         text-align: center;
     }
-    
+
+    .service-card {
+        padding: 32px 24px;
+    }
+
     .footer-title::after {
         left: 50%;
         transform: translateX(-50%);
     }
-    
+
     .contact-info p {
         justify-content: center;
+    }
+
+    /* 슬라이더 반응형 */
+    .feature-slide .slide-title {
+        font-size: 2rem;
+        flex-direction: column;
+    }
+
+    .slide-title .inline-icon {
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    /* ★★★ 수정된 부분 3: 반응형에서도 부제 스타일이 적용되도록 수정 ★★★ */
+    .feature-slide .slide-subtitle {
+        font-size: 1rem;
+        /* 색상은 이미 위에서 지정했으므로 따로 지정할 필요 없음 */
+    }
+
+    .feature-slide .slide-button {
+        padding: 12px 25px;
+        font-size: 0.95rem;
     }
 }

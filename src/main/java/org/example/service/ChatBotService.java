@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.domain.ChatMessage;
 import org.example.domain.Diagnosis;
+import org.example.dto.ChatMessageDTO;
 import org.example.repository.ChatMessageRepository;
 import org.example.repository.DiagnosisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ChatBotService {
@@ -33,12 +35,15 @@ public class ChatBotService {
     }
 
     @Transactional
-    public String processChat(String userMessage, Integer diagnosisId) {
+    public String processChat(String userMessage, Integer diagnosisId, String loginId) {
         Diagnosis diagnosis = diagnosisRepository.findByIdWithCancer(diagnosisId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid diagnosis ID: " + diagnosisId));
 
         try {
-            List<ChatMessage> existingMessages = chatMessageRepository.findByDiagnosisOrderByCreatedAtAsc(diagnosis);
+            // 해당 사용자의 기존 메시지만 조회
+            List<ChatMessage> existingMessages = chatMessageRepository
+                    .findByDiagnosisAndLoginIdOrderByCreatedAtAsc(diagnosis, loginId);
+
             String contextMessage = userMessage;
 
             if (existingMessages.isEmpty() && diagnosis.getCancer() != null) {
@@ -46,12 +51,14 @@ public class ChatBotService {
                 System.out.println("진단 컨텍스트 추가됨: " + diagnosis.getCancer().getCancerName());
             }
 
-            ChatMessage userMsg = new ChatMessage(diagnosis, userMessage, ChatMessage.SenderType.user);
+            // loginId 포함해서 사용자 메시지 저장
+            ChatMessage userMsg = new ChatMessage(diagnosis, loginId, userMessage, ChatMessage.SenderType.user);
             chatMessageRepository.save(userMsg);
 
-            String aiResponse = callFastAPI(contextMessage, diagnosis);
+            String aiResponse = callFastAPI(contextMessage, diagnosis, existingMessages);
 
-            ChatMessage botMsg = new ChatMessage(diagnosis, aiResponse, ChatMessage.SenderType.chatbot);
+            // loginId 포함해서 챗봇 메시지 저장
+            ChatMessage botMsg = new ChatMessage(diagnosis, loginId, aiResponse, ChatMessage.SenderType.chatbot);
             chatMessageRepository.save(botMsg);
 
             return aiResponse;
@@ -62,7 +69,15 @@ public class ChatBotService {
         }
     }
 
-    private String callFastAPI(String message, Diagnosis diagnosis) {
+    private String callFastAPI(String message, Diagnosis diagnosis, List<ChatMessage> existingMessages) {
+        // 대화 기록을 FastAPI 형식으로 변환
+        List<Map<String, String>> historyData = existingMessages.stream()
+                .map(msg -> Map.of(
+                        "role", msg.getSender() == ChatMessage.SenderType.user ? "user" : "model",
+                        "content", msg.getMessageText()
+                ))
+                .collect(Collectors.toList());
+
         Map<String, Object> requestData;
         if (diagnosis != null && diagnosis.getCancer() != null) {
             requestData = Map.of(
@@ -70,12 +85,14 @@ public class ChatBotService {
                     "diagnosis_id", diagnosis.getDiagnosisId(),
                     "cancer_name", diagnosis.getCancer().getCancerName(),
                     "cancer_description", Optional.ofNullable(diagnosis.getCancer().getDescription()).orElse(""),
-                    "cancer_symptoms", Optional.ofNullable(diagnosis.getCancer().getSymptoms()).orElse("")
+                    "cancer_symptoms", Optional.ofNullable(diagnosis.getCancer().getSymptoms()).orElse(""),
+                    "history", historyData
             );
         } else {
             requestData = Map.of(
                     "message", message,
-                    "diagnosis_id", diagnosis.getDiagnosisId()
+                    "diagnosis_id", diagnosis.getDiagnosisId(),
+                    "history", historyData
             );
         }
 
@@ -91,10 +108,17 @@ public class ChatBotService {
         }
     }
 
-    public List<ChatMessage> getChatHistory(Integer diagnosisId) {
+    // 반환 타입을 List<ChatMessageDto>로 변경
+    public List<ChatMessageDTO> getChatHistory(Integer diagnosisId, String loginId) {
         Diagnosis diagnosis = diagnosisRepository.findById(diagnosisId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid diagnosis ID: " + diagnosisId));
-        return chatMessageRepository.findByDiagnosisOrderByCreatedAtAsc(diagnosis);
+
+        List<ChatMessage> messages = chatMessageRepository.findByDiagnosisAndLoginIdOrderByCreatedAtAsc(diagnosis, loginId);
+
+        // 조회한 엔티티 리스트를 DTO 리스트로 변환하여 반환
+        return messages.stream()
+                .map(ChatMessageDTO::new)
+                .collect(Collectors.toList());
     }
 
     public Diagnosis getDiagnosisInfo(Integer diagnosisId) {
@@ -102,7 +126,7 @@ public class ChatBotService {
     }
 
     @Transactional
-    public String startChatWithDiagnosis(Integer diagnosisId) {
+    public String startChatWithDiagnosis(Integer diagnosisId, String loginId) {
         Diagnosis diagnosis = getDiagnosisInfo(diagnosisId);
         if (diagnosis == null || diagnosis.getCancer() == null) {
             return "진단 정보를 찾을 수 없습니다.";
@@ -110,13 +134,13 @@ public class ChatBotService {
 
         try {
             String userMessage = diagnosis.getCancer().getCancerName() + " 진단을 받았습니다. 상담을 받고 싶어요.";
-            ChatMessage userMsg = new ChatMessage(diagnosis, userMessage, ChatMessage.SenderType.user);
+            ChatMessage userMsg = new ChatMessage(diagnosis, loginId, userMessage, ChatMessage.SenderType.user);
             chatMessageRepository.save(userMsg);
 
             String contextMessage = createWelcomeContextMessage(diagnosis);
-            String welcomeMessage = callFastAPI(contextMessage, diagnosis);
+            String welcomeMessage = callFastAPI(contextMessage, diagnosis, List.of());
 
-            ChatMessage welcomeMsg = new ChatMessage(diagnosis, welcomeMessage, ChatMessage.SenderType.chatbot);
+            ChatMessage welcomeMsg = new ChatMessage(diagnosis, loginId, welcomeMessage, ChatMessage.SenderType.chatbot);
             chatMessageRepository.save(welcomeMsg);
 
             return welcomeMessage;
@@ -128,10 +152,47 @@ public class ChatBotService {
                             "궁금한 점이나 걱정되는 부분이 있으시면 언제든 말씀해주세요.",
                     diagnosis.getCancer().getCancerName()
             );
-            ChatMessage welcomeMsg = new ChatMessage(diagnosis, fallbackMessage, ChatMessage.SenderType.chatbot);
+            ChatMessage welcomeMsg = new ChatMessage(diagnosis, loginId, fallbackMessage, ChatMessage.SenderType.chatbot);
             chatMessageRepository.save(welcomeMsg);
             return fallbackMessage;
         }
+    }
+
+    @Transactional
+    public List<ChatMessageDTO> chatWithDiagnosis(Integer diagnosisId, String loginId) {
+        // 먼저 해당 사용자의 채팅 기록을 조회합니다.
+        List<ChatMessageDTO> chatHistory = getChatHistory(diagnosisId, loginId);
+
+        // 만약 채팅 기록이 없다면 (첫 상담이라면), 새로운 상담을 시작합니다.
+        if (chatHistory.isEmpty()) {
+            startChatWithDiagnosis(diagnosisId, loginId);
+            // 새로운 상담이 시작되었으므로, 다시 채팅 기록을 조회하여 반환합니다.
+            chatHistory = getChatHistory(diagnosisId, loginId);
+        }
+
+        return chatHistory;
+    }
+
+    /**
+     * 새로운 상담 세션을 시작합니다.
+     * 기존 기록을 삭제하고 새로운 환영 메시지를 생성합니다.
+     */
+    @Transactional
+    public String startNewChatSession(Integer diagnosisId, String loginId) {
+        clearChatHistory(diagnosisId, loginId);
+        return startChatWithDiagnosis(diagnosisId, loginId);
+    }
+
+    /**
+     * 특정 진단과 사용자의 채팅 기록을 모두 삭제합니다.
+     */
+    @Transactional
+    public void clearChatHistory(Integer diagnosisId, String loginId) {
+        Diagnosis diagnosis = diagnosisRepository.findById(diagnosisId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid diagnosis ID: " + diagnosisId));
+
+        chatMessageRepository.deleteByDiagnosisAndLoginId(diagnosis, loginId);
+        System.out.println("채팅 기록이 초기화되었습니다. 진단 ID: " + diagnosisId + ", 사용자: " + loginId);
     }
 
     private String createInitialContextMessage(String userMessage, Diagnosis diagnosis) {
