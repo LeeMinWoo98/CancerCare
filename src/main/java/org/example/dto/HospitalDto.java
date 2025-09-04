@@ -3,7 +3,7 @@ package org.example.dto;
 import lombok.Data;
 
 @Data
-public class Hospital {
+public class HospitalDto {
     private String id;       // 병원 ID (from Kakao API)
     private String name;     // 병원 이름
     private String address;  // 주소

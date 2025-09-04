@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const distanceFilter = document.getElementById('distanceFilter');
     const hospitalListEl = document.getElementById('hospitalList');
     const saveHospitalsBtn = document.getElementById('saveHospitalsBtn');
+    const showSavedHospitalsBtn = document.getElementById('showSavedHospitalsBtn'); // 새로 추가된 버튼
     const loadingEl = document.getElementById('loading');
 
     // Map controls
@@ -85,6 +86,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     // 저장 버튼 이벤트 리스너 추가
     saveHospitalsBtn.addEventListener('click', saveSelectedHospitals);
+    // 저장된 병원 보기 버튼 이벤트 리스너 추가
+    showSavedHospitalsBtn.addEventListener('click', showSavedHospitals);
 
     // --- Promisified Kakao Map Services ---
     function searchAddressToCoords(address) {
@@ -257,6 +260,92 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // 저장된 병원 목록을 가져와 표시하는 함수
+    async function showSavedHospitals() {
+        loadingEl.style.display = 'flex';
+        clearResults(); // 기존 검색 결과 지우기
+
+        try {
+            const response = await fetch('/hospital/api/saved');
+
+            if (!response.ok) {
+                throw new Error(`서버 응답 오류: ${response.status}`);
+            }
+
+            const savedHospitals = await response.json();
+
+            if (savedHospitals.length === 0) {
+                hospitalListEl.innerHTML = '<div class="no-result">저장된 병원 정보가 없습니다.</div>';
+                return;
+            }
+
+            // 저장된 병원 정보를 지도에 표시하고 목록에 추가
+            const bounds = new kakao.maps.LatLngBounds();
+            savedHospitals.forEach(savedInfo => {
+                const place = savedInfo.hospital; // UserSavedHospital 객체에서 hospital 정보 추출
+                const specialty = savedInfo.specialty; // 저장된 진료과목 정보
+
+                const position = new kakao.maps.LatLng(place.y, place.x);
+                const marker = new kakao.maps.Marker({
+                    map: map,
+                    position: position,
+                    title: place.name
+                });
+                markers.push(marker);
+                bounds.extend(position);
+
+                const itemEl = document.createElement('div');
+                itemEl.className = 'hospital-item';
+                itemEl.innerHTML = `
+                    <div class="hospital-icon">
+                        <i class="fa-solid fa-hospital"></i>
+                    </div>
+                    <div class="hospital-info">
+                        <div class="hospital-name">${place.name}</div>
+                        <div class="hospital-address">${place.address}</div>
+                        <div class="hospital-phone">${place.phone || '전화번호 정보 없음'}</div>
+                        <div class="hospital-specialty">저장 진료과목: ${specialty}</div>
+                    </div>
+                    <div class="hospital-distance"></div> <!-- 저장된 병원은 거리 정보가 없으므로 비워둠 -->
+                `;
+
+                const openInfoWindow = () => {
+                    const content = `
+                        <div style="padding:10px; min-width:280px; font-size:14px; line-height:1.6;">
+                            <div style="font-weight:bold; margin-bottom:5px; font-size:16px;">${place.name}</div>
+                            <div style="color:#333;">${place.address}</div>
+                            <div style="color:#0055A3;">${place.phone || ''}</div>
+                            <div style="margin-top: 8px;">
+                                <a href="${place.url}" style="color:#007BFF; text-decoration:none; font-weight:bold; margin-right: 15px;" target="_blank">상세보기</a>
+                                <a href="https://map.kakao.com/link/to/${place.name},${place.y},${place.x}" style="color:#007BFF; text-decoration:none; font-weight:bold;" target="_blank">길찾기</a>
+                            </div>
+                        </div>`;
+
+                    infowindow.setContent(content);
+                    infowindow.open(map, marker);
+                    map.panTo(marker.getPosition());
+                };
+
+                kakao.maps.event.addListener(marker, 'click', openInfoWindow);
+                itemEl.addEventListener('click', openInfoWindow);
+
+                kakao.maps.event.addListener(marker, 'mouseover', () => itemEl.classList.add('active'));
+                kakao.maps.event.addListener(marker, 'mouseout', () => itemEl.classList.remove('active'));
+                itemEl.addEventListener('mouseover', () => marker.setZIndex(1));
+                itemEl.addEventListener('mouseout', () => marker.setZIndex(0));
+
+                hospitalListEl.appendChild(itemEl);
+            });
+            map.setBounds(bounds);
+
+        } catch (error) {
+            alert('저장된 병원 목록을 불러오는 데 실패했습니다. 개발자 콘솔(F12)을 확인해주세요.');
+            console.error('저장된 병원 목록 조회 오류:', error);
+        } finally {
+            loadingEl.style.display = 'none';
+        }
+    }
+
     // 5. 결과 표시 및 초기화 함수들
     function displayHospitals(hospitals) {
         const bounds = new kakao.maps.LatLngBounds();
@@ -283,17 +372,16 @@ document.addEventListener('DOMContentLoaded', function () {
             const itemEl = document.createElement('div');
             itemEl.className = 'hospital-item';
             itemEl.innerHTML = `
-                <div class="item-checkbox">
-                    <input type="checkbox" class="hospital-item-checkbox" data-place='${JSON.stringify(place)}'>
+                <div class="hospital-icon">
+                    <i class="fa-solid fa-hospital"></i>
                 </div>
-                <div class="item-info">
-                    <h4>${place.place_name}</h4>
-                    <p>${place.road_address_name || place.address_name}</p>
-                    <p class="tel">${place.phone || '전화번호 정보 없음'}</p>
+                <div class="hospital-info">
+                    <div class="hospital-name">${place.place_name}</div>
+                    <div class="hospital-address">${place.road_address_name || place.address_name}</div>
+                    <div class="hospital-phone">${place.phone || '전화번호 정보 없음'}</div>
                 </div>
-                <div class="item-distance">
-                    <span>${place.distance}m</span>
-                </div>
+                <input type="checkbox" class="hospital-item-checkbox" data-place='${JSON.stringify(place)}'>
+                <div class="hospital-distance">${place.distance}m</div>
             `;
 
             const openInfoWindow = () => {
@@ -313,9 +401,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 map.panTo(marker.getPosition());
             };
 
-            kakao.maps.event.addListener(marker, 'click', openInfoWindow);
+            // 카드 클릭 시 정보창 열기
             itemEl.addEventListener('click', openInfoWindow);
 
+            // 체크박스 클릭 시 정보창이 열리는 것을 방지
+            const checkbox = itemEl.querySelector('.hospital-item-checkbox');
+            checkbox.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+
+            // 마커와 목록 아이템에 마우스 이벤트 연결
+            kakao.maps.event.addListener(marker, 'click', openInfoWindow);
             kakao.maps.event.addListener(marker, 'mouseover', () => itemEl.classList.add('active'));
             kakao.maps.event.addListener(marker, 'mouseout', () => itemEl.classList.remove('active'));
             itemEl.addEventListener('mouseover', () => marker.setZIndex(1));

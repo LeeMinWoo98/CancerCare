@@ -1400,7 +1400,7 @@
       <AutoIntrospectionLevel>3</AutoIntrospectionLevel>
       <Current>1</Current>
       <LastIntrospectionLevel>3</LastIntrospectionLevel>
-      <LastIntrospectionLocalTimestamp>2025-09-02.06:54:04</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2025-09-04.05:50:45</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
     <schema id="553" parent="1" name="information_schema">
@@ -1456,559 +1456,743 @@
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_general_ci</CollationName>
     </table>
-    <table id="567" parent="552" name="rice">
+    <table id="567" parent="552" name="hospital">
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_general_ci</CollationName>
     </table>
-    <table id="568" parent="552" name="side_dish">
+    <table id="568" parent="552" name="rice">
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_general_ci</CollationName>
     </table>
-    <table id="569" parent="552" name="snack">
+    <table id="569" parent="552" name="side_dish">
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_general_ci</CollationName>
     </table>
-    <table id="570" parent="552" name="soups">
+    <table id="570" parent="552" name="snack">
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_general_ci</CollationName>
     </table>
-    <column id="571" parent="561" name="id">
+    <table id="571" parent="552" name="soups">
+      <DetailsLevel>3</DetailsLevel>
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_general_ci</CollationName>
+    </table>
+    <table id="572" parent="552" name="user_profiles">
+      <DetailsLevel>3</DetailsLevel>
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_general_ci</CollationName>
+    </table>
+    <table id="573" parent="552" name="user_saved_hospital">
+      <DetailsLevel>3</DetailsLevel>
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_general_ci</CollationName>
+    </table>
+    <column id="574" parent="561" name="id">
       <AutoIncrement>7</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>bigint(20)|0s</StoredType>
     </column>
-    <column id="572" parent="561" name="login_id">
+    <column id="575" parent="561" name="login_id">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(30)|0s</StoredType>
     </column>
-    <column id="573" parent="561" name="password">
+    <column id="576" parent="561" name="password">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="574" parent="561" name="name">
+    <column id="577" parent="561" name="name">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>varchar(50)|0s</StoredType>
     </column>
-    <column id="575" parent="561" name="email">
+    <column id="578" parent="561" name="email">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>varchar(254)|0s</StoredType>
     </column>
-    <column id="576" parent="561" name="birthdate">
+    <column id="579" parent="561" name="birthdate">
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>date|0s</StoredType>
     </column>
-    <column id="577" parent="561" name="gender">
+    <column id="580" parent="561" name="gender">
       <NotNull>1</NotNull>
       <Position>7</Position>
       <StoredType>enum(&apos;F&apos;, &apos;M&apos;, &apos;N&apos;)|0e</StoredType>
     </column>
-    <column id="578" parent="561" name="created_at">
+    <column id="581" parent="561" name="created_at">
       <NotNull>1</NotNull>
       <Position>8</Position>
       <StoredType>datetime(6)|0s</StoredType>
     </column>
-    <index id="579" parent="561" name="PRIMARY">
+    <index id="582" parent="561" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="580" parent="561" name="unique_login_id">
+    <index id="583" parent="561" name="unique_login_id">
       <ColNames>login_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="581" parent="561" name="unique_email">
+    <index id="584" parent="561" name="unique_email">
       <ColNames>email</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="582" parent="561" name="PRIMARY">
+    <key id="585" parent="561" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="583" parent="561" name="unique_login_id">
+    <key id="586" parent="561" name="unique_login_id">
       <UnderlyingIndexName>unique_login_id</UnderlyingIndexName>
     </key>
-    <key id="584" parent="561" name="unique_email">
+    <key id="587" parent="561" name="unique_email">
       <UnderlyingIndexName>unique_email</UnderlyingIndexName>
     </key>
-    <column id="585" parent="562" name="cancer_id">
+    <column id="588" parent="562" name="cancer_id">
       <AutoIncrement>9</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <column id="586" parent="562" name="cancer_name">
+    <column id="589" parent="562" name="cancer_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="587" parent="562" name="description">
+    <column id="590" parent="562" name="description">
       <Position>3</Position>
       <StoredType>text|0s</StoredType>
     </column>
-    <column id="588" parent="562" name="symptoms">
+    <column id="591" parent="562" name="symptoms">
       <Position>4</Position>
       <StoredType>text|0s</StoredType>
     </column>
-    <index id="589" parent="562" name="PRIMARY">
+    <index id="592" parent="562" name="PRIMARY">
       <ColNames>cancer_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="590" parent="562" name="PRIMARY">
+    <key id="593" parent="562" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="591" parent="563" name="message_id">
-      <AutoIncrement>7</AutoIncrement>
+    <column id="594" parent="563" name="message_id">
+      <AutoIncrement>83</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StoredType>bigint(20)|0s</StoredType>
+      <StoredType>int(11)|0s</StoredType>
     </column>
-    <column id="592" parent="563" name="diagnosis_id">
+    <column id="595" parent="563" name="diagnosis_id">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <column id="593" parent="563" name="message_text">
+    <column id="596" parent="563" name="login_id">
       <NotNull>1</NotNull>
       <Position>3</Position>
-      <StoredType>text|0s</StoredType>
-    </column>
-    <column id="594" parent="563" name="sender">
-      <NotNull>1</NotNull>
-      <Position>4</Position>
-      <StoredType>enum(&apos;user&apos;, &apos;chatbot&apos;)|0e</StoredType>
-    </column>
-    <column id="595" parent="563" name="created_at">
-      <DefaultExpression>current_timestamp()</DefaultExpression>
-      <NotNull>1</NotNull>
-      <Position>5</Position>
-      <StoredType>datetime|0s</StoredType>
-    </column>
-    <foreign-key id="596" parent="563" name="chat_messages_ibfk_1">
-      <ColNames>diagnosis_id</ColNames>
-      <OnDelete>cascade</OnDelete>
-      <RefColNames>diagnosis_id</RefColNames>
-      <RefTableName>diagnoses</RefTableName>
-    </foreign-key>
-    <index id="597" parent="563" name="PRIMARY">
-      <ColNames>message_id</ColNames>
-      <Type>btree</Type>
-      <Unique>1</Unique>
-    </index>
-    <index id="598" parent="563" name="diagnosis_id">
-      <ColNames>diagnosis_id</ColNames>
-      <Type>btree</Type>
-    </index>
-    <key id="599" parent="563" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <Primary>1</Primary>
-      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
-    </key>
-    <column id="600" parent="564" name="diagnosis_id">
-      <AutoIncrement>7</AutoIncrement>
-      <NotNull>1</NotNull>
-      <Position>1</Position>
-      <StoredType>int(11)|0s</StoredType>
-    </column>
-    <column id="601" parent="564" name="login_id">
-      <NotNull>1</NotNull>
-      <Position>2</Position>
       <StoredType>varchar(30)|0s</StoredType>
     </column>
-    <column id="602" parent="564" name="cancer_id">
+    <column id="597" parent="563" name="message_text">
       <NotNull>1</NotNull>
-      <Position>3</Position>
-      <StoredType>int(11)|0s</StoredType>
-    </column>
-    <column id="603" parent="564" name="image_url">
       <Position>4</Position>
-      <StoredType>varchar(255)|0s</StoredType>
+      <StoredType>text|0s</StoredType>
     </column>
-    <column id="604" parent="564" name="certainty_score">
+    <column id="598" parent="563" name="sender">
+      <NotNull>1</NotNull>
       <Position>5</Position>
-      <StoredType>float|0s</StoredType>
+      <StoredType>enum(&apos;user&apos;, &apos;chatbot&apos;)|0e</StoredType>
     </column>
-    <column id="605" parent="564" name="diagnosed_at">
+    <column id="599" parent="563" name="created_at">
       <DefaultExpression>current_timestamp()</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <foreign-key id="606" parent="564" name="fk_diagnoses_user">
+    <foreign-key id="600" parent="563" name="chat_messages_ibfk_1">
+      <ColNames>diagnosis_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <RefColNames>diagnosis_id</RefColNames>
+      <RefTableName>diagnoses</RefTableName>
+    </foreign-key>
+    <foreign-key id="601" parent="563" name="fk_chat_messages_user">
+      <ColNames>login_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <RefColNames>login_id</RefColNames>
+      <RefTableName>app_users</RefTableName>
+    </foreign-key>
+    <index id="602" parent="563" name="PRIMARY">
+      <ColNames>message_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="603" parent="563" name="diagnosis_id">
+      <ColNames>diagnosis_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="604" parent="563" name="fk_chat_messages_user">
+      <ColNames>login_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="605" parent="563" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="606" parent="564" name="diagnosis_id">
+      <AutoIncrement>40</AutoIncrement>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <column id="607" parent="564" name="login_id">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>varchar(30)|0s</StoredType>
+    </column>
+    <column id="608" parent="564" name="cancer_id">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <column id="609" parent="564" name="image_url">
+      <Position>4</Position>
+      <StoredType>varchar(255)|0s</StoredType>
+    </column>
+    <column id="610" parent="564" name="certainty_score">
+      <Position>5</Position>
+      <StoredType>float|0s</StoredType>
+    </column>
+    <column id="611" parent="564" name="diagnosed_at">
+      <DefaultExpression>current_timestamp()</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StoredType>datetime|0s</StoredType>
+    </column>
+    <foreign-key id="612" parent="564" name="fk_diagnoses_user">
       <ColNames>login_id</ColNames>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
       <RefColNames>login_id</RefColNames>
       <RefTableName>app_users</RefTableName>
     </foreign-key>
-    <foreign-key id="607" parent="564" name="fk_diagnoses_cancer">
+    <foreign-key id="613" parent="564" name="fk_diagnoses_cancer">
       <ColNames>cancer_id</ColNames>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
       <RefColNames>cancer_id</RefColNames>
       <RefTableName>cancers</RefTableName>
     </foreign-key>
-    <index id="608" parent="564" name="PRIMARY">
+    <index id="614" parent="564" name="PRIMARY">
       <ColNames>diagnosis_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="609" parent="564" name="idx_diag_login_id">
+    <index id="615" parent="564" name="idx_diag_login_id">
       <ColNames>login_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="610" parent="564" name="idx_diag_cancer_id">
+    <index id="616" parent="564" name="idx_diag_cancer_id">
       <ColNames>cancer_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="611" parent="564" name="PRIMARY">
+    <key id="617" parent="564" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="612" parent="565" name="id">
+    <column id="618" parent="565" name="id">
       <AutoIncrement>28</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>bigint(20)|0s</StoredType>
     </column>
-    <column id="613" parent="565" name="email">
+    <column id="619" parent="565" name="email">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(254)|0s</StoredType>
     </column>
-    <column id="614" parent="565" name="code">
+    <column id="620" parent="565" name="code">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>varchar(6)|0s</StoredType>
     </column>
-    <column id="615" parent="565" name="created_at">
+    <column id="621" parent="565" name="created_at">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>datetime(6)|0s</StoredType>
     </column>
-    <column id="616" parent="565" name="expires_at">
+    <column id="622" parent="565" name="expires_at">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>datetime(6)|0s</StoredType>
     </column>
-    <column id="617" parent="565" name="attempt_count">
+    <column id="623" parent="565" name="attempt_count">
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <index id="618" parent="565" name="PRIMARY">
+    <index id="624" parent="565" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="619" parent="565" name="PRIMARY">
+    <key id="625" parent="565" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="620" parent="566" name="article_id">
-      <AutoIncrement>108</AutoIncrement>
+    <column id="626" parent="566" name="article_id">
+      <AutoIncrement>922</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>bigint(20)|0s</StoredType>
     </column>
-    <column id="621" parent="566" name="title">
+    <column id="627" parent="566" name="title">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="622" parent="566" name="original_link">
+    <column id="628" parent="566" name="original_link">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>text|0s</StoredType>
     </column>
-    <column id="623" parent="566" name="link">
+    <column id="629" parent="566" name="link">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>text|0s</StoredType>
     </column>
-    <column id="624" parent="566" name="description">
+    <column id="630" parent="566" name="description">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>text|0s</StoredType>
     </column>
-    <column id="625" parent="566" name="pub_date">
+    <column id="631" parent="566" name="pub_date">
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <column id="626" parent="566" name="created_at">
+    <column id="632" parent="566" name="created_at">
       <DefaultExpression>current_timestamp()</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>7</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <index id="627" parent="566" name="PRIMARY">
+    <index id="633" parent="566" name="PRIMARY">
       <ColNames>article_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="628" parent="566" name="PRIMARY">
+    <key id="634" parent="566" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="629" parent="567" name="id">
+    <column id="635" parent="567" name="hospital_id">
+      <AutoIncrement>1</AutoIncrement>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>bigint(20)|0s</StoredType>
+    </column>
+    <column id="636" parent="567" name="kakao_id">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>varchar(50)|0s</StoredType>
+    </column>
+    <column id="637" parent="567" name="name">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>varchar(100)|0s</StoredType>
+    </column>
+    <column id="638" parent="567" name="address">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StoredType>varchar(255)|0s</StoredType>
+    </column>
+    <column id="639" parent="567" name="phone">
+      <Position>5</Position>
+      <StoredType>varchar(20)|0s</StoredType>
+    </column>
+    <column id="640" parent="567" name="url">
+      <Position>6</Position>
+      <StoredType>varchar(255)|0s</StoredType>
+    </column>
+    <column id="641" parent="567" name="pos_x">
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+      <StoredType>varchar(20)|0s</StoredType>
+    </column>
+    <column id="642" parent="567" name="pos_y">
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+      <StoredType>varchar(20)|0s</StoredType>
+    </column>
+    <column id="643" parent="567" name="created_at">
+      <DefaultExpression>current_timestamp()</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>9</Position>
+      <StoredType>datetime|0s</StoredType>
+    </column>
+    <index id="644" parent="567" name="PRIMARY">
+      <ColNames>hospital_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="645" parent="567" name="kakao_id">
+      <ColNames>kakao_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="646" parent="567" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <key id="647" parent="567" name="kakao_id">
+      <UnderlyingIndexName>kakao_id</UnderlyingIndexName>
+    </key>
+    <column id="648" parent="568" name="id">
       <AutoIncrement>6</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <column id="630" parent="567" name="rice_name">
+    <column id="649" parent="568" name="rice_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(20)|0s</StoredType>
     </column>
-    <column id="631" parent="567" name="Lung">
+    <column id="650" parent="568" name="Lung">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="632" parent="567" name="Liver">
+    <column id="651" parent="568" name="Liver">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="633" parent="567" name="Colorectal">
+    <column id="652" parent="568" name="Colorectal">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="634" parent="567" name="Stomach">
+    <column id="653" parent="568" name="Stomach">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="635" parent="567" name="Cervical">
+    <column id="654" parent="568" name="Cervical">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>7</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="636" parent="567" name="Breast">
+    <column id="655" parent="568" name="Breast">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>8</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="637" parent="567" name="info">
+    <column id="656" parent="568" name="info">
       <Position>9</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <index id="638" parent="567" name="PRIMARY">
+    <index id="657" parent="568" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="639" parent="567" name="PRIMARY">
+    <key id="658" parent="568" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="640" parent="568" name="id">
+    <column id="659" parent="569" name="id">
       <AutoIncrement>16</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <column id="641" parent="568" name="sidedish_name">
+    <column id="660" parent="569" name="sidedish_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(20)|0s</StoredType>
     </column>
-    <column id="642" parent="568" name="Lung">
+    <column id="661" parent="569" name="Lung">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="643" parent="568" name="Liver">
+    <column id="662" parent="569" name="Liver">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="644" parent="568" name="Colorectal">
+    <column id="663" parent="569" name="Colorectal">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="645" parent="568" name="Stomach">
+    <column id="664" parent="569" name="Stomach">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="646" parent="568" name="Cervical">
+    <column id="665" parent="569" name="Cervical">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>7</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="647" parent="568" name="Breast">
+    <column id="666" parent="569" name="Breast">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>8</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="648" parent="568" name="info">
+    <column id="667" parent="569" name="info">
       <Position>9</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <index id="649" parent="568" name="PRIMARY">
+    <index id="668" parent="569" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="650" parent="568" name="PRIMARY">
+    <key id="669" parent="569" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="651" parent="569" name="id">
+    <column id="670" parent="570" name="id">
       <AutoIncrement>6</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <column id="652" parent="569" name="snack_name">
+    <column id="671" parent="570" name="snack_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(20)|0s</StoredType>
     </column>
-    <column id="653" parent="569" name="Lung">
+    <column id="672" parent="570" name="Lung">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="654" parent="569" name="Liver">
+    <column id="673" parent="570" name="Liver">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="655" parent="569" name="Colorectal">
+    <column id="674" parent="570" name="Colorectal">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="656" parent="569" name="Stomach">
+    <column id="675" parent="570" name="Stomach">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="657" parent="569" name="Cervical">
+    <column id="676" parent="570" name="Cervical">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>7</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="658" parent="569" name="Breast">
+    <column id="677" parent="570" name="Breast">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>8</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="659" parent="569" name="info">
+    <column id="678" parent="570" name="info">
       <Position>9</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <index id="660" parent="569" name="PRIMARY">
+    <index id="679" parent="570" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="661" parent="569" name="PRIMARY">
+    <key id="680" parent="570" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="662" parent="570" name="id">
+    <column id="681" parent="571" name="id">
       <AutoIncrement>13</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <column id="663" parent="570" name="soup_name">
+    <column id="682" parent="571" name="soup_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(20)|0s</StoredType>
     </column>
-    <column id="664" parent="570" name="Lung">
+    <column id="683" parent="571" name="Lung">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="665" parent="570" name="Liver">
+    <column id="684" parent="571" name="Liver">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="666" parent="570" name="Colorectal">
+    <column id="685" parent="571" name="Colorectal">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="667" parent="570" name="Stomach">
+    <column id="686" parent="571" name="Stomach">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="668" parent="570" name="Cervical">
+    <column id="687" parent="571" name="Cervical">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>7</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="669" parent="570" name="Breast">
+    <column id="688" parent="571" name="Breast">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>8</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="670" parent="570" name="info">
+    <column id="689" parent="571" name="info">
       <Position>9</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <index id="671" parent="570" name="PRIMARY">
+    <index id="690" parent="571" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="672" parent="570" name="PRIMARY">
+    <key id="691" parent="571" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="692" parent="572" name="user_id">
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>bigint(20)|0s</StoredType>
+    </column>
+    <column id="693" parent="572" name="cancer_type">
+      <Position>2</Position>
+      <StoredType>enum(&apos;LIVER&apos;, &apos;STOMACH&apos;, &apos;COLON&apos;, &apos;BREAST&apos;, &apos;CERVICAL&apos;, &apos;LUNG&apos;)|0e</StoredType>
+    </column>
+    <column id="694" parent="572" name="stage">
+      <Position>3</Position>
+      <StoredType>enum(&apos;S1&apos;, &apos;S2&apos;, &apos;S3A&apos;, &apos;S3B&apos;, &apos;S4&apos;)|0e</StoredType>
+    </column>
+    <column id="695" parent="572" name="height_cm">
+      <Position>4</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <column id="696" parent="572" name="weight_kg">
+      <Position>5</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <column id="697" parent="572" name="updated_at">
+      <DefaultExpression>current_timestamp()</DefaultExpression>
+      <NotNull>1</NotNull>
+      <OnUpdate>current_timestamp()</OnUpdate>
+      <Position>6</Position>
+      <StoredType>datetime|0s</StoredType>
+    </column>
+    <foreign-key id="698" parent="572" name="fk_user_profiles_user">
+      <ColNames>user_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <RefColNames>id</RefColNames>
+      <RefTableName>app_users</RefTableName>
+    </foreign-key>
+    <index id="699" parent="572" name="PRIMARY">
+      <ColNames>user_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="700" parent="572" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="701" parent="573" name="user_id">
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>bigint(20)|0s</StoredType>
+    </column>
+    <column id="702" parent="573" name="hospital_id">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>bigint(20)|0s</StoredType>
+    </column>
+    <column id="703" parent="573" name="specialty">
+      <Position>3</Position>
+      <StoredType>varchar(50)|0s</StoredType>
+    </column>
+    <column id="704" parent="573" name="saved_at">
+      <DefaultExpression>current_timestamp()</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StoredType>datetime|0s</StoredType>
+    </column>
+    <foreign-key id="705" parent="573" name="user_saved_hospital_ibfk_1">
+      <ColNames>user_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <RefColNames>id</RefColNames>
+      <RefTableName>app_users</RefTableName>
+    </foreign-key>
+    <foreign-key id="706" parent="573" name="user_saved_hospital_ibfk_2">
+      <ColNames>hospital_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <RefColNames>hospital_id</RefColNames>
+      <RefTableName>hospital</RefTableName>
+    </foreign-key>
+    <index id="707" parent="573" name="PRIMARY">
+      <ColNames>user_id
+hospital_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="708" parent="573" name="hospital_id">
+      <ColNames>hospital_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="709" parent="573" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>

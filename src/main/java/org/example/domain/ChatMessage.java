@@ -14,7 +14,7 @@ public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "message_id")
-    private long messageId;
+    private Integer messageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diagnosis_id", nullable = false)

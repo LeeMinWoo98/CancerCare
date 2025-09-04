@@ -7,5 +7,5 @@ import java.util.List;
 @Data
 public class SaveHospitalsRequestDto {
     private String specialty;
-    private List<Hospital> hospitals;
+    private List<HospitalDto> hospitals;
 }
