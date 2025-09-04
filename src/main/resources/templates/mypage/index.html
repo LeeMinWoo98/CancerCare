@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>마이페이지</title>
+    <link rel="stylesheet" th:href="@{/css/mypage.css}" />
+    <script>
+        let isCurrentPasswordValid = false;
+        
+        function validateCurrentPassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const currentPasswordFeedback = document.getElementById('currentPasswordFeedback');
+            
+            if (!currentPassword) {
+                currentPasswordFeedback.style.display = 'none';
+                isCurrentPasswordValid = false;
+                hideNewPasswordSection();
+                return;
+            }
+            
+            const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+            
+            fetch('/mypage/validate-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [header]: token
+                },
+                body: JSON.stringify({ password: currentPassword })
+            })
+            .then(response => response.json())
+            .then(data => {
+                currentPasswordFeedback.style.display = 'block';
+                if (data.valid) {
+                    currentPasswordFeedback.textContent = '현재 비밀번호가 올바릅니다';
+                    currentPasswordFeedback.className = 'password-feedback success';
+                    isCurrentPasswordValid = true;
+                } else {
+                    currentPasswordFeedback.textContent = '현재 비밀번호가 올바르지 않습니다';
+                    currentPasswordFeedback.className = 'password-feedback error';
+                    isCurrentPasswordValid = false;
+                }
+                validatePasswordMatch();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                currentPasswordFeedback.style.display = 'block';
+                currentPasswordFeedback.textContent = '비밀번호 확인 중 오류가 발생했습니다';
+                currentPasswordFeedback.className = 'password-feedback error';
+                isCurrentPasswordValid = false;
+            });
+        }
+        
+        function validatePasswordMatch() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const confirmPasswordFeedback = document.getElementById('confirmPasswordFeedback');
+            
+            if (!confirmPassword) {
+                confirmPasswordFeedback.style.display = 'none';
+                hideNewPasswordSection();
+                return;
+            }
+            
+            confirmPasswordFeedback.style.display = 'block';
+            
+            if (currentPassword === confirmPassword) {
+                if (isCurrentPasswordValid) {
+                    confirmPasswordFeedback.textContent = '현재 비밀번호가 확인되었습니다';
+                    confirmPasswordFeedback.className = 'password-feedback success';
+                    showNewPasswordSection();
+                } else {
+                    confirmPasswordFeedback.textContent = '먼저 올바른 현재 비밀번호를 입력해주세요';
+                    confirmPasswordFeedback.className = 'password-feedback error';
+                    hideNewPasswordSection();
+                }
+            } else {
+                confirmPasswordFeedback.textContent = '현재 비밀번호와 일치하지 않습니다';
+                confirmPasswordFeedback.className = 'password-feedback error';
+                hideNewPasswordSection();
+            }
+        }
+        
+        function showNewPasswordSection() {
+            document.getElementById('newPasswordSection').style.display = 'block';
+        }
+        
+        function hideNewPasswordSection() {
+            document.getElementById('newPasswordSection').style.display = 'none';
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>마이페이지</h1>
+        </div>
+        
+        <div class="content">
+            <!-- 메시지 표시 (로그아웃 메시지와 비밀번호 오류 메시지 제거) -->
+            <div th:if="${message}" class="message success" th:text="${message}"></div>
+            <div th:if="${error}" class="message error" th:text="${error}"></div>
+
+            <!-- 정보 수정 폼 -->
+            <div class="form-section">
+                <div class="section-title">정보 수정</div>
+                <form th:action="@{/mypage}" method="post" th:object="${profileForm}">
+                    <div class="form-group">
+                        <label for="name">이름</label>
+                        <input type="text" id="name" name="name" th:value="${profileForm.name}" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginId">아이디</label>
+                        <input type="text" id="loginId" name="loginId" th:value="${profileForm.loginId}" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">이메일</label>
+                        <input type="email" id="email" name="email" th:value="${profileForm.email}" readonly style="background-color: #f8f9fa; cursor: not-allowed;" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gender">성별</label>
+                        <select id="gender" name="gender">
+                            <option th:value="M" th:selected="${profileForm.gender?.name() == 'M'}" th:text="'남성'"></option>
+                            <option th:value="F" th:selected="${profileForm.gender?.name() == 'F'}" th:text="'여성'"></option>
+                            <option th:value="N" th:selected="${profileForm.gender?.name() == 'N'}" th:text="'선택안함'"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="birthdate">생년월일</label>
+                        <input type="date" id="birthdate" name="birthdate" th:value="${profileForm.birthdate}" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cancerType">암종</label>
+                        <select id="cancerType" name="cancerType">
+                            <option value="">선택 안함</option>
+                            <option th:each="t : ${T(org.example.domain.CancerType).values()}"
+                                    th:value="${t.name()}"
+                                    th:selected="${profileForm.cancerType} == ${t}"
+                                    th:text="${t.getDisplayName()}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stage">병기</label>
+                        <select id="stage" name="stage">
+                            <option value="">선택 안함</option>
+                            <option th:value="S1" th:selected="${profileForm.stage?.name() == 'S1'}" th:text="'초기 (1기)'"></option>
+                            <option th:value="S2" th:selected="${profileForm.stage?.name() == 'S2'}" th:text="'2기'"></option>
+                            <option th:value="S3A" th:selected="${profileForm.stage?.name() == 'S3A'}" th:text="'중기 (3A)'"></option>
+                            <option th:value="S3B" th:selected="${profileForm.stage?.name() == 'S3B'}" th:text="'진행기 (3B)'"></option>
+                            <option th:value="S4" th:selected="${profileForm.stage?.name() == 'S4'}" th:text="'말기 (4기)'"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="heightCm">키(cm)</label>
+                        <input type="number" id="heightCm" name="heightCm" min="50" max="300" th:value="${profileForm.heightCm}" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="weightKg">몸무게(kg)</label>
+                        <input type="number" id="weightKg" name="weightKg" min="10" max="400" th:value="${profileForm.weightKg}" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">정보 저장</button>
+                </form>
+            </div>
+
+            <!-- 비밀번호 변경 -->
+            <div class="form-section password-section">
+                <div class="section-title">비밀번호 변경</div>
+                <form th:action="@{/mypage/change-password}" method="post" th:object="${passwordForm}">
+                    <div class="form-group">
+                        <label for="currentPassword">현재 비밀번호</label>
+                        <input type="password" id="currentPassword" name="currentPassword" oninput="validateCurrentPassword()" required />
+                        <div id="currentPasswordFeedback" class="password-feedback" style="display: none;"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">비밀번호 확인</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" oninput="validatePasswordMatch()" required />
+                        <div id="confirmPasswordFeedback" class="password-feedback" style="display: none;"></div>
+                    </div>
+                    
+                    <div id="newPasswordSection" style="display: none;">
+                        <div class="form-group">
+                            <label for="newPassword">새 비밀번호</label>
+                            <input type="password" id="newPassword" name="newPassword" required />
+                        </div>
+                        
+                        <button type="submit" class="btn btn-secondary">비밀번호 변경</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
