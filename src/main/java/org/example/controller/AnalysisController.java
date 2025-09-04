@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.domain.Diagnosis;
+import org.example.domain.Cancer;
 import org.example.repository.CancerRepository;
 import org.example.repository.DiagnosisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,9 +102,8 @@ public class AnalysisController {
                 return Collections.singletonMap("error", "알 수 없는 암 종류입니다: " + cancerName);
             }
 
-            // 4. 최종 진단 결과를 'diagnosis' 테이블에 저장
-            Diagnosis diagnosis = new Diagnosis(loginId, cancerId, savedPath.toString(), null);
-            Diagnosis savedDiagnosis = diagnosisRepository.save(diagnosis);
+            // 4. 최종 진단 결과를 'diagnoses' 테이블에 저장 (엔티티 구조에 맞게 설정)
+            Diagnosis savedDiagnosis = saveDiagnosis(loginId, cancerId, savedPath.toString(), null);
 
             // 5. 프론트엔드(JavaScript)에 필요한 정보들을 Map 형태로 반환
             return Map.of(
@@ -149,5 +149,17 @@ public class AnalysisController {
             return "위암";
         }
         return "알 수 없는 종류";
+    }
+
+    // 테스트 용이성을 위한 패키지-프라이빗 헬퍼: Diagnosis 생성 및 저장 책임 분리
+    Diagnosis saveDiagnosis(String loginId, Integer cancerId, String imageUrl, Float certaintyScore) {
+        Diagnosis diagnosis = new Diagnosis();
+        diagnosis.setLoginId(loginId);
+        Cancer cancer = new Cancer();
+        cancer.setCancerId(cancerId);
+        diagnosis.setCancer(cancer);
+        diagnosis.setImageUrl(imageUrl);
+        diagnosis.setCertaintyScore(certaintyScore);
+        return diagnosisRepository.save(diagnosis);
     }
 }

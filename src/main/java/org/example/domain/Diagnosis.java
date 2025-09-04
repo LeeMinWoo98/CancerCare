@@ -16,11 +16,12 @@ public class Diagnosis {
     @Column(name = "diagnosis_id")
     private Integer diagnosisId;
 
-    @Column(name = "login_id", nullable = false)
+    @Column(name = "login_id", nullable = false, length = 30)
     private String loginId;
 
-    @Column(name = "cancer_id", nullable = false)
-    private Integer cancerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cancer_id", nullable = false)
+    private Cancer cancer;
 
     @Column(name = "image_url")
     private String imageUrl;
@@ -30,18 +31,4 @@ public class Diagnosis {
 
     @Column(name = "diagnosed_at", nullable = false)
     private LocalDateTime diagnosedAt = LocalDateTime.now();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cancer_id", insertable = false, updatable = false)
-    private Cancer cancer;
-
-    // 생성자
-    public Diagnosis() {}
-
-    public Diagnosis(String loginId, Integer cancerId, String imageUrl, Float certaintyScore) {
-        this.loginId = loginId;
-        this.cancerId = cancerId;
-        this.imageUrl = imageUrl;
-        this.certaintyScore = certaintyScore;
-    }
 }
