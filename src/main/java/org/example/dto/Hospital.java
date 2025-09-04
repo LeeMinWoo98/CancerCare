@@ -4,16 +4,11 @@ import lombok.Data;
 
 @Data
 public class Hospital {
-    private Long id;
-    private String name;
-    private String address;
-    private String phone;
-    private String website;
-    private Double latitude;
-    private Double longitude;
-    private String specialty;
-    private String rating;
-    private String operatingHours;
-    private String description;
-    private Double distance; // 사용자 위치로부터의 거리
+    private String id;       // 병원 ID (from Kakao API)
+    private String name;     // 병원 이름
+    private String address;  // 주소
+    private String phone;    // 전화번호
+    private String url;      // 상세 정보 URL
+    private String x;        // 경도(longitude)
+    private String y;        // 위도(latitude)
 }

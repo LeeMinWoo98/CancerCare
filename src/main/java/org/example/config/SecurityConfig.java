@@ -8,7 +8,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -21,9 +20,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // CSRF 보호 기능은 기본적으로 활성화되어 있습니다.
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/main", "/signup", "/signup/**", "/login", "/find", "/find/**", "/diagnosis", "/css/**", "/js/**", "/images/**").permitAll()  // /diagnosis 추가
-                        .anyRequest().authenticated()  // /food/** 제거 - 이제 로그인 필요
+                        .requestMatchers(
+                                // 정적 리소스 (CSS, JS, 이미지)
+                                "/css/**", "/js/**", "/images/**",
+                                // 공개적으로 접근 가능한 페이지
+                                "/", "/main", "/login", "/signup/**", "/find/**", "/diagnosis", "/analyze/check"
+                        ).permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
@@ -37,13 +42,8 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                         .clearAuthentication(true)
                         .permitAll()
-                )
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/find/**", "/chat/**")
                 );
-
 
         return http.build();
     }
 }
-
