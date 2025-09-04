@@ -17,6 +17,13 @@ body.chat-page {
     overflow: hidden; /* 스크롤 방지 */
 }
 
+.sidebar .category-heading {
+    font-size: 16px;
+    color: #cbd5e0;
+    padding: 0 16px 8px;
+    font-weight: 600;
+}
+
 /* 사이드바 */
 .sidebar {
     width: 280px;
