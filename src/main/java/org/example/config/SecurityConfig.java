@@ -23,7 +23,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/", "/main", "/signup", "/signup/**", "/login", "/find", "/find/**", "/diagnosis", "/css/**", "/js/**", "/images/**,","/analyze/check").permitAll()  // /diagnosis 추가
-                    .anyRequest().authenticated()  // /food/** 제거 - 이제 로그인 필요
+                    .anyRequest().authenticated() 
             )
             .formLogin(form -> form
                     .loginPage("/login")

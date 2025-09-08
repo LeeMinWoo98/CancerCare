@@ -15,7 +15,9 @@
     --card-radius: 16px;
 }
 
-* {
+/* 전역 리셋 제거 - 헤더 스타일을 망가뜨리지 않도록 */
+.diag_con,
+.diag_con * {
     box-sizing: border-box;
 }
 
@@ -23,7 +25,8 @@ html, body {
     height: 100%;
 }
 
-body {
+/* body 스타일은 main.css에 맡기고 diagnosis 페이지 전용만 추가 */
+body.diagnosis-page {
     margin: 0;
     font-family: "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
     color: var(--text);
@@ -60,12 +63,30 @@ body {
     margin-bottom: 32px;
 }
 
-#mri-sec h2 {
+.section-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.section-title {
     margin: 0 0 16px 0;
     font-size: 32px;
     font-weight: 700;
     color: var(--text);
     letter-spacing: -0.01em;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(135deg, var(--brand), var(--brand-700));
+    border-radius: 2px;
 }
 
 .section-desc {
@@ -274,4 +295,18 @@ body {
     .usage-info ol {
         font-size: 14px;
     }
+	
+}
+
+.image-preview-container {
+    margin-top: 15px;
+    text-align: center;
+}
+
+#image-preview {
+    max-width: 100%;
+    max-height: 300px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
 }

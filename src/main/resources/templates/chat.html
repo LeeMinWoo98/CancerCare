@@ -1,55 +1,82 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>CancelCare - AI 의료 상담 서비스</title>
+
+    <!-- Pretendard 폰트 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/chat.css}">
-</head>
-<body>
 
+    <!-- 카테고리 UI 개선을 위한 스타일 추가 -->
+    <style>
+        .chat-item {
+            transition: background-color 0.3s ease;
+            border-radius: 8px;
+            margin: 4px 0;
+            cursor: pointer;
+        }
+        .chat-item:hover {
+            background-color: #4a5568;
+        }
+        .chat-item.active {
+            background-color: #2c5282;
+        }
+    </style>
+</head>
+<body class="chat-page">
+
+<!-- 공통 헤더 -->
 <div th:replace="~{fragments/header :: headerFragment}"></div>
+
+<input type="hidden" id="diagnosisId" th:value="${diagnosisId != null ? diagnosisId : 1}" />
 
 <div class="chat-container">
     <div class="sidebar">
         <div class="sidebar-header">
-            <button class="new-chat-btn" onclick="startNewChat()">
-                새로운 상담 시작
-            </button>
+            <button class="new-chat-btn"><i class="fa-solid fa-plus"></i>&nbsp; 새로운 상담 시작</button>
         </div>
-
+        <h3 class="category-heading">상담 주제 선택하기</h3>
         <div class="chat-list">
-            <div class="chat-item active" onclick="selectCategory('general')">
+            <div class="chat-item active" data-category="general">
                 <div class="category-icon">💬</div>
                 <div class="category-info">
                     <div class="chat-title">일반 상담</div>
                     <div class="chat-preview">기본적인 상담 서비스</div>
                 </div>
             </div>
-            <div class="chat-item" onclick="selectCategory('symptoms')">
+            <div class="chat-item" data-category="symptoms">
                 <div class="category-icon">🩺</div>
                 <div class="category-info">
                     <div class="chat-title">증상 문의</div>
                     <div class="chat-preview">증상에 대한 문의</div>
                 </div>
             </div>
-            <div class="chat-item" onclick="selectCategory('prevention')">
+            <div class="chat-item" data-category="prevention">
                 <div class="category-icon">🛡️</div>
                 <div class="category-info">
                     <div class="chat-title">예방 관리</div>
                     <div class="chat-preview">질병 예방 및 관리</div>
                 </div>
             </div>
-            <div class="chat-item" onclick="selectCategory('checkup')">
+            <div class="chat-item" data-category="checkup">
                 <div class="category-icon">📋</div>
                 <div class="category-info">
                     <div class="chat-title">검진 정보</div>
                     <div class="chat-preview">건강검진 관련 정보</div>
                 </div>
             </div>
-            <div class="chat-item" onclick="selectCategory('nutrition')">
+            <div class="chat-item" data-category="nutrition">
                 <div class="category-icon">🥗</div>
                 <div class="category-info">
                     <div class="chat-title">영양 상담</div>
@@ -58,11 +85,11 @@
             </div>
         </div>
 
-        <div class="sidebar-footer">
+        <div class="sidebar-footer" sec:authorize="isAuthenticated()">
             <div class="user-info">
-                <div class="user-avatar">홍</div>
+                <div class="user-avatar" th:text="${#strings.substring(#authentication.name, 0, 1).toUpperCase()}">U</div>
                 <div>
-                    <div style="font-size: 14px; font-weight: 500;">홍길동</div>
+                    <div style="font-size: 14px; font-weight: 500;" sec:authentication="name">사용자이름</div>
                     <div style="font-size: 12px; color: #bdc3c7;">온라인</div>
                 </div>
             </div>
@@ -79,79 +106,18 @@
         </div>
 
         <div class="chat-messages" id="chatMessages">
-            <div class="message ai">
-                <div class="message-avatar">AI</div>
-                <div class="message-content">
-                    안녕하세요! CancelCare AI 상담서비스입니다. 왼쪽 상담 주제를 선택하시거나 궁금한 점을 말씀해주세요.
+            <div th:each="message : ${chatHistory}" class="message" th:classappend="${message.sender.name() == 'user'} ? 'user' : 'ai'">
+                <div class="message-avatar"
+                     th:text="${message.sender.name() == 'user'} ? ${#strings.substring(#authentication.name, 0, 1).toUpperCase()} : 'AI'">
                 </div>
-            </div>
-
-            <div class="message user">
-                <div class="message-avatar">홍</div>
-                <div class="message-content">
-                    이번 주에 건강검진을 받으려고 하는데 어떤 항목들을 검사하면 좋을까요?
-                </div>
-            </div>
-
-            <div class="message ai">
-                <div class="message-avatar">AI</div>
-                <div class="message-content">
-                    좋은 질문이네요! 건강검진 항목은 연령대와 개인 위험요소에 따라 달라집니다.
-
-                    **기본 검진 항목:**
-                    • 혈압 측정
-                    • 혈액검사 (당뇨, 고지혈증 등)
-                    • 소변검사
-                    • 흉부 X-ray
-                    • 심전도 검사
-
-                    검진정보 메뉴에서 더 자세한 정보를 확인하실 수 있습니다.
-                </div>
-            </div>
-
-            <div class="message user">
-                <div class="message-avatar">홍</div>
-                <div class="message-content">
-                    네 감사합니다!
-
-                    그러면 영양상담도 받을 수 있나요?
-                </div>
-            </div>
-
-            <div class="message ai">
-                <div class="message-avatar">AI</div>
-                <div class="message-content">
-                    물론입니다! 영양상담 서비스도 제공하고 있습니다.
-
-                    **영양상담 서비스:**
-                    • 개인 맞춤 식단 상담
-                    • 질병별 영양 관리
-                    • 체중 관리 상담
-                    • 영양제 복용 상담
-
-                    왼쪽 메뉴에서 '영양 상담'을 선택하시면 전문적인 상담을 받으실 수 있습니다.
-                </div>
-            </div>
-
-            <div class="message user">
-                <div class="message-avatar">홍</div>
-                <div class="message-content">
-                    감사합니다!
-                </div>
+                <div class="message-content" th:text="${message.messageText}"></div>
             </div>
         </div>
 
         <div class="chat-input-container">
-            <form action="#" method="post" id="chatForm">
+            <form id="chatForm">
                 <div class="chat-input-wrapper">
-                        <textarea
-                                name="message"
-                                id="messageInput"
-                                class="chat-input"
-                                placeholder="메시지를 입력하세요..."
-                                rows="1"
-                                required
-                        ></textarea>
+                    <textarea name="message" id="messageInput" class="chat-input" placeholder="메시지를 입력하세요..." rows="1" required></textarea>
                     <button type="submit" class="send-btn" id="sendBtn" disabled>
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M22 2L11 13"></path>
@@ -163,112 +129,215 @@
         </div>
     </div>
 </div>
+<div th:replace="~{fragments/footer :: footerFragment}"></div>
+<script th:inline="javascript">
+    const currentUserInitial = /*[[${#authorization.expression('isAuthenticated()')} ? ${#strings.substring(#authentication.name, 0, 1).toUpperCase()} : '홍']]*/ '홍';
 
-<script>
-    // DOM 요소들
-    const messageInput = document.getElementById('messageInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const chatMessages = document.getElementById('chatMessages');
-    const chatForm = document.getElementById('chatForm');
+    document.addEventListener('DOMContentLoaded', function() {
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatForm = document.getElementById('chatForm');
+        const newChatBtn = document.querySelector('.new-chat-btn');
+        const chatItems = document.querySelectorAll('.chat-item');
 
-    // 자동 높이 조절
-    messageInput.addEventListener('input', function () {
-        this.style.height = 'auto';
-        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        // 1. 페이지 로드 시 채팅 기록을 불러오는 함수
+        function loadChatHistory() {
+            const diagnosisId = document.getElementById('diagnosisId').value;
+            if (!diagnosisId) return;
 
-        // 전송 버튼 활성화/비활성화
-        sendBtn.disabled = !this.value.trim();
-    });
+            // 로딩 중임을 표시 (선택 사항)
+            chatMessages.innerHTML = '<div class="message ai"><div class="message-content">대화 기록을 불러오는 중입니다...</div></div>';
 
-    // 엔터키 전송 (Shift+Enter는 줄바꿈)
-    messageInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            if (this.value.trim()) {
-                sendMessage();
-            }
+            fetch(`/chat/history/${diagnosisId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('서버에서 기록을 가져오지 못했습니다.');
+                    return response.json();
+                })
+                .then(history => {
+                    clearChatMessages();
+                    if (history && history.length > 0) {
+                        history.forEach(msg => {
+                            // msg.sender가 'user' 또는 'chatbot' 문자열이므로 바로 비교 가능
+                            addMessage(msg.messageText, msg.sender === 'user');
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading chat history:', error);
+                    clearChatMessages();
+                    addMessage('대화 기록을 불러오는 중 오류가 발생했습니다.', false);
+                });
         }
-    });
 
-    // 채팅 스크롤을 맨 아래로
-    function scrollToBottom() {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
+        // 2. 메시지를 채팅창에 추가하는 함수
+        function addMessage(text, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+            // HTML 태그 실행 방지 및 줄바꿈 처리
+            const sanitizedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            messageDiv.innerHTML = `<div class="message-avatar">${isUser ? currentUserInitial : 'AI'}</div><div class="message-content">${sanitizedText.replace(/\n/g, '<br>')}</div>`;
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
+        }
 
-    // 페이지 로드 시 스크롤을 맨 아래로
-    window.addEventListener('load', scrollToBottom);
+        // 3. 채팅 메시지 전송 함수
+        function sendMessage() {
+            const messageText = messageInput.value.trim();
+            const diagnosisId = document.getElementById('diagnosisId').value;
+            if (!messageText) return;
 
-    // 새 상담 시작
-    function startNewChat() {
-        alert('새로운 상담을 시작합니다!');
-        // window.location.href = '/chat/new';
-    }
+            const csrfToken = document.querySelector("meta[name='_csrf']").content;
+            const csrfHeader = document.querySelector("meta[name='_csrf_header']").content;
 
-    // 상담 주제 선택
-    function selectCategory(category) {
-        // 활성 카테고리 변경
-        document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('active'));
-        event.target.closest('.chat-item').classList.add('active');
+            addMessage(messageText, true); // 사용자 메시지를 먼저 화면에 표시
 
-        // 카테고리별 초기 메시지 표시
-        const categoryMessages = {
-            'general': '일반 상담을 선택하셨습니다. 무엇을 도와드릴까요?',
-            'symptoms': '증상 문의를 선택하셨습니다. 어떤 증상이 있으신가요?',
-            'prevention': '예방 관리를 선택하셨습니다. 어떤 예방법이 궁금하신가요?',
-            'checkup': '검진 정보를 선택하셨습니다. 어떤 검진 정보를 원하시나요?',
-            'nutrition': '영양 상담을 선택하셨습니다. 영양 관련 질문을 해보세요!'
-        };
+            fetch('/chat/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify({ message: messageText, diagnosisId: parseInt(diagnosisId) })
+            })
+                .then(response => response.json())
+                .then(data => addMessage(data.success ? data.response : '오류가 발생했습니다.', false))
+                .catch(error => {
+                    console.error('Error:', error);
+                    addMessage('네트워크 오류가 발생했습니다.', false);
+                });
 
-        alert(categoryMessages[category]);
-        // 실제 구현시에는 해당 카테고리의 채팅을 로드
-    }
+            messageInput.value = '';
+            messageInput.style.height = 'auto'; // 높이 초기화
+            sendBtn.disabled = true;
+        }
 
-    // 메시지 전송
-    function sendMessage() {
-        const messageText = messageInput.value.trim();
-        if (!messageText) return;
+        // 4. 새로운 상담 세션 시작 함수
+        function startNewChatSession() {
+            const diagnosisId = document.getElementById('diagnosisId').value;
+            const csrfToken = document.querySelector("meta[name='_csrf']").content;
+            const csrfHeader = document.querySelector("meta[name='_csrf_header']").content;
 
-        // 사용자 메시지 추가
-        addMessage(messageText, true);
+            newChatBtn.disabled = true;
+            newChatBtn.textContent = '시작 중...';
 
-        // 입력창 초기화
-        messageInput.value = '';
-        messageInput.style.height = 'auto';
-        sendBtn.disabled = true;
+            fetch('/chat/new-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify({ diagnosisId: parseInt(diagnosisId) })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        clearChatMessages();
+                        if (data.welcomeMessage) {
+                            addMessage(data.welcomeMessage, false);
+                        }
+                        showNotification('새로운 상담이 시작되었습니다!', 'success');
+                    } else {
+                        showNotification(data.message || '오류가 발생했습니다.', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('네트워크 오류가 발생했습니다.', 'error');
+                })
+                .finally(() => {
+                    newChatBtn.disabled = false;
+                    newChatBtn.textContent = '새로운 상담 시작';
+                });
+        }
 
-        // AI 응답 시뮬레이션 (2초 후)
-        setTimeout(() => {
-            const responses = [
-                '네, 알겠습니다! 추가로 궁금한 점이 있으시면 언제든 말씀해주세요.',
-                '좋은 질문이네요! 더 자세히 설명해드릴까요?',
-                '네, 맞습니다. 다른 도움이 필요하시면 언제든 말씀해주세요.',
-                '이해했습니다. 혹시 다른 궁금한 점이 있으신가요?',
-                '네, 도움이 되셨기를 바랍니다. 또 다른 질문이 있으시면 편하게 물어보세요!'
-            ];
-            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-            addMessage(randomResponse, false);
-        }, 1500);
-    }
+        // 5. 기타 유틸리티 함수 및 이벤트 리스너
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
 
-    // 메시지 추가 함수
-    function addMessage(text, isUser) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+        function clearChatMessages() {
+            chatMessages.innerHTML = '';
+        }
 
-        messageDiv.innerHTML = `
-            <div class="message-avatar">${isUser ? '홍' : 'AI'}</div>
-            <div class="message-content">${text}</div>
-        `;
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '1000';
+            notification.style.padding = '12px 24px';
+            notification.style.borderRadius = '6px';
+            notification.style.color = 'white';
+            notification.style.background = type === 'success' ? '#10b981' : '#ef4444';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
 
-        chatMessages.appendChild(messageDiv);
-        scrollToBottom();
-    }
+        function selectCategory(selectedItem, category) {
+            chatItems.forEach(item => item.classList.remove('active'));
+            selectedItem.classList.add('active');
+            const categoryMessages = {
+                'general': '일반 상담을 선택하셨습니다. 무엇을 도와드릴까요?',
+                'symptoms': '증상 문의를 선택하셨습니다. 어떤 증상이 있으신가요?',
+                'prevention': '예방 관리를 선택하셨습니다. 어떤 예방법이 궁금하신가요?',
+                'checkup': '검진 정보를 선택하셨습니다. 어떤 검진 정보를 원하시나요?',
+                'nutrition': '영양 상담을 선택하셨습니다. 영양 관련 질문을 해보세요!'
+            };
+            showNotification(categoryMessages[category], 'success');
+        }
 
-    // 폼 전송 처리
-    chatForm.addEventListener('submit', function (e) {
-        e.preventDefault(); // 실제 전송 방지
-        sendMessage();
+        // --- 이벤트 리스너 바인딩 ---
+
+        messageInput.addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            sendBtn.disabled = !this.value.trim();
+        });
+
+        messageInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (this.value.trim()) sendMessage();
+            }
+        });
+
+        chatForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            sendMessage();
+        });
+
+        newChatBtn.addEventListener('click', function() {
+            if (confirm('새로운 상담을 시작하시겠습니까? 기존 대화 내용이 삭제됩니다.')) {
+                startNewChatSession();
+            }
+        });
+
+        chatItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const category = this.dataset.category;
+                selectCategory(this, category);
+            });
+        });
+
+        // --- 페이지 초기화 ---
+
+        // 페이지가 처음 로드될 때 대화 기록을 불러옵니다.
+        loadChatHistory();
     });
 </script>
+<style>
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+</style>
 </body>
 </html>
+

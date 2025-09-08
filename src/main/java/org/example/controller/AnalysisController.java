@@ -1,10 +1,12 @@
 package org.example.controller;
 
+import org.example.domain.Diagnosis;
+import org.example.repository.CancerRepository;
+import org.example.repository.DiagnosisRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
@@ -19,24 +21,26 @@ import java.util.UUID;
 @Controller
 public class AnalysisController {
 
-    // 분석 페이지를 보여주는 역할
+    @Autowired
+    private CancerRepository cancerRepository;
+
+    @Autowired
+    private DiagnosisRepository diagnosisRepository;
+
     @GetMapping("/diagnosis")
     public String diagnosisPage() {
         return "diagnosis";
     }
 
-    // 분석 요청을 처리하고 데이터(JSON)만 반환
     @PostMapping("/analyze/check")
     @ResponseBody
-    public Map<String, String> analyzeImage(@RequestParam("imageFile") MultipartFile file) {
-        String scriptPath = "analyzer/check.py"; // 파이썬 스크립트 경로
-        return runAnalysis(file, scriptPath);
+    public Map<String, Object> analyzeImage(@RequestParam("imageFile") MultipartFile file,
+                                            Authentication authentication) {
+        String scriptPath = "analyzer/check.py";
+        return runAnalysis(file, scriptPath, authentication.getName());
     }
 
-    /**
-     * 분석을 실행하고 결과를 Map 형태로 반환하는 공통 메소드
-     */
-    private Map<String, String> runAnalysis(MultipartFile file, String scriptPath) {
+    private Map<String, Object> runAnalysis(MultipartFile file, String scriptPath, String loginId) {
         if (file.isEmpty()) {
             return Collections.singletonMap("error", "Please select a file to upload.");
         }
@@ -45,14 +49,16 @@ public class AnalysisController {
         Process process = null;
 
         try {
-            // ... (이미지 저장 및 파이썬 실행 부분은 동일) ...
+            // 파일 저장
             String uploadDir = "uploads/";
             Files.createDirectories(Paths.get(uploadDir));
             String savedFilename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
             savedPath = Paths.get(uploadDir + savedFilename);
             Files.copy(file.getInputStream(), savedPath);
 
+            // Python 실행
             ProcessBuilder processBuilder = new ProcessBuilder("python", scriptPath, savedPath.toAbsolutePath().toString());
+            processBuilder.redirectErrorStream(true);
             process = processBuilder.start();
 
             StringBuilder resultBuilder = new StringBuilder();
@@ -60,10 +66,14 @@ public class AnalysisController {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     System.out.println("Python Script Output: " + line);
-                    resultBuilder.append(line);
+                    resultBuilder.append(line).append("\n");
                 }
             }
-            process.waitFor();
+
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                return Collections.singletonMap("error", "Python 스크립트 실행 실패");
+            }
 
             String fullResult = resultBuilder.toString();
             String predictionKey = "";
@@ -71,34 +81,37 @@ public class AnalysisController {
             if (fullResult.contains("Prediction Result:")) {
                 predictionKey = fullResult.substring(fullResult.indexOf(":") + 1).trim();
             } else {
-                return Collections.singletonMap("error", "스크립트 실행 중 오류가 발생했습니다. 출력: " + fullResult);
+                return Collections.singletonMap("error", "스크립트 실행 중 오류가 발생했습니다.");
             }
-            
-            // --- 👇 [수정된 부분] 예측 키워드를 한글 이름으로만 변환 ---
-            String cancerName = "알 수 없는 종류";
-            if (predictionKey.equalsIgnoreCase("ct_liver_cancer") || predictionKey.equalsIgnoreCase("liver_cancer")) {
-                cancerName = "간암(CT)";
-            } else if (predictionKey.equalsIgnoreCase("ct_lung_cancer")) {
-                cancerName = "폐암(CT)";
-            } else if (predictionKey.equalsIgnoreCase("ct_colon_cancer")) {
-                cancerName = "대장암(CT)";
-            } else if (predictionKey.equalsIgnoreCase("mri_liver_cancer")) {
-                cancerName = "간암(MRI)";
-            } else if (predictionKey.equalsIgnoreCase("mri_breast_cancer")) {
-                cancerName = "유방암(MRI)";
-            } else if (predictionKey.equalsIgnoreCase("mri_cervical_cancer")) {
-                cancerName = "자궁경부암(MRI)";
-            }
-            // (다른 암 종류에 대한 변환 규칙 추가)
 
-            // 최종 결과를 Map에 담아 반환
-            return Collections.singletonMap("prediction", cancerName);
+            // ✨ 핵심 변경점: AI 결과를 cancers 테이블과 매핑
+            String cancerName = mapPredictionToCancerName(predictionKey);
+
+            // cancers 테이블에서 cancer_id 조회
+            Integer cancerId = cancerRepository.findByCancerName(cancerName)
+                    .map(cancer -> cancer.getCancerId())
+                    .orElse(null);
+
+            if (cancerId == null) {
+                return Collections.singletonMap("error", "알 수 없는 암 종류입니다: " + cancerName);
+            }
+
+            // 🎯 진단 결과를 DB에 저장
+            Diagnosis diagnosis = new Diagnosis(loginId, cancerId, savedPath.toString(), null);
+            Diagnosis savedDiagnosis = diagnosisRepository.save(diagnosis);
+
+            // 응답에 diagnosisId 포함
+            return Map.of(
+                    "prediction", cancerName,
+                    "diagnosisId", savedDiagnosis.getDiagnosisId(),
+                    "success", true
+            );
 
         } catch (Exception e) {
             e.printStackTrace();
-            return Collections.singletonMap("error", "분속 중 서버 오류가 발생했습니다: " + e.getMessage());
+            return Collections.singletonMap("error", "분석 중 서버 오류가 발생했습니다: " + e.getMessage());
         } finally {
-            // ... (파일 정리 부분은 동일) ...
+            // 파일 정리
             if (process != null) {
                 process.destroy();
             }
@@ -110,5 +123,23 @@ public class AnalysisController {
                 System.err.println("임시 파일 삭제에 실패했습니다: " + e.getMessage());
             }
         }
+    }
+
+    // AI 예측 결과를 cancers 테이블의 cancer_name으로 매핑
+    private String mapPredictionToCancerName(String predictionKey) {
+        if (predictionKey.toLowerCase().contains("liver")) {
+            return "간암";
+        } else if (predictionKey.toLowerCase().contains("lung")) {
+            return "폐암";
+        } else if (predictionKey.toLowerCase().contains("colon")) {
+            return "대장암";
+        } else if (predictionKey.toLowerCase().contains("breast")) {
+            return "유방암";
+        } else if (predictionKey.toLowerCase().contains("cervical")) {
+            return "자궁경부암";
+        } else if (predictionKey.toLowerCase().contains("stomach")) {
+            return "위암";
+        }
+        return "알 수 없는 종류";
     }
 }
