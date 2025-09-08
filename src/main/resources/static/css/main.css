@@ -101,6 +101,31 @@ header {
     color: var(--brand)
 }
 
+.mypage-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 6px !important;
+    border-radius: 50% !important;
+}
+
+.mypage-icon svg {
+    color: #111827;
+    transition: color 0.2s ease;
+}
+
+.mypage-icon:hover svg {
+    color: var(--brand);
+}
+
+.user-name {
+    color: #111827;
+    font-weight: 500;
+    font-size: 14px;
+}
+
 .hero {
     display: grid;
     place-items: center;
