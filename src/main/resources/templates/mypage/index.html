@@ -2,94 +2,118 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
+    <title>마이페이지</title>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <title>마이페이지</title>
-    <link rel="stylesheet" th:href="@{/css/mypage.css}" />
+    
+    <!-- CSS 링크 -->
+    <link rel="stylesheet" th:href="@{/css/mypage.css}">
     <script>
-        let isCurrentPasswordValid = false;
+        let currentPasswordValid = false;
+        let passwordsMatch = false;
         
-        function validateCurrentPassword() {
+        // 현재 비밀번호 실시간 검증
+        async function validateCurrentPassword() {
             const currentPassword = document.getElementById('currentPassword').value;
-            const currentPasswordFeedback = document.getElementById('currentPasswordFeedback');
+            const validationDiv = document.getElementById('currentPasswordValidation');
             
-            if (!currentPassword) {
-                currentPasswordFeedback.style.display = 'none';
-                isCurrentPasswordValid = false;
-                hideNewPasswordSection();
+            if (!currentPassword.trim()) {
+                validationDiv.style.display = 'none';
+                currentPasswordValid = false;
+                updateNewPasswordSection();
                 return;
             }
             
-            const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-            const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-            
-            fetch('/mypage/validate-password', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    [header]: token
-                },
-                body: JSON.stringify({ password: currentPassword })
-            })
-            .then(response => response.json())
-            .then(data => {
-                currentPasswordFeedback.style.display = 'block';
-                if (data.valid) {
-                    currentPasswordFeedback.textContent = '현재 비밀번호가 올바릅니다';
-                    currentPasswordFeedback.className = 'password-feedback success';
-                    isCurrentPasswordValid = true;
+            try {
+                const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+                
+                const response = await fetch('/api/verify-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        [csrfHeader]: csrfToken
+                    },
+                    body: JSON.stringify({ currentPassword: currentPassword })
+                });
+                
+                const result = await response.json();
+                
+                validationDiv.style.display = 'block';
+                if (result.valid) {
+                    validationDiv.className = 'password-validation success';
+                    validationDiv.textContent = result.message;
+                    currentPasswordValid = true;
                 } else {
-                    currentPasswordFeedback.textContent = '현재 비밀번호가 올바르지 않습니다';
-                    currentPasswordFeedback.className = 'password-feedback error';
-                    isCurrentPasswordValid = false;
+                    validationDiv.className = 'password-validation error';
+                    validationDiv.textContent = result.message;
+                    currentPasswordValid = false;
                 }
-                validatePasswordMatch();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                currentPasswordFeedback.style.display = 'block';
-                currentPasswordFeedback.textContent = '비밀번호 확인 중 오류가 발생했습니다';
-                currentPasswordFeedback.className = 'password-feedback error';
-                isCurrentPasswordValid = false;
-            });
+                
+                updateNewPasswordSection();
+            } catch (error) {
+                console.error('비밀번호 검증 중 오류:', error);
+                validationDiv.style.display = 'block';
+                validationDiv.className = 'password-validation error';
+                validationDiv.textContent = '비밀번호 확인 중 오류가 발생했습니다.';
+                currentPasswordValid = false;
+                updateNewPasswordSection();
+            }
         }
         
+        // 비밀번호 확인 검증
         function validatePasswordMatch() {
             const currentPassword = document.getElementById('currentPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            const confirmPasswordFeedback = document.getElementById('confirmPasswordFeedback');
+            const validationDiv = document.getElementById('passwordMatchValidation');
             
-            if (!confirmPassword) {
-                confirmPasswordFeedback.style.display = 'none';
-                hideNewPasswordSection();
+            if (!confirmPassword.trim()) {
+                validationDiv.style.display = 'none';
+                passwordsMatch = false;
+                updateNewPasswordSection();
                 return;
             }
             
-            confirmPasswordFeedback.style.display = 'block';
-            
+            validationDiv.style.display = 'block';
             if (currentPassword === confirmPassword) {
-                if (isCurrentPasswordValid) {
-                    confirmPasswordFeedback.textContent = '현재 비밀번호가 확인되었습니다';
-                    confirmPasswordFeedback.className = 'password-feedback success';
-                    showNewPasswordSection();
-                } else {
-                    confirmPasswordFeedback.textContent = '먼저 올바른 현재 비밀번호를 입력해주세요';
-                    confirmPasswordFeedback.className = 'password-feedback error';
-                    hideNewPasswordSection();
-                }
+                validationDiv.className = 'password-validation success';
+                validationDiv.textContent = '비밀번호가 일치합니다.';
+                passwordsMatch = true;
             } else {
-                confirmPasswordFeedback.textContent = '현재 비밀번호와 일치하지 않습니다';
-                confirmPasswordFeedback.className = 'password-feedback error';
-                hideNewPasswordSection();
+                validationDiv.className = 'password-validation error';
+                validationDiv.textContent = '비밀번호가 일치하지 않습니다.';
+                passwordsMatch = false;
+            }
+            
+            updateNewPasswordSection();
+        }
+        
+        // 새 비밀번호 섹션 표시/숨김
+        function updateNewPasswordSection() {
+            const newPasswordSection = document.getElementById('newPasswordSection');
+            
+            if (currentPasswordValid && passwordsMatch) {
+                newPasswordSection.style.display = 'block';
+            } else {
+                newPasswordSection.style.display = 'none';
             }
         }
         
-        function showNewPasswordSection() {
-            document.getElementById('newPasswordSection').style.display = 'block';
-        }
-        
-        function hideNewPasswordSection() {
-            document.getElementById('newPasswordSection').style.display = 'none';
+        // CSRF 토큰 메타 태그 추가 (없는 경우)
+        if (!document.querySelector('meta[name="_csrf"]')) {
+            const csrfToken = document.querySelector('input[name="_csrf"]');
+            if (csrfToken) {
+                const meta1 = document.createElement('meta');
+                meta1.name = '_csrf';
+                meta1.content = csrfToken.value;
+                document.head.appendChild(meta1);
+                
+                const meta2 = document.createElement('meta');
+                meta2.name = '_csrf_header';
+                meta2.content = 'X-CSRF-TOKEN';
+                document.head.appendChild(meta2);
+            }
         }
     </script>
 </head>
@@ -100,14 +124,16 @@
         </div>
         
         <div class="content">
-            <!-- 메시지 표시 (로그아웃 메시지와 비밀번호 오류 메시지 제거) -->
+            <!-- 메시지 표시 -->
             <div th:if="${message}" class="message success" th:text="${message}"></div>
             <div th:if="${error}" class="message error" th:text="${error}"></div>
+            <div th:if="${passwordError}" class="message error" th:text="${passwordError}"></div>
 
             <!-- 정보 수정 폼 -->
             <div class="form-section">
                 <div class="section-title">정보 수정</div>
                 <form th:action="@{/mypage}" method="post" th:object="${profileForm}">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                     <div class="form-group">
                         <label for="name">이름</label>
                         <input type="text" id="name" name="name" th:value="${profileForm.name}" required />
@@ -178,16 +204,20 @@
             <div class="form-section password-section">
                 <div class="section-title">비밀번호 변경</div>
                 <form th:action="@{/mypage/change-password}" method="post" th:object="${passwordForm}">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    
                     <div class="form-group">
                         <label for="currentPassword">현재 비밀번호</label>
-                        <input type="password" id="currentPassword" name="currentPassword" oninput="validateCurrentPassword()" required />
-                        <div id="currentPasswordFeedback" class="password-feedback" style="display: none;"></div>
+                        <input type="password" id="currentPassword" name="currentPassword" 
+                               oninput="validateCurrentPassword()" required />
+                        <div id="currentPasswordValidation" class="password-validation" style="display: none;"></div>
                     </div>
                     
                     <div class="form-group">
                         <label for="confirmPassword">비밀번호 확인</label>
-                        <input type="password" id="confirmPassword" name="confirmPassword" oninput="validatePasswordMatch()" required />
-                        <div id="confirmPasswordFeedback" class="password-feedback" style="display: none;"></div>
+                        <input type="password" id="confirmPassword" name="confirmPassword" 
+                               oninput="validatePasswordMatch()" required />
+                        <div id="passwordMatchValidation" class="password-validation" style="display: none;"></div>
                     </div>
                     
                     <div id="newPasswordSection" style="display: none;">

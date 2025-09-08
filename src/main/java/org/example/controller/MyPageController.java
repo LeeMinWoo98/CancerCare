@@ -1,5 +1,7 @@
 package org.example.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.example.domain.User;
 import org.example.domain.UserProfile;
 import org.example.dto.UserProfileView;
@@ -7,7 +9,10 @@ import org.example.form.MyPageForm;
 import org.example.form.PasswordChangeForm;
 import org.example.repository.UserRepository;
 import org.example.service.MyPageService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -16,8 +21,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashMap;
@@ -87,6 +90,7 @@ public class MyPageController {
             @ModelAttribute("profileForm") MyPageForm form,
             RedirectAttributes redirectAttributes
     ) {
+        System.out.println("=== saveMyPage 시작 ===");
         try {
             Long userId = resolveUserId(principal);
             User user = userRepository.findById(userId).orElseThrow();
@@ -103,28 +107,13 @@ public class MyPageController {
             myPageService.saveProfile(userId, form);
             
             redirectAttributes.addFlashAttribute("message", "정보가 저장되었습니다.");
+            System.out.println("=== 저장 성공, /main으로 리다이렉트 시도 ===");
         } catch (Exception e) {
+            System.out.println("=== 에러 발생: " + e.getMessage() + " ===");
+            e.printStackTrace();
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/mypage";
         }
         return "redirect:/main";
-    }
-
-    @PostMapping("/mypage/validate-password")
-    @ResponseBody
-    public Map<String, Boolean> validatePassword(@RequestBody Map<String, String> request, 
-                                                 @AuthenticationPrincipal UserDetails principal) {
-        String inputPassword = request.get("password");
-        User user = userRepository.findByLoginId(principal.getUsername()).orElse(null);
-        
-        boolean isValid = false;
-        if (user != null && passwordEncoder.matches(inputPassword, user.getPassword())) {
-            isValid = true;
-        }
-        
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("valid", isValid);
-        return response;
     }
 
     @PostMapping("/mypage/change-password")
@@ -135,6 +124,7 @@ public class MyPageController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
+        System.out.println("=== 비밀번호 변경 시작 ===");
         try {
             User user = userRepository.findByLoginId(principal.getUsername()).orElseThrow();
             
@@ -148,14 +138,53 @@ public class MyPageController {
             user.setPassword(passwordEncoder.encode(form.getNewPassword()));
             userRepository.save(user);
             
-            // 로그아웃 처리
-            SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-            logoutHandler.logout(request, response, null);
+            System.out.println("=== 비밀번호 변경 성공, 로그아웃 처리 시작 ===");
             
-            return "redirect:/";
+            // 로그아웃 처리
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null) {
+                new SecurityContextLogoutHandler().logout(request, response, auth);
+            }
+            
+            redirectAttributes.addFlashAttribute("message", "비밀번호가 변경되었습니다. 다시 로그인해주세요.");
+            System.out.println("=== 로그아웃 완료, /main으로 리다이렉트 ===");
+            return "redirect:/main";
         } catch (Exception e) {
+            System.out.println("=== 비밀번호 변경 중 에러: " + e.getMessage() + " ===");
+            e.printStackTrace();
             redirectAttributes.addFlashAttribute("passwordError", "비밀번호 변경 중 오류가 발생했습니다.");
             return "redirect:/mypage";
+        }
+    }
+
+    // 실시간 비밀번호 검증 API
+    @PostMapping("/api/verify-password")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> verifyPassword(
+            @AuthenticationPrincipal UserDetails principal,
+            @RequestBody Map<String, String> request
+    ) {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            String currentPassword = request.get("currentPassword");
+            if (currentPassword == null || currentPassword.trim().isEmpty()) {
+                response.put("valid", false);
+                response.put("message", "");
+                return ResponseEntity.ok(response);
+            }
+            
+            User user = userRepository.findByLoginId(principal.getUsername()).orElseThrow();
+            boolean isValid = passwordEncoder.matches(currentPassword, user.getPassword());
+            
+            response.put("valid", isValid);
+            response.put("message", isValid ? "비밀번호가 일치합니다." : "현재 비밀번호가 일치하지 않습니다.");
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("valid", false);
+            response.put("message", "비밀번호 확인 중 오류가 발생했습니다.");
+            return ResponseEntity.ok(response);
         }
     }
 
