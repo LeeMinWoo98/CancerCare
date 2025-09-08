@@ -23,8 +23,7 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
      * 🎯 특정 진단과 사용자의 최근 메시지 조회
      */
     List<ChatMessage> findByDiagnosisAndLoginIdOrderByCreatedAtDesc(Diagnosis diagnosis, String loginId, Pageable pageable);
-    List<ChatMessage> findByLoginId(String loginId);
-    List<ChatMessage> findByDiagnosisIdAndLoginId(Long diagnosisId, String loginId);
+    List<ChatMessage> findByDiagnosis_DiagnosisIdAndLoginId(Integer diagnosisId, String loginId);
     /**
      * 🎯 특정 진단과 사용자의 채팅 기록 삭제
      */

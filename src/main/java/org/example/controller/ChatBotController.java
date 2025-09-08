@@ -77,9 +77,19 @@ public class ChatBotController {
     @GetMapping("/history/{diagnosisId}")
     @ResponseBody
     public ResponseEntity<List<ChatMessageDTO>> getChatHistory(@PathVariable Integer diagnosisId, Authentication auth) {
-        String loginId = auth.getName();
-        List<ChatMessageDTO> history = chatBotService.getChatHistory(diagnosisId, loginId);
-        return ResponseEntity.ok(history);
+        try {
+            String loginId = auth.getName();
+            System.out.println("채팅 히스토리 요청 - diagnosisId: " + diagnosisId + ", loginId: " + loginId);
+            
+            List<ChatMessageDTO> history = chatBotService.getChatHistory(diagnosisId, loginId);
+            System.out.println("조회된 히스토리 개수: " + history.size());
+            
+            return ResponseEntity.ok(history);
+        } catch (Exception e) {
+            System.err.println("채팅 히스토리 조회 오류: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.ok(List.of()); // 빈 리스트 반환
+        }
     }
 
     /**
