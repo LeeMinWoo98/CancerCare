@@ -1,105 +1,200 @@
-document.addEventListener('DOMContentLoaded', function() {
+// human_team6/src/main/resources/static/js/diag.js
 
-    // --- 이미지 미리보기 기능 시작 ---
-    const imageInput = document.getElementById('imageFile');
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('.upload-form');
     const imagePreview = document.getElementById('image-preview');
+    const imageFile = document.getElementById('imageFile');
+    const resultSection = document.getElementById('result-section');
+    const chatPanel = document.getElementById('chat-panel');
+    const chatMessages = document.getElementById('chatMessages');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const chatForm = document.getElementById('chatForm');
+    const closeChatBtn = document.getElementById('closeChatBtn');
 
-    imageInput.addEventListener('change', function() {
-        const file = this.files[0]; // 사용자가 선택한 첫 번째 파일
+    // CSRF 토큰 설정
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    let currentDiagnosisId = null;
 
+    // 이미지 파일 선택 시 미리보기
+    imageFile.addEventListener('change', function () {
+        const file = this.files[0];
         if (file) {
-            const reader = new FileReader(); // 파일을 읽기 위한 객체 생성
-
-            reader.onload = function(e) {
-                // 파일 읽기가 성공적으로 끝나면,
-                imagePreview.src = e.target.result; // img 태그의 src를 읽은 파일 데이터로 설정
-                imagePreview.style.display = 'block'; // 숨겨져 있던 img 태그를 보여줌
-            };
-
-            reader.readAsDataURL(file); // 파일 읽기 시작
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.style.display = 'none';
         }
     });
-    // --- 이미지 미리보기 기능 끝 ---
 
+    // 챗봇 메시지 추가 함수
+    function addMessage(text, isUser) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+        const sanitizedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        messageDiv.innerHTML = `
+            <div class="message-avatar">${isUser ? 'U' : 'AI'}</div>
+            <div class="message-content">${sanitizedText.replace(/\n/g, '<br>')}</div>
+        `;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
 
-    // 분석 종류 선택 버튼 로직 (동일)
-    const analysisButtons = document.querySelectorAll('.anal_btn');
-    const analysisSections = document.querySelectorAll('.anal-sec');
-    analysisButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const targetId = this.dataset.target;
-            analysisSections.forEach(section => section.style.display = 'none');
-            const targetSection = document.getElementById(targetId);
-            if (targetSection) targetSection.style.display = 'block';
+    // 챗봇 메시지 전송
+    function sendMessage() {
+        const messageText = messageInput.value.trim();
+        if (!messageText || !currentDiagnosisId) return;
+
+        addMessage(messageText, true);
+        messageInput.value = '';
+        messageInput.style.height = 'auto';
+        sendBtn.disabled = true;
+
+        fetch('/chat/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            },
+            body: JSON.stringify({
+                message: messageText,
+                diagnosisId: currentDiagnosisId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            addMessage(data.success ? data.response : '오류가 발생했습니다.', false);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            addMessage('네트워크 오류가 발생했습니다.', false);
+        });
+    }
+
+    // 채팅 내역 로드
+    function loadChatHistory(diagnosisId) {
+        fetch(`/chat/history/${diagnosisId}`)
+            .then(response => response.ok ? response.json() : [])
+            .then(history => {
+                chatMessages.innerHTML = '';
+                if (history && history.length > 0) {
+                    history.forEach(msg => {
+                        addMessage(msg.messageText, msg.sender === 'user');
+                    });
+                } else {
+                    addMessage('안녕하세요! 분석 결과에 대해 궁금한 점이 있으시면 언제든지 질문해주세요.', false);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading chat history:', error);
+                chatMessages.innerHTML = '';
+                addMessage('안녕하세요! 분석 결과에 대해 궁금한 점이 있으시면 언제든지 질문해주세요.', false);
+            });
+    }
+
+    // 폼 제출 이벤트
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        if (!imageFile.files[0]) {
+            alert('이미지 파일을 선택해주세요.');
+            return;
+        }
+
+        resultSection.style.display = 'block';
+        const resultDiv = resultSection.querySelector('.result');
+        
+        // ✨ 수정된 부분: 채팅창을 숨기지 않고, show 클래스만 제거합니다.
+        if (chatPanel) {
+            chatPanel.classList.remove('show');
+        }
+
+        if (resultDiv) {
+            resultDiv.innerHTML = '<p class="loading">AI가 이미지를 분석 중입니다. 잠시만 기다려주세요...</p>';
+        }
+
+        fetch('/analyze/check', {
+            method: 'POST',
+            headers: { [csrfHeader]: csrfToken },
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(`서버 응답 오류: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            if (data.success && data.prediction && data.diagnosisId) {
+                if (resultDiv) {
+                    resultDiv.innerHTML = `
+                        <div class="result-header">
+                            <span class="result-icon">🔍</span>
+                            AI 분석 결과
+                        </div>
+                        <p class="result-content">${data.prediction}</p>
+                    `;
+                }
+                
+                // ✨ 수정된 부분: 불필요한 스타일 직접 조작을 제거하고 'show' 클래스만 추가합니다.
+                if (chatPanel) {
+                    setTimeout(() => {
+                        chatPanel.classList.add('show');
+                    }, 100); // 짧은 딜레이 후 클래스 추가
+                }
+
+                currentDiagnosisId = data.diagnosisId;
+                loadChatHistory(data.diagnosisId);
+
+            } else {
+                if (resultDiv) {
+                    resultDiv.innerHTML = `<p class="error">오류: ${data.error || '분석 중 오류가 발생했습니다.'}</p>`;
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            if (resultDiv) {
+                resultDiv.innerHTML = `<p class="error">분석 요청에 실패했습니다. 네트워크 연결을 확인해주세요.</p>`;
+            }
         });
     });
 
-    // AJAX 폼 제출 로직
-    const analysisForms = document.querySelectorAll('.anal-sec form');
-    analysisForms.forEach(form => {
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
+    // 챗봇 관련 이벤트 리스너들
+    messageInput.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = `${Math.min(this.scrollHeight, 100)}px`;
+        sendBtn.disabled = !this.value.trim();
+    });
 
-            const formData = new FormData(this);
-            const actionUrl = this.action;
+    messageInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
 
-            const parentSection = this.closest('.anal-sec');
-            const resultDiv = parentSection.querySelector('.result');
+    chatForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        sendMessage();
+    });
 
-            if (!resultDiv) {
-                console.error("Error: Could not find the result div for this form.");
-                return;
-            }
+    // 채팅창 닫기
+    closeChatBtn.addEventListener('click', function () {
+        if (chatPanel) {
+            // ✨ 수정된 부분: display 속성 대신 'show' 클래스만 제거합니다.
+            chatPanel.classList.remove('show');
+        }
+    });
 
-            resultDiv.innerHTML = '<p>분석 중입니다...</p>';
-
-            const token = document.querySelector("meta[name='_csrf']").getAttribute("content");
-            const headerName = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
-
-
-            fetch(actionUrl, {
-                method: 'POST',
-                headers: {
-                    // 👇 여기에 CSRF 토큰을 추가합니다
-                    [headerName]: token
-                },
-                body: formData
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        // 서버에서 4xx, 5xx 에러 응답을 받았을 때 처리
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.error) {
-                        resultDiv.innerHTML = `<p style="color: red;"><strong>오류:</strong> ${data.error}</p>`;
-                    } else if (data.success && data.diagnosisId) {
-                        // ✨ 새로운 연동 로직
-                        resultDiv.innerHTML = `
-                            <div style="text-align: center; color: green;">
-                                <p><strong>✅ 분석 완료!</strong></p>
-                                <p><strong>예측 결과:</strong> ${data.prediction}</p>
-                                <p>💬 AI 상담으로 이동 중...</p>
-                                <div class="loading-spinner">⏳</div>
-                            </div>
-                        `;
-                        
-                        // 3초 후 챗봇 페이지로 자동 이동
-                        setTimeout(() => {
-                            window.location.href = `/chat/diagnosis/${data.diagnosisId}`;
-                        }, 3000);
-                    } else {
-                        // 기존 로직 (diagnosisId가 없는 경우)
-                        resultDiv.innerHTML = `<p><strong>예측 결과:</strong> ${data.prediction}</p>`;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    resultDiv.innerHTML = `<p style="color: red;">클라이언트 측 오류가 발생했습니다. 콘솔을 확인해주세요.</p>`;
-                });
-        });
+    // ESC 키로 채팅창 닫기
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && chatPanel && chatPanel.classList.contains('show')) {
+            closeChatBtn.click();
+        }
     });
 });
-

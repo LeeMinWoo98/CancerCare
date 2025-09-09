@@ -110,15 +110,22 @@ public class ChatBotService {
 
     // 반환 타입을 List<ChatMessageDto>로 변경
     public List<ChatMessageDTO> getChatHistory(Integer diagnosisId, String loginId) {
-        Diagnosis diagnosis = diagnosisRepository.findById(diagnosisId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid diagnosis ID: " + diagnosisId));
+        try {
+            Diagnosis diagnosis = diagnosisRepository.findById(diagnosisId)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid diagnosis ID: " + diagnosisId));
 
-        List<ChatMessage> messages = chatMessageRepository.findByDiagnosisAndLoginIdOrderByCreatedAtAsc(diagnosis, loginId);
+            List<ChatMessage> messages = chatMessageRepository.findByDiagnosisAndLoginIdOrderByCreatedAtAsc(diagnosis, loginId);
 
-        // 조회한 엔티티 리스트를 DTO 리스트로 변환하여 반환
-        return messages.stream()
-                .map(ChatMessageDTO::new)
-                .collect(Collectors.toList());
+            // 조회한 엔티티 리스트를 DTO 리스트로 변환하여 반환
+            return messages.stream()
+                    .map(ChatMessageDTO::new)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.err.println("getChatHistory 오류 - diagnosisId: " + diagnosisId + ", loginId: " + loginId);
+            e.printStackTrace();
+            // 빈 리스트 반환하여 오류 방지
+            return List.of();
+        }
     }
 
     public Diagnosis getDiagnosisInfo(Integer diagnosisId) {

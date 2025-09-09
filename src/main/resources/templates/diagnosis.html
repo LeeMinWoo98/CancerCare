@@ -49,7 +49,11 @@
                 </button>
             </form>
 
-            <div class="result">
+            <!-- 분석 결과만 표시하는 영역 -->
+            <div id="result-section" style="display: none;">
+                <h3>분석 결과</h3>
+                <div class="result">
+                </div>
             </div>
 
             <div class="usage-info">
@@ -65,6 +69,38 @@
                 </div>
             </div>
         </section>
+    </div>
+
+    <!-- 우측에 독립적인 채팅창 -->
+    <div id="chat-panel" class="chat-panel">
+        <div class="chat-header">
+            <div class="ai-avatar">AI</div>
+            <div class="ai-info">
+                <h3>AI 상담</h3>
+                <div class="ai-status">분석 결과에 대해 상담하세요</div>
+            </div>
+            <button class="close-chat-btn" id="closeChatBtn">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <!-- 챗봇 메시지들이 여기에 표시됩니다 -->
+        </div>
+        
+        <div class="chat-input-container">
+            <form id="chatForm">
+                <div class="chat-input-wrapper">
+                    <textarea name="message" id="messageInput" class="chat-input" placeholder="분석 결과에 대해 질문하세요..." rows="1" required></textarea>
+                    <button type="submit" class="send-btn" id="sendBtn" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 2L11 13"></path>
+                            <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </main>
 <div th:replace="~{fragments/footer :: footerFragment}"></div>
