@@ -1,6 +1,11 @@
+import sys
+print(">>> Python Executable:", sys.executable)
+print(">>> Python Version:", sys.version)
+
 import os
 import argparse
 from ultralytics import YOLO
+
 
 class MRIAnalyzer:
     def __init__(self, model_path):
