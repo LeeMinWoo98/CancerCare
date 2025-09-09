@@ -20,6 +20,9 @@ public class ChatMessage {
     @JoinColumn(name = "diagnosis_id", nullable = false)
     private Diagnosis diagnosis;
 
+    @Column(name = "login_id", nullable = false, length = 30)
+    private String loginId;
+
     @Column(name = "message_text", columnDefinition = "TEXT", nullable = false)
     private String messageText;
 
@@ -32,11 +35,14 @@ public class ChatMessage {
 
     public enum SenderType {user, chatbot}
 
+    // 기본 생성자
     public ChatMessage() {
     }
 
-    public ChatMessage(Diagnosis diagnosis, String messageText, SenderType sender) {
+    // 🎯 생성자 수정 (loginId 추가)
+    public ChatMessage(Diagnosis diagnosis, String loginId, String messageText, SenderType sender) {
         this.diagnosis = diagnosis;
+        this.loginId = loginId;
         this.messageText = messageText;
         this.sender = sender;
     }

@@ -1,10 +1,10 @@
 package org.example.dto;
 
-public class ChatResponse {
+public class ChatResponseDTO {
     private String response;
     private boolean success;
 
-    public ChatResponse(String response, boolean success) {
+    public ChatResponseDTO(String response, boolean success) {
         this.response = response;
         this.success = success;
     }

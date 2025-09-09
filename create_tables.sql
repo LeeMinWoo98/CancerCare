@@ -26,3 +26,15 @@ CREATE TABLE email_verification_codes (
     expires_at DATETIME(6) NOT NULL,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB;
+
+-- user_profiles 테이블 생성(없으면)
+CREATE TABLE IF NOT EXISTS user_profiles (
+    user_id BIGINT NOT NULL PRIMARY KEY,
+    cancer_type ENUM('LIVER','STOMACH','COLON','BREAST','CERVICAL','LUNG') NULL,
+    stage ENUM('S1','S2','S3A','S3B','S4') NULL,
+    height_cm INT NULL,
+    weight_kg INT NULL,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_user_profiles_user FOREIGN KEY (user_id)
+        REFERENCES app_users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

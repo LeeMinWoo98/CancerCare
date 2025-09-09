@@ -3,7 +3,7 @@ package org.example.domain;
 public enum CancerType {
     LUNG("Lung", "폐암"),
     LIVER("Liver", "간암"), 
-    COLORECTAL("Colorectal", "대장암"),
+    COLON("Colon", "대장암"),
     STOMACH("Stomach", "위암"),
     CERVICAL("Cervical", "자궁경부암"),
     BREAST("Breast", "유방암");

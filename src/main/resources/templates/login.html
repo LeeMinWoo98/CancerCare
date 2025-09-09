@@ -93,47 +93,12 @@
         <div th:if="${param.signup}" class="alert" style="background:#f0f9ff;color:#0369a1;border-color:#bae6fd;">
             회원가입이 완료되었습니다. 로그인해주세요.
         </div>
-        
-        <div th:if="${param.logout}" class="alert" style="background:#f0f9ff;color:#0369a1;border-color:#bae6fd;">
-            로그아웃되었습니다.
-        </div>
-        
-        <div th:if="${param.error}" class="alert">
-            아이디 또는 비밀번호가 올바르지 않습니다.
-        </div>
     </div>
 </div>
 
-<script>
-// 로그인 오류 메시지를 Alert로 표시
-window.addEventListener('load', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('error')) {
-        alert('아이디 또는 비밀번호가 올바르지 않습니다.');
-        // URL에서 error 파라미터 제거
-        const url = new URL(window.location);
-        url.searchParams.delete('error');
-        window.history.replaceState({}, document.title, url.pathname + url.search);
-    }
-});
+<script th:if="${param.error}">
+    alert('아이디 또는 비밀번호가 올바르지 않습니다.');
 </script>
+
 </body>
 </html>
-<!--
-   <script th:inline="javascript">
-   /*<![CDATA[*/
-       // 아래는 JavaScript로 에러 메시지를 처리하는 예시입니다.
-       // Spring Security는 로그인 실패 시 URL에 '?error' 파라미터를 추가하여 리디렉션합니다.
-       // 이 파라미터의 존재 여부를 확인하여 에러 발생을 감지할 수 있습니다.
-       const urlParams = new URLSearchParams(window.location.search);
-       if (urlParams.has('error')) {
-           const alertBox = document.querySelector('.alert');
-           // 서버의 Thymeleaf가 이미 에러 메시지를 표시했을 수 있으므로,
-           // alertBox 내부가 비어있을 때만 기본 메시지를 추가합니다.
-           if (alertBox && !alertBox.textContent.trim()) {
-               alertBox.innerHTML = '<span>이메일 또는 비밀번호가 올바르지 않습니다.</span>';
-           }
-       }
-   /*]]>*/
-   </script>
-   -->

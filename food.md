@@ -45,7 +45,7 @@ CREATE TABLE side_dish (
     sidedish_name VARCHAR(100) NOT NULL,
     Lung TINYINT(1) DEFAULT 0,
     Liver TINYINT(1) DEFAULT 0,
-    Colorectal TINYINT(1) DEFAULT 0,
+    Colon TINYINT(1) DEFAULT 0,
     Stomach TINYINT(1) DEFAULT 0,
     Cervical TINYINT(1) DEFAULT 0,
     Breast TINYINT(1) DEFAULT 0,
@@ -61,7 +61,7 @@ CREATE TABLE side_dish (
 ### 2.2 공통 컬럼 규칙
 - **ID**: 기본키
 - **이름**: `{table}_name` 형태 (sidedish_name, soups_name 등)
-- **암 타입**: `Lung`, `Liver`, `Colorectal`, `Stomach`, `Cervical`, `Breast` (1=추천, 0=비추천)
+- **암 타입**: `Lung`, `Liver`, `Colon`, `Stomach`, `Cervical`, `Breast` (1=추천, 0=비추천)
 - **설명**: `info` (음식 설명 및 주의사항)
 
 ---
@@ -90,7 +90,7 @@ CREATE TABLE side_dish (
 public enum CancerType {
     LUNG("Lung", "폐암"),
     LIVER("Liver", "간암"), 
-    COLORECTAL("Colorectal", "대장암"),
+    COLON("Colon", "대장암"),
     STOMACH("Stomach", "위암"),
     CERVICAL("Cervical", "자궁경부암"),
     BREAST("Breast", "유방암");
@@ -167,7 +167,7 @@ boolean insufficient = soup == null || sideDishes.size() < 3;
 ### 6.1 통합 식단 추천 API 
 - **Endpoint**: `GET /api/food/recommend`
 - **Parameters**: 
-  - `cancer` (필수) - 암 타입 (LUNG, LIVER, COLORECTAL, STOMACH, CERVICAL, BREAST)
+    - `cancer` (필수) - 암 타입 (LUNG, LIVER, COLON, STOMACH, CERVICAL, BREAST)
   - `foodType` (옵션) - 특정 음식 분류만 추천 (sideDish, soup, rice, snack)
   - `count` (옵션) - 추천 개수 (기본값: foodType별 기본 개수)
   - `excludeIds` (옵션) - 제외할 음식 ID 목록 (다시뽑기용)
