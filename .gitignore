@@ -6,6 +6,16 @@ build/
 
 ### IntelliJ IDEA ###
 .idea/
+<<<<<<< HEAD
+=======
+
+.idea/modules.xml
+.idea/jarRepositories.xml
+.idea/compiler.xml
+.idea/libraries/
+
+
+>>>>>>> branch 'kyoungjun' of https://github.com/LeeMinWoo98/human_team6
 *.iws
 *.iml
 *.ipr
