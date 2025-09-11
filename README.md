@@ -23,9 +23,13 @@ CancerCare는 CNN 딥러닝 기반의 암 예측과 AI 챗봇을 통해 환자�
 ## 🚀 주요 기능 (Features)
 
 * **🔬 AI 암 예측**: CNN 딥러닝 모델인 YOLO V8을 사용하여 의료 이미지를 기반으로 암 발병 가능성을 예측합니다.
+![이미지 진단](./src/main/resources/static/img/CancerCareChatbot2.png)
 * **💬 AI 챗봇 상담**: 생활 습관, 식단, 일반적인 궁금증에 대해 24시간 맞춤형 상담을 제공합니다.
+![챗봇](./src/main/resources/static/img/CancerCareChat2.png)
 * **🥗 맞춤 식단 추천**: 환자의 상태를 고려한 건강하고 균형 잡힌 식단을 추천합니다.
+![식단](./src/main/resources/static/img/CancerFood.png)
 * **🏥 주변 병원 찾기**: Kakao Map API를 활용하여 현재 위치를 기준으로 가장 가까운 병원을 안내합니다.
+![병원](./src/main/resources/static/img/CancaerHospital.png)
 
 ### 🛠️ 기술 스택 (Tech Stack)
 
