@@ -76,6 +76,10 @@ CancerCare는 CNN 딥러닝 기반의 암 예측과 AI 챗봇을 통해 환자�
 #### **협업/커뮤니케이션 (Collaboration/Communication)**
 [![KakaoTalk](https://img.shields.io/badge/KakaoTalk-FFCD00?style=for-the-badge&logo=kakao&logoColor=black)](https://www.kakaocorp.com/service/KakaoTalk)
 
+
+## 🔗 fastapi + llm 깃허브(Related Projects)
+- **LLM API Server (FastAPI):** [![LLM Repository](https://img.shields.io/badge/LLM_API_Server-000000?style=for-the-badge&logo=github)](https://github.com/minkj98/cancercare-chatbot.git)
+
 ### **👨‍💻 팀원 소개 및 역할**
 | 팀원 (Team Member) | 역할 (Role) | 주요 담당 기능 (Responsibilities) |
 | --- | --- | --- |
