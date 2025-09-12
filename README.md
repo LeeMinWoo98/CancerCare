@@ -70,6 +70,7 @@ CancerCare는 CNN 딥러닝 기반의 암 예측과 AI 챗봇을 통해 환자�
 #### **개발 도구 (Development Tools)**
 [![IntelliJ IDEA](https://img.shields.io/badge/IntelliJ_IDEA-000000?style=for-the-badge&logo=intellij-idea&logoColor=white)](https://www.jetbrains.com/idea/)
 [![DBeaver](https://img.shields.io/badge/DBeaver-382923?style=for-the-badge&logo=dbeaver&logoColor=white)](https://dbeaver.io/)
+[![StarUML](https://img.shields.io/badge/StarUML-233B56?style=for-the-badge&logo=staruml&logoColor=white)](http://staruml.io/)
 
 #### **협업/커뮤니케이션 (Collaboration/Communication)**
 [![KakaoTalk](https://img.shields.io/badge/KakaoTalk-FFCD00?style=for-the-badge&logo=kakao&logoColor=black)](https://www.kakaocorp.com/service/KakaoTalk)
